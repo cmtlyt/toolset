@@ -18,6 +18,9 @@
     "dev": "rollup -cw",
     "build": "tsc && rollup -c"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "cl",
     "monitor",
