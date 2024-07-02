@@ -1,0 +1,44 @@
+{
+  "name": "@cmtlyt/monitor",
+  "version": "0.0.1",
+  "description": "cl项目监控",
+  "type": "module",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "dev": "rollup -cw",
+    "build": "tsc && rollup -c"
+  },
+  "keywords": [
+    "cl",
+    "monitor",
+    "cmtlyt",
+    "监控",
+    "项目监控",
+    "sdk",
+    "数据上报",
+    "report"
+  ],
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/monitor"
+  },
+  "license": "MIT"
+}

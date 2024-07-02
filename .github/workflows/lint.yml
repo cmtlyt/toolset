@@ -1,0 +1,51 @@
+name: Commit Message Check on PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0 # 获取所有提交记录以便检查提交信息
+
+      - name: Grant execute permission
+        run: chmod +x ./scripts/check_commit_msg.sh
+
+      - name: Check commit messages in PR
+        run: ./scripts/check_commit_msg.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [21]
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install PNPM
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Deps
+        run: pnpm i --no-frozen-lockfile
+
+      - name: Lint and Format
+        run: pnpm run lint
