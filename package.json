@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "publish": "turbo publish",
+    "test": "turbo test",
     "lint": "eslint \"packages/**/*.{js,jsx,tsx,ts}\" --fix"
   },
   "keywords": [],
