@@ -34,6 +34,8 @@ module.exports = {
     'no-multiple-empty-lines': ['error', { max: 1 }],
     'no-multi-spaces': 'error',
     'no-dupe-args': 'error',
+    'no-prototype-builtins': 'off',
+    'prefer-spread': 'off',
     'import/order': [
       'error',
       {

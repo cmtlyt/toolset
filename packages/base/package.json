@@ -1,0 +1,47 @@
+{
+  "name": "@cmtlyt/base",
+  "type": "module",
+  "version": "0.5.17",
+  "description": "cmtlyt的基础工具库",
+  "module": "./dist/index.esm.js",
+  "types": "'./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "dev": "rollup -cw",
+    "build": "tsc && rollup -c"
+  },
+  "keywords": [
+    "cmtlyt",
+    "base",
+    "基础工具库"
+  ],
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "private": false,
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cmtlyt/base"
+  },
+  "homepage": "https://cmtlyt.github.io/base/",
+  "bugs": {
+    "url": "https://github.com/cmtlyt/base/issues",
+    "email": "cmtlyt@163.com"
+  }
+}

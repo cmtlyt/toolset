@@ -43,5 +43,11 @@
     "url": "git+https://github.com/cmtlyt/toolset.git",
     "directory": "packages/monitor"
   },
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/monitor/README.md",
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "license": "MIT"
 }
