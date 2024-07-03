@@ -1,0 +1,194 @@
+[
+  {
+    "path": "https://model.oml2d.com/mai/model.json",
+    "position": [10, 60],
+    "scale": 0.2,
+    "stageStyle": { "height": 440 }
+  },
+  {
+    "path": "https://model.oml2d.com/haruto/haruto.model.json",
+    "position": [0, 100],
+    "scale": 0.15,
+    "stageStyle": { "height": 400 }
+  },
+  {
+    "path": "https://model.oml2d.com/Kar98k-normal/model.json",
+    "position": [0, 90],
+    "scale": 0.08,
+    "stageStyle": { "height": 480 }
+  },
+  {
+    "path": "https://model.oml2d.com/Pio/model.json",
+    "position": [0, 60],
+    "scale": 0.4,
+    "stageStyle": { "height": 310 }
+  },
+  {
+    "path": "https://model.oml2d.com/Senko_Normals/senko.model3.json",
+    "position": [-30, 60],
+    "scale": 0.1,
+    "stageStyle": { "height": 320 }
+  },
+  {
+    "path": "https://model.oml2d.com/bilibili-22/index.json",
+    "position": [0, 60],
+    "scale": 0.25,
+    "stageStyle": { "height": 365 }
+  },
+  {
+    "path": "https://model.oml2d.com/bilibili-33/index.json",
+    "position": [0, 60],
+    "scale": 0.25,
+    "stageStyle": { "height": 365 }
+  },
+  {
+    "path": "https://model.oml2d.com/cat-black/model.json",
+    "position": [0, 50],
+    "scale": 0.12,
+    "stageStyle": { "height": 320 }
+  },
+  {
+    "path": "https://model.oml2d.com/cat-white/model.json",
+    "position": [0, 50],
+    "scale": 0.12,
+    "stageStyle": { "height": 320 }
+  },
+  {
+    "path": "https://model.oml2d.com/chino/model.json",
+    "position": [0, 100],
+    "scale": 0.2,
+    "stageStyle": { "height": 380 }
+  },
+  {
+    "path": "https://model.oml2d.com/date/model.json",
+    "position": [0, -120],
+    "scale": 0.14,
+    "stageStyle": { "height": 360 }
+  },
+  {
+    "path": "https://model.oml2d.com/hallo/model.json",
+    "position": [0, -110],
+    "scale": 0.14,
+    "stageStyle": { "height": 360 }
+  },
+  {
+    "path": "https://model.oml2d.com/hibiki/hibiki.model.json",
+    "position": [0, 90],
+    "scale": 0.2,
+    "stageStyle": { "height": 580 }
+  },
+  {
+    "path": "https://model.oml2d.com/histoire/model.json",
+    "position": [0, 10],
+    "scale": 0.2,
+    "stageStyle": { "height": 320 }
+  },
+  {
+    "path": "https://model.oml2d.com/kobayaxi/model.json",
+    "position": [0, 60],
+    "scale": 0.2,
+    "stageStyle": { "height": 480 }
+  },
+  {
+    "path": "https://model.oml2d.com/koharu/model.json",
+    "position": [0, 90],
+    "scale": 0.18,
+    "stageStyle": { "height": 460 }
+  },
+  {
+    "path": "https://model.oml2d.com/kp31/model.json",
+    "position": [0, -340],
+    "scale": 0.08,
+    "stageStyle": { "height": 460 }
+  },
+  {
+    "path": "https://model.oml2d.com/live_uu/model.json",
+    "position": [-80, 0],
+    "scale": 0.12,
+    "stageStyle": { "height": 340, "width": 300 }
+  },
+  {
+    "path": "https://model.oml2d.com/murakumo/model.json",
+    "position": [0, 100],
+    "scale": 0.25,
+    "stageStyle": { "height": 380 }
+  },
+  {
+    "path": "https://model.oml2d.com/platelet/model.json",
+    "position": [75, 60],
+    "scale": 0.16,
+    "stageStyle": { "height": 380 }
+  },
+  {
+    "path": "https://model.oml2d.com/platelet_2/model.json",
+    "position": [-50, 90],
+    "scale": 0.18,
+    "stageStyle": { "height": 450, "width": 260 }
+  },
+  {
+    "path": "https://model.oml2d.com/potion-Maker-Pio/index.json",
+    "position": [0, 100],
+    "scale": 0.3,
+    "stageStyle": { "height": 300 }
+  },
+  {
+    "path": "https://model.oml2d.com/rem/model.json",
+    "position": [-40, 90],
+    "scale": 0.12,
+    "stageStyle": { "height": 460, "width": 220 }
+  },
+  {
+    "path": "https://model.oml2d.com/shizuku/shizuku.model.json",
+    "position": [0, 90],
+    "scale": 0.2,
+    "stageStyle": { "height": 430 }
+  },
+  {
+    "path": "https://model.oml2d.com/shizuku_48/index.json",
+    "position": [20, 60],
+    "scale": 0.18,
+    "stageStyle": { "height": 360, "width": 260 }
+  },
+  {
+    "path": "https://model.oml2d.com/shizuku_pajama/index.json",
+    "position": [20, 60],
+    "scale": 0.18,
+    "stageStyle": { "height": 360, "width": 260 }
+  },
+  {
+    "path": "https://model.oml2d.com/uni/model.json",
+    "position": [30, 90],
+    "scale": 0.1,
+    "stageStyle": { "height": 560, "width": 230 }
+  },
+  {
+    "path": "https://model.oml2d.com/xisitina/model.json",
+    "position": [0, 0],
+    "scale": 0.08,
+    "stageStyle": { "height": 300 }
+  },
+  {
+    "path": "https://model.oml2d.com/z16/z16.model.json",
+    "position": [30, 90],
+    "scale": 0.3,
+    "stageStyle": { "height": 400, "width": 240 }
+  },
+  {
+    "path": "https://model.oml2d.com/HK416-1-normal/model.json",
+    "position": [0, 90],
+    "scale": 0.08,
+    "stageStyle": { "height": 480 }
+  },
+  {
+    "path": "https://model.oml2d.com/HK416-2-destroy/model.json",
+    "position": [0, 60],
+    "scale": 0.08,
+    "stageStyle": { "height": 420 }
+  },
+  {
+    "path": "https://model.oml2d.com/HK416-2-normal/model.json",
+    "position": [0, 90],
+    "scale": 0.08,
+    "stageStyle": { "height": 480 }
+  }
+]

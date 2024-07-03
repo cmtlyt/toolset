@@ -1,0 +1,25 @@
+{
+  "name": "@cmtlyt/document",
+  "version": "0.0.0",
+  "description": "文档仓库",
+  "scripts": {
+    "dev:doc": "rspress dev",
+    "build:doc": "rspress build"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@rspress/plugin-playground": "^1.25.2",
+    "@rspress/plugin-preview": "^1.25.2",
+    "rspress": "^1.25.2",
+    "rspress-plugin-file-tree": "^0.4.0",
+    "rspress-plugin-gh-pages": "^0.3.0",
+    "rspress-plugin-live2d": "^0.3.0",
+    "rspress-plugin-reading-time": "^0.3.0"
+  },
+  "keywords": [],
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "license": "MIT"
+}
