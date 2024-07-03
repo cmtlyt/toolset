@@ -9,3 +9,5 @@ dist/
 .idea/
 
 .vscode/
+
+doc_build/
