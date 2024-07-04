@@ -40,6 +40,9 @@
     "url": "git+https://github.com/cmtlyt/toolset/",
     "directory": "packages/base"
   },
+  "clPublish": {
+    "checkDir": "src"
+  },
   "homepage": "https://cmtlyt.github.io/toolset/packages/base/",
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues",
