@@ -88,6 +88,9 @@ importers:
       '@rspress/plugin-preview':
         specifier: ^1.25.2
         version: 1.25.2(@babel/core@7.24.7)(@rspress/core@1.25.2(@swc/helpers@0.5.3)(webpack@5.92.1))(@swc/helpers@0.5.3)(react-router-dom@6.24.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(solid-js@1.8.18)
+      glob:
+        specifier: ^10.4.2
+        version: 10.4.2
       rspress:
         specifier: ^1.25.2
         version: 1.25.2(@swc/helpers@0.5.3)(webpack@5.92.1)

@@ -10,6 +10,7 @@
   "devDependencies": {
     "@rspress/plugin-playground": "^1.25.2",
     "@rspress/plugin-preview": "^1.25.2",
+    "glob": "^10.4.2",
     "rspress": "^1.25.2",
     "rspress-plugin-file-tree": "^0.4.0",
     "rspress-plugin-gh-pages": "^0.3.0",

@@ -1,0 +1,18 @@
+[
+  "guide",
+  {
+    "type": "dir",
+    "name": "utils",
+    "label": "基础工具",
+    "collapsible": true,
+    "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "tools",
+    "label": "通用工具",
+    "collapsible": true,
+    "collapsed": true
+  },
+  "history"
+]

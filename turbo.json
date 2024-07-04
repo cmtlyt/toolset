@@ -6,17 +6,11 @@
       "outputs": ["dist/**"]
     },
     "deploy": {
-      "dependsOn": ["^deploy$"],
-      "outputs": ["dist/**"]
-    },
-    "publish": {
-      "dependsOn": ["^publish$"],
-      "outputs": ["dist/**"]
+      "dependsOn": ["^deploy$"]
     },
     "dev": {
       "dependsOn": ["^dev$"],
-      "cache": false,
-      "persistent": true
+      "cache": false
     },
     "dev:doc": {
       "dependsOn": ["^dev:doc$"],

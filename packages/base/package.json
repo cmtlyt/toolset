@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/base",
   "type": "module",
-  "version": "0.6.0",
+  "version": "0.6.3",
   "description": "cmtlyt的基础工具库",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
@@ -15,8 +15,7 @@
   },
   "scripts": {
     "dev": "rollup -cw",
-    "build": "tsc && rollup -c",
-    "publish": "npm run build && npm publish"
+    "build": "tsc && rollup -c"
   },
   "keywords": [
     "cmtlyt",
@@ -38,11 +37,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cmtlyt/base"
+    "url": "git+https://github.com/cmtlyt/toolset/",
+    "directory": "packages/base"
   },
-  "homepage": "https://cmtlyt.github.io/base/",
+  "homepage": "https://cmtlyt.github.io/toolset/packages/base/",
   "bugs": {
-    "url": "https://github.com/cmtlyt/base/issues",
+    "url": "https://github.com/cmtlyt/toolset/issues",
     "email": "cmtlyt@163.com"
   }
 }

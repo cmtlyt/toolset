@@ -7,6 +7,7 @@ import readingTime from 'rspress-plugin-reading-time';
 import live2d from 'rspress-plugin-live2d';
 import ghPages from 'rspress-plugin-gh-pages';
 import fileTree from 'rspress-plugin-file-tree';
+import { globSync } from 'glob';
 
 import live2dModels from './live2d.model.json';
 
@@ -30,7 +31,7 @@ const config: any = defineConfig({
     checkDeadLinks: true,
     showLineNumbers: true,
     defaultWrapCode: true,
-    globalComponents: [],
+    globalComponents: globSync('src/**/*.jsx', { absolute: true }),
   },
   builderConfig: {
     tools: {

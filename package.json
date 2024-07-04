@@ -9,7 +9,7 @@
     "test": "turbo test",
     "dev:doc": "turbo dev:doc",
     "build:doc": "turbo build:doc",
-    "lint": "eslint \"packages/**/*.{js,jsx,tsx,ts}\" --fix"
+    "lint": "eslint --ext js,jsx,tsx,ts --fix"
   },
   "keywords": [],
   "author": {

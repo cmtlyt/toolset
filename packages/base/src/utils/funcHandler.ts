@@ -1,6 +1,7 @@
 import { EMPTY } from '@com/constant';
 
-import { getArray, getNow } from './dataHandler';
+import { getArray } from './dataHandler';
+import { getNow } from './getData';
 
 export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   cacheLoad: T,

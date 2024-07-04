@@ -3,6 +3,7 @@ import { EMPTY } from '@com/constant';
 
 import { cacheByReturn } from './funcHandler';
 import { isWeb } from './ua';
+import { getType } from './getData';
 
 export function isNull(value: any): boolean {
   return typeof value === 'undefined' || (typeof value === 'object' && value === null);
@@ -26,12 +27,6 @@ export function isString(value: any): boolean {
 
 export function isPromise(value: any): boolean {
   return value && typeof value.then === 'function';
-}
-
-export function getType(value: any): string {
-  const baseType = typeof value;
-  if (baseType !== 'object' && baseType !== 'function') return baseType;
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 }
 
 export function isEmpty(value: any): boolean {

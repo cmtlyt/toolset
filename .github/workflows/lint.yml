@@ -48,4 +48,4 @@ jobs:
         run: pnpm i --no-frozen-lockfile
 
       - name: Lint and Format
-        run: pnpm run lint
+        run: pnpm run lint packages

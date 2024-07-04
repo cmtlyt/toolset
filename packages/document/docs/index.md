@@ -1,11 +1,11 @@
 ---
-title: '@cmtlyt/base 文档'
-description: '这是 @cmtlyt/base 的文档'
+title: '@cmtlyt 文档'
+description: '这是 @cmtlyt 的文档'
 titleSuffix: '| 开发的基本工具'
 pageType: home
 
 hero:
-  name: '@cmtlyt/base 文档'
+  name: '@cmtlyt 文档'
   text: '包含开发的基本工具'
   tagline: '个人开发, 大家有想法的可以提一下, 作者很好说话!!!'
   image:

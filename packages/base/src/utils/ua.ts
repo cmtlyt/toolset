@@ -261,7 +261,7 @@ export const isWechatNode = cacheByReturn(() => {
 
 // 淘宝
 export const isTB = cacheByReturn(() => {
-  return isTBMiniapp() || isTBWeb() || isTBNode;
+  return isTBMiniapp() || isTBWeb() || isTBNode();
 });
 
 // 淘特
