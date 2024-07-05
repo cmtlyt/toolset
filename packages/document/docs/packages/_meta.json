@@ -4,7 +4,7 @@
     "type": "dir",
     "name": "base",
     "label": "@cmtlyt/base",
-    "collapsible": true,
+    "collapsible": false,
     "collapsed": true
   }
 ]

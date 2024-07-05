@@ -1,0 +1,25 @@
+[
+  "index",
+  {
+    "type": "dir",
+    "name": "javascript",
+    "label": "JavaScript 相关",
+    "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "SOLID",
+    "label": "面向对象设计原则",
+    "collapsed": true
+  },
+  {
+    "type": "dir",
+    "name": "软件开发流程相关",
+    "label": "软件开发流程相关",
+    "collapsed": true
+  },
+  { "name": "Turbo", "label": "Turbo" },
+  "CI_CD",
+  "dataType",
+  "ConstructorMethod"
+]

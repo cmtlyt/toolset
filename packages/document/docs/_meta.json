@@ -5,6 +5,11 @@
     "activeMatch": "^/guides/"
   },
   {
+    "text": "百科",
+    "link": "wiki/index",
+    "activeMatch": "^/wiki/"
+  },
+  {
     "text": "工具包",
     "link": "/packages/index",
     "activeMatch": "^/packages/",
