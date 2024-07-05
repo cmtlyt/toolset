@@ -45,7 +45,9 @@
   },
   "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/monitor/README.md",
   "clPublish": {
-    "checkDir": "src"
+    "checkDir": [
+      "src/**/*.ts"
+    ]
   },
   "private": false,
   "publishConfig": {

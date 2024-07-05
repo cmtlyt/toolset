@@ -41,7 +41,9 @@
     "directory": "packages/base"
   },
   "clPublish": {
-    "checkDir": "src"
+    "checkDir": [
+      "src/**/*.ts"
+    ]
   },
   "homepage": "https://cmtlyt.github.io/toolset/packages/base/",
   "bugs": {
