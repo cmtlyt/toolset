@@ -251,3 +251,7 @@ export function chunkTask<F extends TAnyFunc>(task: F) {
 }
 
 export const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+
+export function reverseArgs<F extends TAnyFunc>(callback: F) {
+  return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback.apply(null, args.reverse());
+}

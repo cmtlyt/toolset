@@ -310,3 +310,33 @@ sleep(1000).then(() => {
   console.log('hello');
 });
 ```
+
+```ts
+export function reverseArgs<F extends TAnyFunc>(callback: F) {
+  return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback.apply(null, args.reverse());
+}
+```
+
+## reverseArgs
+
+反转函数参数
+
+**参数**
+| 必填 | 参数名 | 说明 | 类型 | 默认值 |
+| :--: | ------ | ---- | ---- | ------ |
+| \* | callback | 回调 | F | - |
+
+**返回值**: `(...args: ReverseArray<TArgsType<F>>) => ReturnType<F>`
+
+**示例**
+
+```ts
+import { reverseArgs } from '@cmtlyt/base';
+// import { reverseArgs } from '@cmtlyt/base/utils/funcHandler';
+
+const fn = (a: number, b: string) => {
+  return `${a} + ${b} = ${a + b}`;
+};
+const reversedFn = reverseArgs(fn);
+reversedFn('1', 2); // 1 + 2 = 3
+```

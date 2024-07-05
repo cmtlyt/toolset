@@ -217,3 +217,32 @@ asyncReplace('hello world', 'world', async (match) => {
   return '@cmtlyt/base';
 }); // hello @cmtlyt/base
 ```
+
+## asyncFilter
+
+异步过滤
+
+**类型声明**
+
+```ts
+function asyncFilter<T>(arr: T[], predicate: (item: T, index: number) => Promise<boolean> | boolean): Promise<T[]>;
+```
+
+**参数**
+| 必填 | 参数 | 说明 | 类型 | 默认值 |
+| :--: | -------- | -------- | ------------------------------------------------------------ | ------ |
+| \* | arr | 数组 | T[] | - |
+| \* | predicate | 过滤函数 | (item: T, index: number) => Promise<boolean> \| boolean | - |
+
+**返回值**: `Promise<T[]>`
+
+**示例**
+
+```js
+import { asyncFilter } from '@cmtlyt/base';
+// import { asyncFilter } from '@cmtlyt/base/utils/dataHandler'
+
+asyncFilter([1, 2, 3, 4, 5], async (item) => {
+  return item > 2;
+}); // Promise<[3, 4, 5]>
+```

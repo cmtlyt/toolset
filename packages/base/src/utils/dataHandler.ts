@@ -131,3 +131,12 @@ export async function asyncReplace(
   }
   throw new TypeError('pattern 必须是字符串或正则表达式');
 }
+
+export async function asyncFilter<T>(
+  arr: T[],
+  predicate: (item: T, index: number) => Promise<boolean> | boolean,
+): Promise<T[]> {
+  return (await Promise.all(arr.map(async (item, idx) => ((await predicate(item, idx)) ? item : null)))).filter(
+    Boolean,
+  );
+}

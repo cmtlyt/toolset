@@ -12,6 +12,8 @@ type TTailTypes<A extends any[]> = A extends [any] ? [] : A extends [any, ...inf
 
 type TPrepend<T, A extends any[]> = [T, ...A];
 
+type TAppend<T, A extends any[]> = [...A, T];
+
 type TCast<X, Y> = X extends Y ? X : Y;
 
 type TLength<T extends any[]> = T['length'];
@@ -38,3 +40,6 @@ type GetReturnType<F> = F extends (...args: any[]) => infer R ? R : F;
 type TExclude<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
 type TFlatPromise<T> = T extends Promise<infer R> ? TFlatPromise<R> : T;
+
+type ReverseArray<T extends any[], L = TLength<T>, R extends any[] = []> =
+  L extends TLength<[]> ? R : T extends [infer H, ...infer E] ? ReverseArray<E, TLength<E>, TPrepend<H, R>> : [];

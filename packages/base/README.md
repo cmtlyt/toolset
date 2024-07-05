@@ -13,6 +13,14 @@
 - (CV) 常量
 - -> 别名
 
+### v0.6.4
+
+新增
+
+- (D) utils
+  - (F) reverseArgs
+  - (F) asyncFilter
+
 ### v0.6.1
 
 函数所属目录调整
