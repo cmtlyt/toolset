@@ -99,17 +99,40 @@ async function checkPassword() {
 
 async function publish(pkgFiles) {
   if (!pkgFiles.length) return console.log('未选择需要发布的包, 跳过发布流程');
-  for (const idx in pkgFiles) {
-    changePwd(pkgFiles[idx]);
-    const { name, version } = readJsonFile(pkgFiles[idx]);
-    console.log(chalk.blue(`开始打包 ${name}@${version}`));
-    const [err] = await execCommand(`npm run build`);
-    exportError(err);
-    console.log(chalk.green(`打包 ${name}@${version} 成功`));
+
+  let optCode = '';
+
+  const action = async (pkgFile, reInputCode = false) => {
+    const { name, version } = readJsonFile(pkgFile);
+    changePwd(pkgFile);
+    if (reInputCode) {
+      const { opt } = await prompt({
+        type: 'password',
+        name: 'opt',
+        message: `请输入 npm publish 的 OTP 码`,
+      });
+      if (!opt) exportError('OTP 码错误');
+      optCode = opt;
+    } else {
+      console.log(chalk.blue(`开始打包 ${name}@${version}`));
+      console.time(`build ${name}@${version}`);
+      const [err] = await execCommand(`npm run build`);
+      exportError(err);
+      console.timeEnd(`build ${name}@${version}`);
+      console.log(chalk.green(`打包 ${name}@${version} 成功`));
+    }
     console.log(chalk.blue(`开始发布 ${name}@${version}`));
-    const [err2] = await execCommand(`npm publish`);
+    const [err2] = await execCommand(`npm publish ${optCode ? `--otp=${optCode}` : ''}`);
+    if (err2?.message?.includes('This operation requires a one-time password from your authenticator.')) {
+      console.log(chalk.red(`OTP 码过期, 请重新输入 OTP 码`));
+      return action(pkgFile, true);
+    }
     exportError(err2);
     console.log(chalk.green(`发布 ${name}@${version} 成功\n`));
+  };
+
+  for (const idx in pkgFiles) {
+    await action(pkgFiles[idx]);
   }
 }
 
@@ -121,19 +144,19 @@ async function getPkgMap(pkgFiles) {
   }, {});
 }
 
-async function getPublishPkg(pkgMap) {
+async function selectPublishPkgs(pkgMap) {
   const choices = [{ title: 'all', value: 'all' }];
   for (const pkgName in pkgMap) {
     choices.push({ title: pkgName, value: pkgMap[pkgName] });
   }
-  const { pkg } = await prompt({
-    type: 'multiselect',
-    value: 'pkg',
+  const { pkgs } = await prompt({
+    type: 'autocompleteMultiselect',
+    name: 'pkgs',
     choices,
     message: '请选择需要发布的包',
     instructions: false,
   });
-  return pkg === 'all' ? Object.values(pkgMap) : pkg || [];
+  return pkgs.includes('all') ? Object.values(pkgMap) : pkgs || [];
 }
 
 (async function main() {
@@ -147,7 +170,7 @@ async function getPublishPkg(pkgMap) {
 
   const pkgMap = await getPkgMap(needPublishs);
 
-  const publishPkgs = await getPublishPkg(pkgMap);
+  const publishPkgs = await selectPublishPkgs(pkgMap);
 
   await publish(publishPkgs);
 })();
