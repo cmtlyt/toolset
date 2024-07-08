@@ -4,8 +4,9 @@ export interface Schema {
   properties?: Record<string, Schema>;
   required?: string[];
   items?: Schema;
-  maxLength?: number;
-  minLength?: number;
+  minItems?: number;
+  maxItems?: number;
+  uniqueItems?: boolean;
 }
 
 export type TObject<T> = Record<string | number | symbol, T>;
@@ -17,7 +18,7 @@ function _encodeJsonSchema(data: TObject<any>): Schema {
     const item = data[0];
     const itemSchema = _encodeJsonSchema(item);
     schema.type = 'array';
-    schema.items = itemSchema;
+    if (item) schema.items = itemSchema;
   } else if (schemaType === 'object') {
     const required = [];
     schema.properties = {};
@@ -61,15 +62,15 @@ function _mockFromSchema(mockDefaultValue: MockHandlerMap, schema: Schema) {
     return result;
   } else if (type === 'array') {
     const items = schema.items;
+    if (!items) return defaultValue;
     const result = defaultValue;
-    const { maxLength, minLength } = items;
-    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength || 1;
+    const { maxItems = 0, minItems = 0 } = items;
+    const length = Math.floor(Math.random() * (maxItems - minItems + 1)) + minItems || 1;
     for (let i = 0; i < length; i++) {
       result.push(_mockFromSchema(mockDefaultValue, items));
     }
     return result;
   }
-  return null;
 }
 
 export function mockFromSchema(schema: Schema, handlerMap: Partial<MockHandlerMap> = {}) {

@@ -1,0 +1,27 @@
+{
+  "address": [
+    {
+      "area": "",
+      "city": "",
+      "house": "",
+      "street": "",
+    },
+  ],
+  "age": 0,
+  "isFinite": false,
+  "name": "",
+  "test1": {
+    "array": [
+      {
+        "name": "",
+      },
+    ],
+    "boolean": false,
+    "number": 0,
+    "object": {
+      "array2": [],
+      "name": "",
+    },
+    "string": "",
+  },
+}

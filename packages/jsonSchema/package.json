@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/json-schema",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "json schema 处理相关方法",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.esm.d.ts",
@@ -54,6 +54,6 @@
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
-    "ajv": "^8.16.0"
+    "jsonschema": "^1.4.1"
   }
 }

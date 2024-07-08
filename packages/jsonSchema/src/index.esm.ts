@@ -2,20 +2,25 @@ import type { Schema, TObject } from './base';
 
 export { jsonSchemaGenerator, mockFromSchema } from './base';
 
+type Validator = import('jsonschema').Validator;
+
 export const verifyBySchema = (() => {
-  let ajv;
-  return async (schema: Schema, data: TObject<any>): Promise<[boolean, { path: string; message: string }[] | null]> => {
-    if (!ajv) {
-      const Ajv = (await import('ajv')).default;
-      ajv = new Ajv();
+  let v: Validator = null;
+  return async (
+    schema: Schema,
+    data: TObject<any>,
+  ): Promise<[boolean, { path: (string | number)[]; message: string }[]]> => {
+    if (!v) {
+      const Validator = (await import('jsonschema')).Validator;
+      v = new Validator();
     }
-    const validate = ajv.compile(schema);
+    const validate = v.validate(data, schema);
     return [
-      validate(data),
+      validate.valid,
       validate.errors?.map((item) => ({
-        path: item.instancePath,
+        path: item.path,
         message: item.message,
-      })) || null,
+      })),
     ];
   };
 })();
