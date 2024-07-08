@@ -72,9 +72,9 @@ async function checkLocalCommitStatus() {
 async function checkVersionUpgrade(pkgFile) {
   const [err, stdout] = await execCommand(`git diff HEAD^ HEAD -- ${pkgFile}`);
   exportError(err);
-  const reg = /-\s+"version":\s*"(.*?)".*?\+\s+"version":\s*"(.*?)"/s;
-  const [, oldVersion, newVersion] = reg.exec(stdout) || [];
-  if (!oldVersion || !newVersion) return false;
+  const reg = /(-\s+"version":\s*"(.*?)")?.*?\+\s+"version":\s*"(.*?)"/s;
+  const [, oldVersion = '0.0.0', , newVersion] = reg.exec(stdout) || [];
+  if (!newVersion) return false;
   return semver.lt(oldVersion, newVersion);
 }
 
