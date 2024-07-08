@@ -8,5 +8,5 @@ packages/*/dist/
 doc_build/
 scripts/
 __test__/
-/*.config.{js,ts}
+vitest.*
 coverage/

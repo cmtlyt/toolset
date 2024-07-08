@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'v8',
-      exclude: ['packages/document/**'],
+      exclude: ['packages/document/**', '*.workspace.{js,ts}', '*.config.{js,ts}', '.*.{ts,js}', 'scripts/*'],
       reporter: ['html'],
     },
   },

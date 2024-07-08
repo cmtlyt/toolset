@@ -24,6 +24,6 @@
     "allowJs": false, // 不允许编译 js 文件
     "lib": ["ES6", "ES2017", "DOM"]
   },
-  "include": ["packages", "vitest.config.ts"],
+  "include": ["packages", "vitest.config.ts", "vitest.workspace.ts"],
   "exclude": ["node_modules"]
 }
