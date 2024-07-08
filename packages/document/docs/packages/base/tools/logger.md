@@ -38,12 +38,7 @@ type IgnoreMessageFunc = (message: string) => boolean;
 **类型声明**
 
 ```ts
-type MessageTemplateFunc = (
-  data: any[],
-  moduleId: ModuleId,
-  method: string,
-  date: Date
-) => string | any[];
+type MessageTemplateFunc = (data: any[], moduleId: ModuleId, method: string, date: Date) => string | any[];
 ```
 
 ---

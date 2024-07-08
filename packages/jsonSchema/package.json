@@ -1,0 +1,59 @@
+{
+  "name": "@cmtlyt/json-schema",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "json schema 处理相关方法",
+  "module": "./dist/index.esm.js",
+  "types": "'./dist/index.esm.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.umd.js",
+      "types": "./dist/index.esm.d.ts"
+    },
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "dev": "rollup -cw",
+    "build": "tsc && rollup -c"
+  },
+  "keywords": [
+    "cmtlyt",
+    "json-schema",
+    "verify",
+    "generator",
+    "mock",
+    "基础工具库"
+  ],
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "private": false,
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset/",
+    "directory": "packages/jsonSchema"
+  },
+  "clPublish": {
+    "checkDir": [
+      "src/**/*.ts"
+    ]
+  },
+  "homepage": "https://cmtlyt.github.io/toolset/packages/jsonSchema/",
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues",
+    "email": "cmtlyt@163.com"
+  },
+  "dependencies": {
+    "ajv": "^8.16.0"
+  }
+}

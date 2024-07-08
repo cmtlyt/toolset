@@ -7,10 +7,7 @@
 ### 静态方法
 
 ```ts
-function group(
-  callback: (calc: Calculator) => Calculator | number | void,
-  initValue: number
-): Calculator | number;
+function group(callback: (calc: Calculator) => Calculator | number | void, initValue: number): Calculator | number;
 ```
 
 ### 参数

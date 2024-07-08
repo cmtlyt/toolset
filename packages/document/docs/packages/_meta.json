@@ -6,5 +6,6 @@
     "label": "@cmtlyt/base",
     "collapsible": false,
     "collapsed": true
-  }
+  },
+  "jsonSchema/index"
 ]

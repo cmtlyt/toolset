@@ -27,11 +27,7 @@
 :::details 类型补充
 
 ```ts
-type TBodyHanderFunc = (body: {
-  chunk: Blob;
-  chunkIdx: number;
-  customOption: any;
-}) => Record<string, any>;
+type TBodyHanderFunc = (body: { chunk: Blob; chunkIdx: number; customOption: any }) => Record<string, any>;
 type THeadersHandler = (body: {
   chunkIdx: number;
   currentHeanders: Record<string, any>;
@@ -73,11 +69,7 @@ interface UploadController {
   // 上传
   upload(file: TFileLive, options?: IUploadOptions): Promise<IUploadResult>;
   // 重试
-  retry(
-    file: TFileLive,
-    chunkIdxs?: number[],
-    options?: IUploadOptions
-  ): Promise<IUploadResult>;
+  retry(file: TFileLive, chunkIdxs?: number[], options?: IUploadOptions): Promise<IUploadResult>;
   // 取消
   abort(file: TFileLive): void;
   // 清空

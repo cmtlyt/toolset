@@ -18,6 +18,11 @@
         "text": "@cmtlyt/base",
         "link": "/packages/base",
         "activeMatch": "^/packages/base/"
+      },
+      {
+        "text": "@cmtlyt/json-schema",
+        "link": "/packages/jsonSchema",
+        "activeMatch": "^/packages/jsonSchema/"
       }
     ]
   }
