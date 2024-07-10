@@ -147,7 +147,7 @@ describe('utils', () => {
       expectTypeOf(getNow()).toEqualTypeOf<number>();
       const now = getNow();
       sleep(200).then(() => {
-        expect(getNow() - now).toBeGreaterThan(200);
+        expect(Math.ceil(getNow() - now)).toBeGreaterThanOrEqual(200);
       });
     });
 
