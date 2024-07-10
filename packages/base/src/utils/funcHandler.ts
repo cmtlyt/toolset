@@ -1,7 +1,7 @@
 import { EMPTY } from '@com/constant';
 
 import { getArray } from './dataHandler';
-import { getNow } from './getData';
+import { getNow, safeGetGlobal } from './getData';
 
 export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   cacheLoad: T,
@@ -80,7 +80,7 @@ type TCurryFuncReturnType<F> = F extends TCurry<any, infer R> ? R : F extends TA
 
 export const curry: TCurryFunc = function (func) {
   // @ts-expect-error 自定义属性, 确保获取到参数列表长度
-  const length = func.clength || func.length;
+  const length = func?.clength || func?.length || 0;
   if (!length) {
     throw new TypeError('无法读取函数参数列表的长度，不能使用可选参数和剩余参数！！！');
   }
@@ -88,7 +88,9 @@ export const curry: TCurryFunc = function (func) {
     if (args.length >= length) {
       return func.apply(null, args);
     } else {
-      return (...args2: any) => curried.apply(null, args.concat(args2));
+      const tempFunc = (...args2: any) => curried.apply(null, args.concat(args2));
+      tempFunc.clength = length - args.length;
+      return tempFunc;
     }
   };
   curried.clength = length;
@@ -96,12 +98,9 @@ export const curry: TCurryFunc = function (func) {
 };
 
 function _generateRunFunc(funcs: TAnyFunc[], callback: (funcs: TAnyFunc[], args: any[]) => any) {
-  if (funcs.length === 0) return (arg) => arg;
+  if (funcs.length === 0) return (arg: any) => arg;
   if (funcs.length === 1) return funcs[0];
-  const runFunc = (...args) => callback(funcs, args);
-  // @ts-expect-error 自定义属性, 确保获取到参数列表长度
-  const funcLength = funcs[0].clength || funcs[0].length;
-  runFunc.clength = funcLength;
+  const runFunc = (...args: any[]) => callback(funcs, args);
   return runFunc;
 }
 
@@ -111,11 +110,17 @@ type TComposeFunc = <F extends TCompose<F>>(
   ...funcs: F
 ) => (...args: Required<TArgsType<TLastType<F>>>) => TCurryFuncReturnType<THeadType<F>>;
 
-// todo 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
+/**
+ * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
+ */
 export const compose: TComposeFunc = function compose(...funcs) {
-  return _generateRunFunc(funcs, (funcs: TAnyFunc[], args: any) =>
+  const func = _generateRunFunc(funcs, (funcs: TAnyFunc[], args: any) =>
     funcs.reduceRight((data, func) => func.apply(null, getArray(data)), args),
   );
+  const firstFunc = funcs[funcs.length - 1];
+  // @ts-expect-error 自定义属性
+  func.clength = firstFunc?.clength || firstFunc?.length;
+  return func;
 };
 
 type TPipe<T extends TAnyFunc[]> = [...any, any, TFunc<[TCurryFuncReturnType<TLastTwoArg<T>>]>];
@@ -124,9 +129,17 @@ type TPipeFunc = <F extends TPipe<F>>(
   ...funcs: F
 ) => (...args: Required<TArgsType<THeadType<F>>>) => TCurryFuncReturnType<TLastType<F>>;
 
-// todo 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
+/**
+ * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
+ */
 export const pipe: TPipeFunc = function pipe(...funcs) {
-  return _generateRunFunc(funcs, (funcs, args) => funcs.reduce((data, func) => func.apply(null, getArray(data)), args));
+  const func = _generateRunFunc(funcs, (funcs, args) =>
+    funcs.reduce((data, func) => func.apply(null, getArray(data)), args),
+  );
+  const firstFunc = funcs[0];
+  // @ts-expect-error 自定义属性
+  func.clength = firstFunc?.clength || firstFunc?.length;
+  return func;
 };
 
 export function debounce<F extends TAnyFunc>(
@@ -180,7 +193,7 @@ export function throttle<F extends TAnyFunc>(func: F, time = 100, immediately = 
 
 const _runTask = cacheByReturn(
   (): ((task: TAnyFunc, args: any[], resolve: (value: any) => void, reject: (reason?: any) => void) => void) => {
-    if (requestIdleCallback) {
+    if (safeGetGlobal().requestIdleCallback) {
       return (task, args, resolve, reject) => {
         requestIdleCallback((idle) => {
           if (idle.timeRemaining() > 0) {
@@ -196,7 +209,7 @@ const _runTask = cacheByReturn(
         });
       };
     }
-    if (requestAnimationFrame) {
+    if (safeGetGlobal().requestAnimationFrame) {
       return (task, args, resolve, reject) => {
         const start = getNow();
         requestAnimationFrame(() => {
@@ -227,16 +240,16 @@ const _runTask = cacheByReturn(
 );
 
 export function chunkTask<F extends TAnyFunc>(task: F) {
-  return (datas: Parameters<F>[0]): Promise<ReturnType<F>[]> => {
+  return (datas: Parameters<F>[] | number): Promise<ReturnType<F>[]> => {
     const results = [];
     return new Promise((resolve, reject) => {
-      const func = async (args: any) => {
+      const func = async (args: any[]) => {
         return new Promise(_runTask.bind(null, task, args)).then((res) => results.push(res), reject);
       };
       (async () => {
         if (typeof datas === 'number') {
           for (let i = 0; i < datas; ++i) {
-            await func(i);
+            await func([i]);
           }
         } else if (Array.isArray(datas)) {
           for (const key in datas) {
@@ -251,6 +264,11 @@ export function chunkTask<F extends TAnyFunc>(task: F) {
 }
 
 export const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+
+export const sleepSync = (time: number) => {
+  const start = getNow();
+  while (getNow() - start < time);
+};
 
 export function reverseArgs<F extends TAnyFunc>(callback: F) {
   return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback.apply(null, args.reverse());

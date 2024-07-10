@@ -228,11 +228,11 @@ export const isKuaiShouMiniProgram = cacheByReturn(() => {
 // 微信小程序
 export const isWeChatMiniProgram = cacheByReturn(() => {
   return (
+    !isWeb() &&
     !isByteDanceMicroApp() &&
     !isUndef(typeof wx) &&
-    wx !== null &&
-    (!isUndef(typeof wx.login) || !isUndef(typeof wx.miniProgram)) &&
-    !isWeb()
+    typeof wx !== 'undefined' &&
+    (!isUndef(wx?.login) || !isUndef(wx?.miniProgram))
   );
 });
 

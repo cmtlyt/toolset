@@ -1,13 +1,11 @@
-name: build test
+name: Code Test on PR
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  buildTest:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -27,5 +25,5 @@ jobs:
       - name: Install Deps
         run: pnpm i --no-frozen-lockfile
 
-      - name: Build
-        run: pnpm run build
+      - name: test
+        run: pnpm run test:ci

@@ -1,1 +1,2 @@
+npm run test:ci
 npx --no -- lint-staged

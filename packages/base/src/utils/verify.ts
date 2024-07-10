@@ -26,17 +26,17 @@ export function isString(value: any): boolean {
 }
 
 export function isPromise(value: any): boolean {
-  return value && typeof value.then === 'function';
+  return (value || false) && typeof value.then === 'function';
 }
 
 export function isEmpty(value: any): boolean {
   if (value === EMPTY) return true;
   if (typeof value === 'boolean') return false;
   if (typeof value === 'number') return isNaN(value) || false;
-  if (typeof value === 'object') {
+  if (typeof value === 'object' && value !== null) {
     const type = getType(value);
     if (['set', 'map'].includes(type)) return value.size === 0;
-    if (['weakmap', 'weakset'].includes(type)) return false;
+    if (['weakmap', 'weakset'].includes(type)) return value.size === 0;
     return Object.keys(value).length === 0;
   }
   return isNull(value) || !value;
@@ -44,7 +44,7 @@ export function isEmpty(value: any): boolean {
 
 export const isFile = cacheByReturn(() => {
   if (isInIframe()) {
-    warning('iframe 中无法增正确使用!!!');
+    warning('iframe 中无法正确判断!!!');
     return false;
   }
   if (!File) return false;
@@ -56,7 +56,7 @@ export const isFile = cacheByReturn(() => {
 
 export const isBlob = cacheByReturn(() => {
   if (isInIframe()) {
-    warning('iframe 中无法增正确使用!!!');
+    warning('iframe 中无法正确判断!!!');
     return false;
   }
   if (!Blob) return false;
@@ -84,7 +84,7 @@ export function isDataUrlString(value: any): boolean {
 
 export function isUrl(value: any): boolean {
   if (isInIframe()) {
-    warning('iframe 中无法增正确使用!!!');
+    warning('iframe 中无法正确判断!!!');
     return false;
   }
   return (

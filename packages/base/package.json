@@ -49,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues",
     "email": "cmtlyt@163.com"
+  },
+  "dependencies": {
+    "ms": "^2.1.3"
   }
 }

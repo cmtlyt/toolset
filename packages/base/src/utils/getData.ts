@@ -1,3 +1,5 @@
+import ms from 'ms';
+
 import { cacheByReturn } from './funcHandler';
 import {
   isAliMiniApp,
@@ -104,7 +106,7 @@ export const getDeviceInfo = cacheByReturn(
       };
     }
     if (isWeChatMiniProgram()) {
-      const systemInfo = wx.getSystemInfoSync() || {};
+      const systemInfo = wx?.getSystemInfoSync?.() || {};
       return {
         ...baseInfo,
         appName: 'wechat',
@@ -178,11 +180,15 @@ export interface CookieOptions {
   domain?: string;
   maxAge?: number;
   path?: string;
+  data?: {
+    name: string;
+    value: string;
+  };
 }
 
 export function generateCookieInfo(options: CookieOptions = {}) {
-  const { duration, expires, domain, maxAge, path } = options;
-  let infoString = '';
+  const { duration, expires, domain, maxAge, path, data } = options;
+  let infoString = data ? `${data.name}=${data.value};` : '';
   if (isEmpty(options)) return infoString;
   if (duration) {
     const date = new Date();
@@ -190,7 +196,9 @@ export function generateCookieInfo(options: CookieOptions = {}) {
     infoString += `expires=${date.toUTCString()};`;
   } else if (expires) {
     if (typeof expires === 'string') {
-      infoString += `expires=${expires};`;
+      const date = new Date();
+      date.setTime(date.getTime() + ms(expires));
+      infoString += `expires=${date.toUTCString()};`;
     } else if (expires instanceof Date) {
       infoString += `expires=${expires.toUTCString()};`;
     } else {
@@ -208,7 +216,15 @@ export function generateCookieInfo(options: CookieOptions = {}) {
   }
   return infoString;
 }
-export function generateClassName(...args: (string | string[] | Record<string, boolean> | undefined | null)[]) {
+
+type GCArgs =
+  | string
+  | (undefined | null | string | Record<string, boolean>)[]
+  | Record<string, boolean>
+  | undefined
+  | null;
+
+export function generateClassName(...args: GCArgs[]) {
   if (!args.length) return '';
   const className = args
     .map((arg) => {
@@ -226,7 +242,7 @@ export function generateClassName(...args: (string | string[] | Record<string, b
     })
     .join(' ')
     .replace(/\s+/g, ' ');
-  return className;
+  return className.trimEnd();
 }
 
 /**

@@ -26,26 +26,3 @@ jobs:
 
       - name: Check commit messages in PR
         run: ./scripts/check_commit_msg.sh ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
-
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [21]
-
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.4.0
-
-      - name: Install Deps
-        run: pnpm i --no-frozen-lockfile
-
-      - name: Lint and Format
-        run: pnpm run lint packages
