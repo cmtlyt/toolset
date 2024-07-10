@@ -30,9 +30,9 @@ export const getOsType = cacheByReturn(() => {
 });
 
 export const getUserAgent = cacheByReturn((): string => {
-  if (navigator) {
+  if (globalThis.navigator) {
     // @ts-expect-error env
-    return navigator.userAgent || navigator.swuserAgent;
+    return globalThis.navigator.userAgent || globalThis.navigator.swuserAgent;
   } else if (process) {
     return `Node.js/${process.version} (${process.platform}; ${process.arch}) ${process.env.SHELL} ${process.env.LANG} ${process.env.TERM_PROGRAM}`;
   }
