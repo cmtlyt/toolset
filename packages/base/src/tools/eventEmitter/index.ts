@@ -1,3 +1,5 @@
+import { TObject } from '../../types/base';
+
 type CallbackFunc<T> = (event: CustomEvent<T>) => void;
 
 export class CustomEvent<T> {

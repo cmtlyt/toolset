@@ -143,11 +143,16 @@ importers:
 
   packages/jsonSchema:
     dependencies:
+      '@cmtlyt/base':
+        specifier: workspace:../base
+        version: link:../base
       jsonschema:
         specifier: ^1.4.1
         version: 1.4.1
 
   packages/monitor: {}
+
+  packages/storage: {}
 
 packages:
 

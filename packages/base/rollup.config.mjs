@@ -14,8 +14,8 @@ export default defineConfig({
   plugins: [
     alias({
       entries: [
-        { find: '@', replacement: 'src' },
-        { find: '@com', replacement: 'src/common' },
+        { find: '@/*', replacement: 'src/*' },
+        { find: '@com/*', replacement: 'src/common/*' },
       ],
     }),
     resolve(),

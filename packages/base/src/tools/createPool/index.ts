@@ -1,6 +1,7 @@
 import { EMPTY } from '@com/constant';
 
 import { getRandomString } from '@/utils';
+import { TObject } from '@/types/base';
 
 interface PoolItem<T> {
   __id: string;

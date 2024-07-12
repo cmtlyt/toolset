@@ -1,5 +1,7 @@
 import { warning } from '@com/warning';
 
+import { TObject } from '../types/base';
+
 import { isNull } from './verify';
 import { getType } from './getData';
 

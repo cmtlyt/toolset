@@ -53,6 +53,7 @@
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
+    "@cmtlyt/base": "workspace:../base",
     "jsonschema": "^1.4.1"
   }
 }

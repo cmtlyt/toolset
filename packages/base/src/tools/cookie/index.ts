@@ -1,11 +1,13 @@
-import { CookieOptions, generateCookieInfo, safeGetGlobal } from '@/utils';
+import { CookieOptions } from '../../utils';
+
+import { generateCookieInfo, safeGetGlobal } from '@/utils';
 
 export const cookie = {
   get(key: string) {
     return (
       safeGetGlobal()
         .document?.cookie.split('; ')
-        .find((row) => row.startsWith(`${key}=`))
+        .find((row: string) => row.startsWith(`${key}=`))
         ?.split('=')[1] || ''
     );
   },

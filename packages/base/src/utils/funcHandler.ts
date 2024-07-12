@@ -1,5 +1,20 @@
 import { EMPTY } from '@com/constant';
 
+import {
+  GetArgs,
+  GetReturnType,
+  ReverseArray,
+  TAnyFunc,
+  TArgsType,
+  TCast,
+  TDropHead,
+  TFunc,
+  THeadType,
+  TLastTwoArg,
+  TLastType,
+  TLength,
+} from '../types/base';
+
 import { getArray } from './dataHandler';
 import { getNow, safeGetGlobal } from './getData';
 

@@ -1,5 +1,7 @@
 import { warning } from '@com/warning';
 
+import { TExclude } from '../../types/base';
+
 import { getArray, isNull, cacheByReturn, formatDate } from '@/utils';
 
 interface Constant {

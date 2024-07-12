@@ -1,5 +1,6 @@
 import { EMPTY } from '@com/constant';
 
+import { TFunc } from '../../types/base';
 import { EventEmitter } from '../eventEmitter';
 
 class DefaultStoreController {

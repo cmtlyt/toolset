@@ -1,3 +1,5 @@
+import { TAnyFunc, TExclude, TFlatPromise } from '../../types/base';
+
 import { createLinkByString, getRandomString } from '@/utils';
 
 function generateWorkerScript(func: TAnyFunc, importScript: string[] = [], userNeedPost = false) {
