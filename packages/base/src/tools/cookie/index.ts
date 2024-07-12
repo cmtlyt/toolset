@@ -1,16 +1,22 @@
-import { CookieOptions, generateCookieInfo } from '@/utils';
+import { CookieOptions, generateCookieInfo, safeGetGlobal } from '@/utils';
 
 export const cookie = {
   get(key: string) {
-    return document.cookie
-      .split('; ')
-      .find((row) => row.startsWith(`${key}=`))
-      .split('=')[1];
+    return (
+      safeGetGlobal()
+        .document?.cookie.split('; ')
+        .find((row) => row.startsWith(`${key}=`))
+        ?.split('=')[1] || ''
+    );
   },
   set(key: string, value: string, options: CookieOptions = {}) {
-    document.cookie = `${key}=${value};${generateCookieInfo(options)}`;
+    const doc = safeGetGlobal().document;
+    if (!doc?.cookie) return;
+    doc.cookie = `${key}=${value};${generateCookieInfo(options)}`;
   },
   remove(key: string) {
-    document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    const doc = safeGetGlobal().document;
+    if (!doc?.cookie) return;
+    doc.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   },
 };

@@ -2,30 +2,40 @@ import { warning } from '@com/warning';
 
 import { isHttpsUrlString, cacheByReturn, safeGetGlobal } from '@/utils';
 
+const hasExecCommand = cacheByReturn(() => {
+  return typeof safeGetGlobal().document?.execCommand === 'function';
+});
+
 const hasCopyCommand = cacheByReturn(() => {
-  return safeGetGlobal().document?.queryCommandSupported?.('copy');
+  return safeGetGlobal().document?.queryCommandSupported?.('copy') && hasExecCommand();
 });
 
 const hasPasteCommand = cacheByReturn(() => {
-  return safeGetGlobal().document?.queryCommandSupported?.('paste');
+  return safeGetGlobal().document?.queryCommandSupported?.('paste') && hasExecCommand();
+});
+
+const isNavCopyable = cacheByReturn(() => {
+  return (isHttpsUrlString(safeGetGlobal().location?.href) && !!navigator.clipboard?.writeText) || false;
 });
 
 const isCopyable = cacheByReturn(() => {
-  return isHttpsUrlString(safeGetGlobal().location?.href)
-    ? !!navigator.clipboard?.writeText || hasCopyCommand() || false
-    : hasPasteCommand() || false;
+  return isNavCopyable() || hasCopyCommand() || false;
+});
+
+const isNavPasteable = cacheByReturn(() => {
+  return (isHttpsUrlString(safeGetGlobal().location?.href) && !!navigator.clipboard?.readText) || false;
 });
 
 const isPasteable = cacheByReturn(() => {
-  return (
-    isHttpsUrlString(safeGetGlobal().location?.href) && (!!navigator.clipboard?.readText || hasPasteCommand() || false)
-  );
+  return isNavPasteable() || hasPasteCommand() || false;
 });
+
+const isNavClearable = isNavCopyable;
 
 const isClearable = isCopyable;
 
 const copy = cacheByReturn((): ((text: string) => void) => {
-  if (isCopyable()) {
+  if (isNavCopyable()) {
     return (text) => {
       navigator.clipboard.writeText(text);
     };
@@ -46,7 +56,7 @@ const copy = cacheByReturn((): ((text: string) => void) => {
 });
 
 const paste = cacheByReturn((): (() => Promise<string>) => {
-  if (isPasteable()) {
+  if (isNavPasteable()) {
     return () => {
       return navigator.clipboard.readText();
     };
@@ -56,7 +66,11 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
       const input = doc.createElement('input');
       doc.body.appendChild(input);
       input.select();
-      doc.execCommand('paste');
+      try {
+        doc.execCommand('paste');
+      } catch (e) {
+        return Promise.reject('paste not supported');
+      }
       const text = input.value;
       doc.body.removeChild(input);
       return Promise.resolve(text);
@@ -69,7 +83,7 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
 });
 
 const clear = cacheByReturn((): (() => void) => {
-  if (isClearable()) {
+  if (isNavClearable()) {
     return () => {
       navigator.clipboard.writeText('');
     };

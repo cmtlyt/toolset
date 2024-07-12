@@ -180,15 +180,11 @@ export interface CookieOptions {
   domain?: string;
   maxAge?: number;
   path?: string;
-  data?: {
-    name: string;
-    value: string;
-  };
 }
 
 export function generateCookieInfo(options: CookieOptions = {}) {
-  const { duration, expires, domain, maxAge, path, data } = options;
-  let infoString = data ? `${data.name}=${data.value};` : '';
+  const { duration, expires, domain, maxAge, path } = options;
+  let infoString = '';
   if (isEmpty(options)) return infoString;
   if (duration) {
     const date = new Date();

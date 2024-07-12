@@ -121,7 +121,6 @@ describe('utils', () => {
     it('generateCookieInfo', ({ expect }) => {
       expect(generateCookieInfo()).toMatchInlineSnapshot(`""`);
       expect(generateCookieInfo({})).toMatchInlineSnapshot(`""`);
-      expect(generateCookieInfo({ data: { name: 'test', value: '123' } })).toMatchInlineSnapshot(`"test=123;"`);
       expect(
         generateCookieInfo({
           domain: '.taobao.com',
@@ -149,12 +148,11 @@ describe('utils', () => {
         .includes('domain=.taobao.com;path=/;');
       expect(
         generateCookieInfo({
-          data: { name: 'test', value: '123' },
           domain: '.taobao.com',
           path: '/',
           maxAge: 1000,
         }),
-      ).toMatchInlineSnapshot(`"test=123;domain=.taobao.com;max-age=1000;path=/;"`);
+      ).toMatchInlineSnapshot(`"domain=.taobao.com;max-age=1000;path=/;"`);
       expect(() =>
         generateCookieInfo({
           data: { name: 'test', value: '123' },
