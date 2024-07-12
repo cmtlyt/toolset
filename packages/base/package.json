@@ -14,7 +14,6 @@
     "./*": "./dist/*"
   },
   "scripts": {
-    "dev": "rollup -cw",
     "build": "tsc && rollup -c"
   },
   "keywords": [

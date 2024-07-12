@@ -1,7 +1,7 @@
 {
-  "name": "@cmtlyt/monitor",
-  "version": "0.0.1",
-  "description": "cl项目监控",
+  "name": "@cmtlyt/storage",
+  "version": "0.0.0",
+  "description": "cl存储管理",
   "type": "module",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.esm.js",
@@ -22,13 +22,10 @@
   ],
   "keywords": [
     "cl",
-    "monitor",
+    "storage",
     "cmtlyt",
-    "监控",
-    "项目监控",
-    "sdk",
-    "数据上报",
-    "report"
+    "存储",
+    "sdk"
   ],
   "author": {
     "name": "cmtlyt",
@@ -40,9 +37,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cmtlyt/toolset.git",
-    "directory": "packages/monitor"
+    "directory": "packages/storage"
   },
-  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/monitor/README.md",
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/storage/README.md",
   "clPublish": {
     "checkDir": [
       "src/**/*.ts"
