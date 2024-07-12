@@ -10,7 +10,7 @@ export function isNull(value: any): boolean {
 }
 
 export function isUndef(value: any): boolean {
-  return typeof value === 'undefined';
+  return value === 'undefined' || typeof value === 'undefined';
 }
 
 export function isNaN(value: any): boolean {

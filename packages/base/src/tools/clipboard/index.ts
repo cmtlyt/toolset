@@ -1,21 +1,25 @@
 import { warning } from '@com/warning';
 
-import { isHttpsUrlString, cacheByReturn } from '@/utils';
+import { isHttpsUrlString, cacheByReturn, safeGetGlobal } from '@/utils';
 
 const hasCopyCommand = cacheByReturn(() => {
-  return document.queryCommandSupported?.('copy');
+  return safeGetGlobal().document?.queryCommandSupported?.('copy');
 });
 
 const hasPasteCommand = cacheByReturn(() => {
-  return document.queryCommandSupported?.('paste');
+  return safeGetGlobal().document?.queryCommandSupported?.('paste');
 });
 
 const isCopyable = cacheByReturn(() => {
-  return isHttpsUrlString(location.href) && (!!navigator.clipboard?.writeText || hasCopyCommand() || false);
+  return isHttpsUrlString(safeGetGlobal().location?.href)
+    ? !!navigator.clipboard?.writeText || hasCopyCommand() || false
+    : hasPasteCommand() || false;
 });
 
 const isPasteable = cacheByReturn(() => {
-  return isHttpsUrlString(location.href) && (!!navigator.clipboard?.readText || hasPasteCommand() || false);
+  return (
+    isHttpsUrlString(safeGetGlobal().location?.href) && (!!navigator.clipboard?.readText || hasPasteCommand() || false)
+  );
 });
 
 const isClearable = isCopyable;
@@ -26,13 +30,14 @@ const copy = cacheByReturn((): ((text: string) => void) => {
       navigator.clipboard.writeText(text);
     };
   } else if (hasCopyCommand()) {
+    const doc = safeGetGlobal().document;
     return (text) => {
-      const input = document.createElement('input');
+      const input = doc.createElement('input');
       input.setAttribute('value', text);
-      document.body.appendChild(input);
+      doc.body.appendChild(input);
       input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
+      doc.execCommand('copy');
+      doc.body.removeChild(input);
     };
   }
   return (text) => {
@@ -46,13 +51,14 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
       return navigator.clipboard.readText();
     };
   } else if (hasPasteCommand()) {
+    const doc = safeGetGlobal().document;
     return () => {
-      const input = document.createElement('input');
-      document.body.appendChild(input);
+      const input = doc.createElement('input');
+      doc.body.appendChild(input);
       input.select();
-      document.execCommand('paste');
+      doc.execCommand('paste');
       const text = input.value;
-      document.body.removeChild(input);
+      doc.body.removeChild(input);
       return Promise.resolve(text);
     };
   }
@@ -68,12 +74,13 @@ const clear = cacheByReturn((): (() => void) => {
       navigator.clipboard.writeText('');
     };
   } else if (hasCopyCommand()) {
+    const doc = safeGetGlobal().document;
     return () => {
-      const input = document.createElement('input');
-      document.body.appendChild(input);
+      const input = doc.createElement('input');
+      doc.body.appendChild(input);
       input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
+      doc.execCommand('copy');
+      doc.body.removeChild(input);
     };
   }
   return () => {

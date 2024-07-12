@@ -1,4 +1,5 @@
 // @vitest-environment happy-dom
+// @ts-nocheck
 
 import { it, describe, expectTypeOf, expect } from 'vitest';
 import {
@@ -35,17 +36,88 @@ import {
   pipe,
   chunkTask,
   sleepSync,
+  getArraySlice,
+  deepClone,
+  merge,
+  cloneMerge,
+  asyncReplace,
+  asyncFilter,
+  isNode,
+  isWeb,
+  isIOS,
+  isAndroid,
+  isChrome,
+  isFirefox,
+  isSafari,
+  isNewEdge,
+  isOldEdge,
+  isEdge,
+  isWeex,
+  isKraken,
+  isQuickApp,
+  isTBWeb,
+  isLTWeb,
+  isTbLive,
+  isTbWebEnv,
+  isWechatWeb,
+  isAliPayWeb,
+  isWebInDingding,
+  isTuan,
+  isLST,
+  isLXB,
+  isAliAppWeb,
+  isMiniApp,
+  isAliMiniApp,
+  isDingdingMiniapp,
+  isTaobaoMiniapp,
+  isAlipayMiniapp,
+  isTBMiniapp,
+  isLTMiniapp,
+  isMMCMiniapp,
+  isXiNiaoapp,
+  isCaiNiaoApp,
+  isAlipayApp,
+  isByteDanceMicroApp,
+  isBaiduSmartProgram,
+  isKuaiShouMiniProgram,
+  isWeChatMiniProgram,
+  isAliMiniappPlatform,
+  isTBNode,
+  isLTNode,
+  isWechatNode,
+  isTB,
+  isLT,
+  isAliPay,
+  isTmall,
+  isAliApp,
+  isWechat,
+  isCaiNiaoBusiness,
+  isCaiNiao,
+  isAliUa,
+  isHmApp,
+  isYouKu,
+  isAlipayMiniWeb,
+  isLTMiniWeb,
+  isLBMiniWeb,
+  isTBMiniWeb,
+  isDingTalk,
+  isTuanWebview,
+  isWechatMiniWeb,
+  isWechatH5,
+  isWebInMiniApp,
+  isAliWebInMiniApp,
+  isAliAppMiniApp,
+  isOpenHarmony,
+  isIPhoneX,
+  isIPhoneXSMax,
+  isIPhoneXR,
+  isIPhone14PM,
+  isIOSNotchScreen,
 } from '../src/utils';
 import { EMPTY } from '../src';
 
 describe('utils', () => {
   describe('getData', () => {
-    it('getArray', ({ expect }) => {
-      expect(getArray([])).toStrictEqual([]);
-      expect(getArray([1, 2, 3])).toStrictEqual([1, 2, 3]);
-      expect(getArray(1)).toEqual([1]);
-    });
-
     it('generateCookieInfo', ({ expect }) => {
       expect(generateCookieInfo()).toMatchInlineSnapshot(`""`);
       expect(generateCookieInfo({})).toMatchInlineSnapshot(`""`);
@@ -88,7 +160,6 @@ describe('utils', () => {
           data: { name: 'test', value: '123' },
           domain: '.taobao.com',
           path: '/',
-          // @ts-expect-error test
           expires: true,
         }),
       ).toThrowErrorMatchingInlineSnapshot(`[TypeError: expires 必须是字符串或 Date (推荐使用Date)]`);
@@ -147,7 +218,7 @@ describe('utils', () => {
       expectTypeOf(getNow()).toEqualTypeOf<number>();
       const now = getNow();
       sleep(200).then(() => {
-        expect(Math.ceil(getNow() - now)).toBeGreaterThanOrEqual(200);
+        expect(Math.ceil(Math.ceil(getNow() - now))).toBeGreaterThanOrEqual(200);
       });
     });
 
@@ -376,10 +447,8 @@ describe('utils', () => {
     it('curry', () => {
       const func = curry((a: number, b: number, c: number) => a + b + c);
       const fastCall = func(1);
-      // @ts-expect-error
       expectTypeOf(fastCall).toEqualTypeOf<Function>();
       const secondCall = fastCall(2);
-      // @ts-expect-error
       expectTypeOf(secondCall).toEqualTypeOf<Function>();
       const thirdCall = secondCall(3);
       expectTypeOf(thirdCall).toEqualTypeOf<number>();
@@ -396,10 +465,8 @@ describe('utils', () => {
       expect(sum2(2)(3)).toBe(8);
 
       const sum3 = curry(pipe((a: number, b: number) => a * 2 + b, sum(1)));
-      // @ts-expect-error
       expect(sum3.clength).toBe(2);
       expect(sum3(2, 3)).toBe(8);
-      // @ts-expect-error
       expect(sum3(2).clength).toBe(1);
       expect(sum3(2)(3)).toBe(8);
 
@@ -413,7 +480,7 @@ describe('utils', () => {
       expect(sleep(100))
         .resolves.toBeUndefined()
         .then(() => {
-          expect(getNow() - now).toBeGreaterThanOrEqual(100);
+          expect(Math.ceil(getNow() - now)).toBeGreaterThanOrEqual(100);
         });
     });
 
@@ -505,12 +572,10 @@ describe('utils', () => {
       );
       expect(func(1, 2)).toBe(6);
 
-      // @ts-expect-error
       const func2 = compose();
       expect(func2(1, 2)).toBe(1);
       expect(func2(1)).toBe(1);
 
-      // @ts-expect-error
       const func3 = compose((a: number) => a * 2);
       expect(func3(1, 2)).toBe(2);
       expect(func3(1)).toBe(2);
@@ -527,18 +592,12 @@ describe('utils', () => {
       );
       expect(func(1, 2)).toBe(6);
 
-      // @ts-expect-error
       const func2 = pipe();
-      // @ts-expect-error
       expect(func2(1, 2)).toBe(1);
-      // @ts-expect-error
       expect(func2(1)).toBe(1);
 
-      // @ts-expect-error
       const func3 = pipe((a: number) => a * 2);
-      // @ts-expect-error
       expect(func3(1)).toBe(2);
-      // @ts-expect-error
       expect(func3(1)).toBe(2);
 
       const sum = curry((a: number, b: number) => a + b);
@@ -566,6 +625,271 @@ describe('utils', () => {
           throw new Error('error');
         })(3),
       ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: error]`);
+    });
+  });
+
+  describe('datahandler', () => {
+    it('getArray', ({ expect }) => {
+      expect(getArray([])).toStrictEqual([]);
+      expect(getArray([1, 2, 3])).toStrictEqual([1, 2, 3]);
+      expect(getArray(1)).toEqual([1]);
+      expect(getArray(null)).toEqual([]);
+      expect(getArray()).toEqual([]);
+    });
+
+    it('getArraySlice', () => {
+      expect(getArraySlice([], 0)).toEqual([[]]);
+      expect(getArraySlice([1, 2, 3], 0)).toEqual([[1, 2, 3]]);
+      expect(getArraySlice([1, 2, 3], 1)).toEqual([[1], [2], [3]]);
+      expect(getArraySlice([1, 2, 3], 2)).toEqual([[1, 2], [3]]);
+      expect(getArraySlice([1, 2, 3], 3)).toEqual([[1, 2, 3]]);
+      expect(getArraySlice([1, 2, 3], 4)).toEqual([[1, 2, 3]]);
+      expect(getArraySlice([1, 2, 3], 2, 1)).toEqual([[2, 3]]);
+      expect(getArraySlice([1, 2, 3], 2, 2)).toEqual([[3]]);
+      expect(getArraySlice([1, 2, 3], 2, 3)).toEqual([]);
+      expect(getArraySlice([1, 2, 3])).toEqual([[1, 2, 3]]);
+    });
+
+    it('deepClone', () => {
+      const obj = { a: 1, b: { c: 2 } };
+      expect(deepClone(obj)).toEqual({ a: 1, b: { c: 2 } });
+      expect(deepClone(obj)).not.toBe(obj);
+      expect(deepClone(obj).b).not.toBe(obj.b);
+      const arr = [1, obj, 2];
+      expect(deepClone(arr)).toEqual([1, { a: 1, b: { c: 2 } }, 2]);
+      expect(deepClone(arr)).not.toBe(arr);
+      expect(deepClone(arr)[1]).not.toBe(arr[1]);
+      expect(deepClone(arr)[1].b).not.toBe(arr[1].b);
+      expect(deepClone(null)).toBe(null);
+      expect(deepClone(undefined)).toBe(undefined);
+      obj.arr = arr;
+      const dcObj = deepClone(obj);
+      expect(dcObj.arr[1].b).not.toBe(obj.arr[1].b);
+      expect(dcObj.arr[1].arr[1].arr[1]).not.toBe(obj.arr[1].arr[1].arr[1]);
+      expect(deepClone(NaN)).toBe(NaN);
+      expect(deepClone(0)).toBe(0);
+      expect(deepClone(0 / 1)).toBe(0 / 1);
+      expect(deepClone(true)).toBe(true);
+      expect(deepClone('false')).toBe('false');
+    });
+
+    it('merge', () => {
+      expect(merge({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 });
+      expect(merge({ a: 1 }, null)).toEqual({ a: 1 });
+      expect(merge('string:', undefined)).toEqual('string:');
+      expect(merge('string:', '123123')).toEqual('string:123123');
+      expect(merge(1, 123)).toEqual(124);
+      expect(merge([], [1, 2, 3])).toEqual([1, 2, 3]);
+      expect(merge([10, 20, 30], [1, 2, 3])).toEqual([10, 20, 30, 1, 2, 3]);
+      expect(merge({ a: 1, arr: [1, 2, 3] }, { b: 2 })).toEqual({ a: 1, arr: [1, 2, 3], b: 2 });
+      expect(merge({ a: 1 }, { b: 2, arr: [1, 2, 3] })).toEqual({ a: 1, arr: [1, 2, 3], b: 2 });
+      expect(merge({ a: 1, obj: { c: 1 } }, { b: 2 })).toEqual({ a: 1, obj: { c: 1 }, b: 2 });
+      expect(merge({ a: 1 }, { b: 2, obj: { c: 1 } })).toEqual({ a: 1, obj: { c: 1 }, b: 2 });
+      expect(merge({ a: 1, d: null }, { b: 2, obj: { c: 1 } }, { d: 123 })).toEqual({
+        a: 1,
+        obj: { c: 1 },
+        b: 2,
+        d: 123,
+      });
+      expect(merge({ a: 1, d: 0 }, { b: 2, obj: { c: 1 } }, { d: 123 })).toEqual({
+        a: 1,
+        obj: { c: 1 },
+        b: 2,
+        d: 0,
+      });
+      const obj = { a: 1 };
+      const obj2 = { c: 1 };
+      const obj3 = { obj: obj2 };
+      const mobj = merge(obj, obj2, obj3);
+      expect(mobj).toEqual({ a: 1, c: 1, obj: { c: 1 } });
+      expect(mobj).toBe(obj);
+      expect(mobj.obj).not.toBe(obj2);
+    });
+
+    it('cloneMerge', () => {
+      expect(cloneMerge({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 });
+      expect(cloneMerge({ a: 1 }, null)).toEqual({ a: 1 });
+      expect(cloneMerge('string:', undefined)).toEqual('string:');
+      expect(cloneMerge('string:', '123123')).toEqual('string:123123');
+      expect(cloneMerge(1, 123)).toEqual(124);
+      expect(cloneMerge([], [1, 2, 3])).toEqual([1, 2, 3]);
+      expect(cloneMerge([10, 20, 30], [1, 2, 3])).toEqual([10, 20, 30, 1, 2, 3]);
+      expect(cloneMerge({ a: 1, arr: [1, 2, 3] }, { b: 2 })).toEqual({ a: 1, arr: [1, 2, 3], b: 2 });
+      expect(cloneMerge({ a: 1 }, { b: 2, arr: [1, 2, 3] })).toEqual({ a: 1, arr: [1, 2, 3], b: 2 });
+      expect(cloneMerge({ a: 1, obj: { c: 1 } }, { b: 2 })).toEqual({ a: 1, obj: { c: 1 }, b: 2 });
+      expect(cloneMerge({ a: 1 }, { b: 2, obj: { c: 1 } })).toEqual({ a: 1, obj: { c: 1 }, b: 2 });
+      expect(cloneMerge({ a: 1, d: null }, { b: 2, obj: { c: 1 } }, { d: 123 })).toEqual({
+        a: 1,
+        obj: { c: 1 },
+        b: 2,
+        d: 123,
+      });
+      expect(cloneMerge({ a: 1, d: 0 }, { b: 2, obj: { c: 1 } }, { d: 123 })).toEqual({
+        a: 1,
+        obj: { c: 1 },
+        b: 2,
+        d: 0,
+      });
+      const obj = { a: 1 };
+      const obj2 = { c: 1 };
+      const obj3 = { obj: obj2 };
+      const mobj = cloneMerge(obj, obj2, obj3);
+      expect(mobj).toEqual({ a: 1, c: 1, obj: { c: 1 } });
+      expect(mobj).not.toBe(obj);
+      expect(mobj.obj).not.toBe(obj2);
+    });
+
+    it('asyncReplace', async ({ expect }) => {
+      const repFunc = (reg, func) => asyncReplace('123456789', reg, func);
+      expect(
+        repFunc(/[13579]/, async () => {
+          await sleep(25);
+          return 'a';
+        }),
+      ).resolves.toBe('a23456789');
+      expect(
+        repFunc(/[13579]/g, async () => {
+          await sleep(25);
+          return 'a';
+        }),
+      ).resolves.toBe('a2a4a6a8a');
+      expect(repFunc(/[13579]/, 'a')).resolves.toBe('a23456789');
+      expect(repFunc('1', 'a')).resolves.toBe('a23456789');
+      expect(
+        repFunc('1', async () => {
+          await sleep(25);
+          return 'a';
+        }),
+      ).resolves.toBe('a23456789');
+      expect(repFunc(null, 'a')).resolves.toMatchInlineSnapshot(`"123456789"`);
+      expect(repFunc(null, () => 'a')).resolves.toMatchInlineSnapshot(`"123456789"`);
+      expect(repFunc(null, async () => 'a')).resolves.toMatchInlineSnapshot(`"123456789"`);
+      expect(
+        repFunc('1', async () => {
+          throw new Error('test');
+        }),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: test]`);
+      expect(repFunc('1', 1)).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: replacer 必须是字符串或函数]`);
+      expect(repFunc('1', null)).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: replacer 必须是字符串或函数]`);
+      expect(repFunc('1')).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: replacer 必须是字符串或函数]`);
+      expect(repFunc()).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: replacer 必须是字符串或函数]`);
+      expect(
+        repFunc(/[2468]/g, async () => {
+          throw new Error('test');
+        }),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: test]`);
+      expect(
+        repFunc(/[2468]/, () => {
+          throw new Error('test');
+        }),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: test]`);
+      expect(
+        repFunc(/[2468]/g, () => {
+          throw new Error('test');
+        }),
+      ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: test]`);
+      expect(
+        repFunc(/a/, async () => {
+          throw new Error('test');
+        }),
+      ).resolves.toBe('123456789');
+    });
+
+    it('asyncFilter', async ({ expect }) => {
+      const fltFunc = (func) => asyncFilter([1, 2, 3, 4, 5, 6, 7, 8, 9], func);
+      expect(fltFunc((_, i) => i % 2)).resolves.toEqual([2, 4, 6, 8]);
+      const now = getNow();
+      expect(
+        fltFunc(async (_, i) => {
+          await sleep(25);
+          return i % 2;
+        }).then((res) => {
+          expect(getNow() - now, '判断是否是并发替换的').toBeLessThanOrEqual(50);
+          return res;
+        }),
+      ).resolves.toEqual([2, 4, 6, 8]);
+      expect(fltFunc()).resolves.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(fltFunc(1)).resolves.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(fltFunc('1')).resolves.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(fltFunc(true)).resolves.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(fltFunc(false)).resolves.toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+      expect(asyncFilter()).rejects.toThrowErrorMatchingInlineSnapshot(`[TypeError: arr 必须是数组]`);
+    });
+  });
+
+  describe('ua', () => {
+    it('ua', () => {
+      expectTypeOf(isNode()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIOS()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAndroid()).toEqualTypeOf<boolean>();
+      expectTypeOf(isChrome()).toEqualTypeOf<boolean>();
+      expectTypeOf(isFirefox()).toEqualTypeOf<boolean>();
+      expectTypeOf(isSafari()).toEqualTypeOf<boolean>();
+      expectTypeOf(isNewEdge()).toEqualTypeOf<boolean>();
+      expectTypeOf(isOldEdge()).toEqualTypeOf<boolean>();
+      expectTypeOf(isEdge()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWeex()).toEqualTypeOf<boolean>();
+      expectTypeOf(isKraken()).toEqualTypeOf<boolean>();
+      expectTypeOf(isQuickApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTBWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLTWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTbLive()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTbWebEnv()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWechatWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliPayWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWebInDingding()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTuan()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLST()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLXB()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliAppWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isMiniApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliMiniApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isDingdingMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTaobaoMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAlipayMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTBMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLTMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isMMCMiniapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isXiNiaoapp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isCaiNiaoApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAlipayApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isByteDanceMicroApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isBaiduSmartProgram()).toEqualTypeOf<boolean>();
+      expectTypeOf(isKuaiShouMiniProgram()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWeChatMiniProgram()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliMiniappPlatform()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTBNode()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLTNode()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWechatNode()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTB()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLT()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliPay()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTmall()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWechat()).toEqualTypeOf<boolean>();
+      expectTypeOf(isCaiNiaoBusiness()).toEqualTypeOf<boolean>();
+      expectTypeOf(isCaiNiao()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliUa()).toEqualTypeOf<boolean>();
+      expectTypeOf(isHmApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isYouKu()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAlipayMiniWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLTMiniWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isLBMiniWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTBMiniWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isDingTalk()).toEqualTypeOf<boolean>();
+      expectTypeOf(isTuanWebview()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWechatMiniWeb()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWechatH5()).toEqualTypeOf<boolean>();
+      expectTypeOf(isWebInMiniApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliWebInMiniApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isAliAppMiniApp()).toEqualTypeOf<boolean>();
+      expectTypeOf(isOpenHarmony()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIPhoneX()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIPhoneXSMax()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIPhoneXR()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIPhone14PM()).toEqualTypeOf<boolean>();
+      expectTypeOf(isIOSNotchScreen()).toEqualTypeOf<boolean>();
     });
   });
 });

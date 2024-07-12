@@ -228,11 +228,7 @@ export const isKuaiShouMiniProgram = cacheByReturn(() => {
 // 微信小程序
 export const isWeChatMiniProgram = cacheByReturn(() => {
   return (
-    !isWeb() &&
-    !isByteDanceMicroApp() &&
-    !isUndef(typeof wx) &&
-    typeof wx !== 'undefined' &&
-    (!isUndef(wx?.login) || !isUndef(wx?.miniProgram))
+    !isWeb() && !isByteDanceMicroApp() && !isUndef(typeof wx) && (!isUndef(wx?.login) || !isUndef(wx?.miniProgram))
   );
 });
 
@@ -393,7 +389,7 @@ export const isOpenHarmony = cacheByReturn(() => {
  * 如果要判断是否为「刘海屏」，建议使用 `isIOSNotchScreen`
  */
 export const isIPhoneX = cacheByReturn(() => {
-  const screenHeight = getDeviceInfo();
+  const { screenHeight } = getDeviceInfo();
   return (
     isIOS() &&
     [812, 896, 844, 926, 693, 780, 932, 852].includes(

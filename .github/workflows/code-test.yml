@@ -1,4 +1,4 @@
-name: Code Test on PR
+name: Code Test
 
 on:
   push:

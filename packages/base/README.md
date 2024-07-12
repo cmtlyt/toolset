@@ -20,7 +20,7 @@
 - (D) utils
   - (F) sleepSync
 
-修复一些小 bug
+修复一些 bug
 
 ### v0.6.4
 
