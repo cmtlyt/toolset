@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jsonSchemaGenerator, mockFromSchema, verifyBySchema } from '../src/index.esm';
-import { decodeDataSchema, encodeDataSchema } from '../src/base';
+import { decodeDataSchema, encodeDataSchema, jsonSchemaGenerator, mockFromSchema, verifyBySchema } from '../src/index';
 
 function getFile(name: string) {
   return `snapshot/${name}`;
@@ -47,8 +46,8 @@ describe('jsonSchema', () => {
     expect(mockData).toMatchFileSnapshot(getFile('mock.1'));
   });
 
-  it('verify', async () => {
-    expect(await verifyBySchema(schema, mockData)).toMatchInlineSnapshot(`
+  it('verify', () => {
+    expect(verifyBySchema(schema, mockData)).toMatchInlineSnapshot(`
       [
         true,
         [],
@@ -56,19 +55,74 @@ describe('jsonSchema', () => {
     `);
   });
 
-  it('verify error', async () => {
+  it('verify error', () => {
     const testData = { ...data, age: '12' };
-    expect(await verifyBySchema(schema, testData)).toMatchInlineSnapshot(`
+    expect(verifyBySchema(schema, testData)).toMatchInlineSnapshot(`
       [
         false,
         [
           {
-            "message": "is not of a type(s) number",
-            "path": [
-              "age",
-            ],
+            "message": "类型应该为 number",
+            "path": "/age",
           },
         ],
+      ]
+    `);
+    const arrSchema = JSON.stringify({ type: 'array', items: { type: 'string' }, maxItems: 3, minItems: 1 });
+    expect(verifyBySchema(arrSchema, [])).toMatchInlineSnapshot(`
+      [
+        false,
+        [
+          {
+            "message": "最多允许 3 元素, 至少要有 1 元素, 当前 0 个",
+            "path": "",
+          },
+        ],
+      ]
+    `);
+    expect(verifyBySchema(arrSchema, [1])).toMatchInlineSnapshot(`
+      [
+        false,
+        [
+          {
+            "message": "类型应该为 string",
+            "path": "/0",
+          },
+        ],
+      ]
+    `);
+    expect(verifyBySchema(arrSchema, [1, '1'])).toMatchInlineSnapshot(`
+      [
+        false,
+        [
+          {
+            "message": "类型应该为 string",
+            "path": "/0",
+          },
+        ],
+      ]
+    `);
+    expect(verifyBySchema(arrSchema, ['1', '1', '1', '1'])).toMatchInlineSnapshot(`
+      [
+        false,
+        [
+          {
+            "message": "最多允许 3 元素, 至少要有 1 元素, 当前 4 个",
+            "path": "",
+          },
+        ],
+      ]
+    `);
+    expect(verifyBySchema(arrSchema, ['1', '1', '1'])).toMatchInlineSnapshot(`
+      [
+        true,
+        [],
+      ]
+    `);
+    expect(verifyBySchema(arrSchema, ['1', '1'])).toMatchInlineSnapshot(`
+      [
+        true,
+        [],
       ]
     `);
   });
@@ -104,7 +158,7 @@ describe('jsonSchema', () => {
       [data, data],
     ]),
     reg: /^12[3](123)?.*?1+[^123](?=123)(?:123)(?!123)\d\w\s\D\W\S[0-9](1|2){2}1{1,}2{1,3}$/gms,
-    date: new Date('2024-7-12'),
+    date: new Date('Sat, 13 Jul 2024 05:14:09 GMT'),
   };
 
   let dataSchema, dataSchema2;

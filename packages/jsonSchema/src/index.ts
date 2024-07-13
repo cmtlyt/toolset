@@ -1,4 +1,4 @@
-import { getType } from '@cmtlyt/base';
+import { cacheByReturn, getType, isFalse } from '@cmtlyt/base';
 
 export interface Schema {
   type: string;
@@ -181,4 +181,56 @@ export function decodeDataSchema(dataSchema: string) {
   for (const key in map) delete map[key];
   map = null;
   return data;
+}
+
+function _verifyBySchema(schema: Schema, data: any, path = '', errors: ErrorItem[] = []) {
+  const type = getType(data);
+  if (schema.type !== type) errors.push({ path, message: `类型应该为 ${schema.type}` });
+  if (type === 'array') {
+    const length = data.length;
+    const { minItems, maxItems, uniqueItems } = schema;
+    if (length > maxItems || length < minItems) {
+      errors.push({ path, message: `最多允许 ${maxItems} 元素, 至少要有 ${minItems} 元素, 当前 ${length} 个` });
+    }
+    const uniqueSet = new Set();
+    const func = cacheByReturn(() => {
+      if (uniqueItems) {
+        return (item: any, idx: number) => {
+          if (uniqueSet.has(item)) {
+            errors.push({ path, message: `元素必须唯一 ${idx}` });
+            return false;
+          }
+          uniqueSet.add(item);
+          _verifyBySchema(schema.items, item, `${path}/${idx}`, errors);
+        };
+      }
+      return (item: any, idx: number) => {
+        _verifyBySchema(schema.items, item, `${path}/${idx}`, errors);
+      };
+    });
+    for (const idx in data) {
+      const item = data[idx];
+      if (isFalse(func(item, +idx))) break;
+    }
+  }
+  if (type === 'object') {
+    const { properties, required } = schema;
+    required?.every((item: string) => {
+      return item in data;
+    });
+    for (const key in properties) {
+      _verifyBySchema(properties[key], data[key], `${path}/${key}`, errors);
+    }
+  }
+}
+
+interface ErrorItem {
+  path: string;
+  message: string;
+}
+
+export function verifyBySchema(schema: string, data: any): [boolean, ErrorItem[]] {
+  const errors: ErrorItem[] = [];
+  _verifyBySchema(JSON.parse(schema), data, '', errors);
+  return [errors.length === 0, errors];
 }
