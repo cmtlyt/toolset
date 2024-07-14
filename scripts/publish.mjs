@@ -166,7 +166,7 @@ function getRelativePath(filePath) {
 
 async function rollbackWorkspacePaddingPackage() {
   fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
-    fs.writeFileSync(pkgPath, pkgOldFile);
+    fs.writeFileSync(pkgPath, JSON.stringify(pkgOldFile));
   });
   // const { pkgPaths } = await prompt({
   //   type: 'autocompleteMultiselect',
@@ -269,7 +269,7 @@ async function selectPublishPkgs(pkgMap) {
 }
 
 (async function main() {
-  // await checkPassword();
+  await checkPassword();
 
   await checkLocalCommitStatus();
 
