@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/string-zip",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "cl字符串数据压缩",
   "type": "module",
   "main": "./dist/index.umd.js",

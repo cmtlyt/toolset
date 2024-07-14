@@ -194,17 +194,23 @@ function createOnceWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
   return { run, dispose, ...eventFuncs };
 }
 
-function formatImportScripts(input: (string | Record<string, TAnyFunc>)[]): string[] {
-  return input.map((item) => {
-    if (typeof item === 'string') return item;
-    return createLinkByString(
-      Object.keys(item)
-        .map((funcName) => {
-          return `function ${funcName}(...args) { return (${item[funcName]})(...args); }`;
+function formatImportScripts(input: (string | TAnyFunc)[]): string[] {
+  const funcs: TAnyFunc[] = [];
+  const strs: string[] = [];
+  input.forEach((item) => {
+    if (typeof item === 'string') strs.push(item);
+    else if (typeof item === 'function') funcs.push(item);
+  });
+  strs.push(
+    createLinkByString(
+      funcs
+        .map((func) => {
+          return `function ${func.name}(...args) { return (${func})(...args); }`;
         })
         .join('\n'),
-    );
-  });
+    ),
+  );
+  return strs;
 }
 
 interface CreateWorkerFuncOptions {
@@ -214,7 +220,7 @@ interface CreateWorkerFuncOptions {
 
 export function createWorkerFunc<F extends TAnyFunc>(
   func: F,
-  importScripts: (string | Record<string, TAnyFunc>)[] = [],
+  importScripts: (string | TAnyFunc)[] = [],
   options?: CreateWorkerFuncOptions,
 ): WorkerFuncs<F> {
   if (!caniuse('Worker')) {

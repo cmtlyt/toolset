@@ -43,7 +43,8 @@ const pkgNameMap = {};
 
 const readJsonFile = (() => {
   const cache = {};
-  return (file) => {
+  return (file, forceRead = false) => {
+    if (forceRead) return JSON.parse(fs.readFileSync(file, 'utf8'));
     if (file in cache) return cache[file];
     const content = fs.readFileSync(file, 'utf8');
     const pkgJson = (cache[file] = JSON.parse(content));
@@ -155,7 +156,7 @@ async function fetchWorkspaceVersion(pkgFile) {
       pkgInfo[depType][pkgName] = `^${pkgVersion}`;
     });
   }
-  fetchPkgFiles.push([pkgInfo.name, pkgFile]);
+  fetchPkgFiles.push([pkgInfo.name, pkgFile, readJsonFile(pkgFile, true)]);
   fs.writeFileSync(pkgFile, JSON.stringify(pkgInfo, null, 2));
 }
 
@@ -164,32 +165,35 @@ function getRelativePath(filePath) {
 }
 
 async function rollbackWorkspacePaddingPackage() {
-  const { pkgPaths } = await prompt({
-    type: 'autocompleteMultiselect',
-    name: 'pkgPaths',
-    choices: [
-      { title: 'all', value: 'all' },
-      ...fetchPkgFiles.map(([pkgName, pkgPath]) => {
-        return { title: `${pkgName} - ${getRelativePath(pkgPath)}`, value: pkgPath };
-      }),
-    ],
-    message: '脚本自动更新下列文件的 workspace 依赖版本, 请选择需要回滚的文件',
-    instructions: false,
+  fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
+    fs.writeFileSync(pkgPath, pkgOldFile);
   });
+  // const { pkgPaths } = await prompt({
+  //   type: 'autocompleteMultiselect',
+  //   name: 'pkgPaths',
+  //   choices: [
+  //     { title: 'all', value: 'all' },
+  //     ...fetchPkgFiles.map(([pkgName, pkgPath]) => {
+  //       return { title: `${pkgName} - ${getRelativePath(pkgPath)}`, value: pkgPath };
+  //     }),
+  //   ],
+  //   message: '脚本自动更新下列文件的 workspace 依赖版本, 请选择需要回滚的文件',
+  //   instructions: false,
+  // });
 
-  if (pkgPaths?.length) {
-    let rollbacks = pkgPaths;
-    if (pkgPaths.includes('all')) {
-      rollbacks = fetchPkgFiles.map(([, pkgPath]) => pkgPath);
-    }
-    const outputs = await Promise.all(
-      rollbacks.map(async (pkgPath) => [pkgPath, await execCommand(`git checkout -- ${pkgPath}`)]),
-    );
-    outputs.forEach(([pkgPath, [err]]) => {
-      if (err) console.log(chalk.red(`回滚失败:> ${pkgPath}`));
-      console.log(chalk.green(`回滚成功:> ${pkgPath}`));
-    });
-  }
+  // if (pkgPaths?.length) {
+  //   let rollbacks = pkgPaths;
+  //   if (pkgPaths.includes('all')) {
+  //     rollbacks = fetchPkgFiles.map(([, pkgPath]) => pkgPath);
+  //   }
+  //   const outputs = await Promise.all(
+  //     rollbacks.map(async (pkgPath) => [pkgPath, await execCommand(`git checkout -- ${pkgPath}`)]),
+  //   );
+  //   outputs.forEach(([pkgPath, [err]]) => {
+  //     if (err) console.log(chalk.red(`回滚失败:> ${pkgPath}`));
+  //     console.log(chalk.green(`回滚成功:> ${pkgPath}`));
+  //   });
+  // }
 }
 
 async function publish(pkgFiles) {
@@ -265,7 +269,7 @@ async function selectPublishPkgs(pkgMap) {
 }
 
 (async function main() {
-  await checkPassword();
+  // await checkPassword();
 
   await checkLocalCommitStatus();
 

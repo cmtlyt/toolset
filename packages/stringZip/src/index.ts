@@ -52,18 +52,7 @@ export function zipSync(source: string, keyLength: number = 6) {
   return JSON.stringify({ cache: map, source: result, keyLength });
 }
 
-export const { run: zip } = createWorkerFunc(
-  zipSync,
-  [
-    {
-      _zip,
-      getPreKey,
-      genKey,
-      getRandomString,
-    },
-  ],
-  { reuse: false },
-);
+export const { run: zip } = createWorkerFunc(zipSync, [_zip, getPreKey, genKey, getRandomString], { reuse: false });
 
 interface ZipSource {
   cache: Record<string, string>;
@@ -101,15 +90,6 @@ export function unzipSync(zipSource: string) {
   return result;
 }
 
-export const { run: unzip } = createWorkerFunc(
-  unzipSync,
-  [
-    {
-      _unzip,
-      getPreKey,
-      genKey,
-      getRandomString,
-    },
-  ],
-  { reuse: false },
-);
+export const { run: unzip } = createWorkerFunc(unzipSync, [_unzip, getPreKey, genKey, getRandomString], {
+  reuse: false,
+});
