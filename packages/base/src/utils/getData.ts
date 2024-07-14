@@ -160,7 +160,7 @@ export const getNow = cacheByReturn(() => {
 
 export function getRandomString(len = 8): string {
   const str = Math.random()
-    .toString(32)
+    .toString(36)
     .slice(2, len + 2);
   if (str.length === len) {
     return str;

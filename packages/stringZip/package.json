@@ -1,0 +1,59 @@
+{
+  "name": "@cmtlyt/string-zip",
+  "version": "0.1.0",
+  "description": "cl字符串数据压缩",
+  "type": "module",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "default": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "build": "tsc && rollup -c"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "cl",
+    "string-zip",
+    "cmtlyt",
+    "string",
+    "zip",
+    "字符串",
+    "压缩"
+  ],
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/stringZip"
+  },
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/stringZip/README.md",
+  "clPublish": {
+    "checkDir": [
+      "src/**/*.ts"
+    ]
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@cmtlyt/base": "workspace:../base"
+  }
+}

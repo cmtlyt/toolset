@@ -124,7 +124,7 @@ export function caniuseCSSFeature(feature: string): boolean {
   return window?.CSS?.supports?.(feature) || false;
 }
 
-export function caniuse(feature: string): boolean {
+export function caniuse(feature: keyof typeof window): boolean {
   if (!isWeb()) {
     warning('caniuse 只能在浏览器环境中使用');
     return false;

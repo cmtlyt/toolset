@@ -53,6 +53,6 @@
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
-    "@cmtlyt/base": "^0.6.6"
+    "@cmtlyt/base": "workspace:../base"
   }
 }

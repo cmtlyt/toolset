@@ -1,10 +1,12 @@
+import { warning } from '@com/warning';
+
 import { TAnyFunc, TExclude, TFlatPromise } from '../../types/base';
 
-import { createLinkByString, getRandomString } from '@/utils';
+import { caniuse, createLinkByString, getRandomString } from '@/utils';
 
 function generateWorkerScript(func: TAnyFunc, importScript: string[] = [], userNeedPost = false) {
   return `
-${importScript.length ? `importScripts("${importScript.join(', ')}");` : ''}
+${importScript.length ? `importScripts("${importScript.join('", "')}");` : ''}
 const func = ${func};
 
 const { postMessage } = (()=>{
@@ -192,6 +194,19 @@ function createOnceWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
   return { run, dispose, ...eventFuncs };
 }
 
+function formatImportScripts(input: (string | Record<string, TAnyFunc>)[]): string[] {
+  return input.map((item) => {
+    if (typeof item === 'string') return item;
+    return createLinkByString(
+      Object.keys(item)
+        .map((funcName) => {
+          return `function ${funcName}(...args) { return (${item[funcName]})(...args); }`;
+        })
+        .join('\n'),
+    );
+  });
+}
+
 interface CreateWorkerFuncOptions {
   reuse?: boolean;
   needPost?: boolean;
@@ -199,11 +214,21 @@ interface CreateWorkerFuncOptions {
 
 export function createWorkerFunc<F extends TAnyFunc>(
   func: F,
-  importScripts: string[] = [],
+  importScripts: (string | Record<string, TAnyFunc>)[] = [],
   options?: CreateWorkerFuncOptions,
 ): WorkerFuncs<F> {
+  if (!caniuse('Worker')) {
+    warning('不支持 web worker 已降级');
+    return {
+      run: (async (...args: any[]) => {
+        return await func(...args);
+      }) as TAnyFunc,
+      dispose: () => {},
+      ...createEventFunc(),
+    };
+  }
   const { reuse = true, needPost = false } = options;
-  const workerScript = generateWorkerScript(func, importScripts, needPost);
+  const workerScript = generateWorkerScript(func, formatImportScripts(importScripts), needPost);
   const scriptUrl = createLinkByString(workerScript);
   // 复用版的funcs
   if (reuse) {

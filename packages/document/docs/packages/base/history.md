@@ -9,6 +9,21 @@
 - (CV) 常量
 - -> 别名
 
+### v0.6.7
+
+优化
+
+- createWorkerFunc 支持直接从传入函数作为依赖
+- getRandomString 从原来的 32 进制更新为 36 进制
+
+修复
+
+- createWorkerFunc 返回值类型修复
+
+### v0.6.6
+
+类型调整
+
 ### v0.6.5
 
 新增
