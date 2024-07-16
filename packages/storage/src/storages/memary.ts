@@ -1,7 +1,15 @@
-import { BaseStorage } from './base';
+import { TExclude } from '@cmtlyt/base';
+
+import { BaseStorage, StorageBaseOptions } from './base';
+
+interface MemaryStorageOptions extends TExclude<StorageBaseOptions, 'autoSaveDelay'> {}
 
 export class MemaryStorage extends BaseStorage {
-  constructor() {
-    super();
+  constructor(options: MemaryStorageOptions) {
+    super({ ...options, autoSaveDelay: 0 });
+  }
+
+  protected init() {
+    return {};
   }
 }

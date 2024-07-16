@@ -1,4 +1,4 @@
-import { createWorkerFunc, getRandomString } from '@cmtlyt/base';
+import { createWorkerFunc, getRandomString, TExclude } from '@cmtlyt/base';
 
 function genKey(keys: string[], length: number) {
   let id: string,
@@ -93,3 +93,11 @@ export function unzipSync(zipSource: string) {
 export const { run: unzip } = createWorkerFunc(unzipSync, [_unzip, getPreKey, genKey, getRandomString], {
   reuse: false,
 });
+
+type CreateWorkerFuncOptions = Parameters<typeof createWorkerFunc>[2];
+
+export const createZip = (options: TExclude<CreateWorkerFuncOptions, 'needPost'>) =>
+  createWorkerFunc(zipSync, [_zip, getPreKey, genKey, getRandomString], { ...options, needPost: false }).run;
+
+export const createUnzip = (options: TExclude<CreateWorkerFuncOptions, 'needPost'>) =>
+  createWorkerFunc(unzipSync, [_unzip, getPreKey, genKey, getRandomString], { ...options, needPost: false }).run;

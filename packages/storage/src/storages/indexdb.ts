@@ -4,4 +4,8 @@ export class IndexedDBStorage extends BaseStorage {
   constructor() {
     super();
   }
+
+  protected init() {
+    return {};
+  }
 }

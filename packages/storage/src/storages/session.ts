@@ -4,4 +4,8 @@ export class SessionStorage extends BaseStorage {
   constructor() {
     super();
   }
+
+  protected init() {
+    return {};
+  }
 }

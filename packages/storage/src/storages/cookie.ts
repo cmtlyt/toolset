@@ -4,4 +4,8 @@ export class CookieStorage extends BaseStorage {
   constructor() {
     super();
   }
+
+  protected init() {
+    return {};
+  }
 }

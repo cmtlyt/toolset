@@ -50,5 +50,10 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@cmtlyt/base": "workspace:*",
+    "@cmtlyt/json-schema": "workspace:*",
+    "@cmtlyt/string-zip": "workspace:*"
+  }
 }

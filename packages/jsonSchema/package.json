@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/json-schema",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "json schema 处理相关方法",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
@@ -9,7 +9,7 @@
     ".": {
       "import": "./dist/index.esm.js",
       "default": "./dist/index.umd.js",
-      "types": "./dist/inde.d.ts"
+      "types": "./dist/index.d.ts"
     },
     "./*": "./dist/*"
   },
