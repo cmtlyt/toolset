@@ -44,7 +44,7 @@ const pkgNameMap = {};
 const readJsonFile = (() => {
   const cache = {};
   return (file, forceRead = false) => {
-    if (forceRead) return JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (forceRead) return fs.readFileSync(file, 'utf8');
     if (file in cache) return cache[file];
     const content = fs.readFileSync(file, 'utf8');
     const pkgJson = (cache[file] = JSON.parse(content));
@@ -118,7 +118,7 @@ async function asyncFilter(arr, callback) {
 
 async function filterNeedPublishPackage(files, pkgFiles) {
   const temp = pkgFiles.filter((file) => {
-    const { clPublish } = readJsonFile(file, 'utf8');
+    const { clPublish } = readJsonFile(file);
     return checkNeedPublish(files, file, clPublish);
   });
   return asyncFilter(temp, (file) => checkVersionUpgrade(file));
@@ -166,7 +166,7 @@ function getRelativePath(filePath) {
 
 async function rollbackWorkspacePaddingPackage() {
   fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
-    fs.writeFileSync(pkgPath, JSON.stringify(pkgOldFile));
+    fs.writeFileSync(pkgPath, pkgOldFile);
   });
   // const { pkgPaths } = await prompt({
   //   type: 'autocompleteMultiselect',
@@ -246,7 +246,7 @@ async function publish(pkgFiles) {
 
 async function getPkgMap(pkgFiles) {
   return pkgFiles.reduce((dic, file) => {
-    const { name, version } = readJsonFile(file, 'utf8');
+    const { name, version } = readJsonFile(file);
     dic[name] = [version, file];
     return dic;
   }, {});
