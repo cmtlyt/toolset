@@ -1,3 +1,2 @@
 npm run test:ci
-git add coverage
 npx --no -- lint-staged
