@@ -8,6 +8,42 @@ import fg from 'fast-glob';
 import chalk from 'chalk';
 import prompt from 'prompts';
 
+function normalizeConfig(config) {
+  return {
+    force: false,
+    skipCheck: false,
+    optCode: '',
+    customPublish: false,
+    usePassword: false,
+    packagesPath: 'packages/**/package.json',
+    ...config,
+  };
+}
+
+const getConfig = (() => {
+  const configMap = [
+    ['force', ['-f', '--force'], () => true],
+    ['skipCheck', ['-s', '--skip-check'], () => true],
+    ['optCode', ['-o', '--opt'], (value) => value],
+    ['customPublish', ['-c', '--custom-publish'], () => true],
+    ['usePassword', ['-p', '--use-password'], () => true],
+    ['packagesPath', ['--path'], (value) => value],
+  ];
+
+  let config;
+  return () => {
+    if (config) return config;
+    const argv = process.argv.slice(2);
+    const temp = argv.reduce((dist, item) => {
+      const [field, value] = item.split('=');
+      const [key, , getValue] = configMap.find(([, k]) => k.includes(field.trim())) || [];
+      if (key) dist[key] = getValue(value);
+      return dist;
+    }, {});
+    return (config = normalizeConfig(temp));
+  };
+})();
+
 function exportError(err) {
   if (err) {
     console.log(chalk.red('--- 出错了 ---'));
@@ -26,6 +62,11 @@ async function execCommand(command, autoExport = true) {
 }
 
 async function getFiles() {
+  const { customPublish } = getConfig();
+  if (customPublish) {
+    const allPackageFiles = getAllPackageFilePath();
+    return [[], allPackageFiles];
+  }
   const [stdout] = await execCommand('git diff-tree --no-commit-id --name-only -r HEAD');
   const files = stdout
     .split('\n')
@@ -53,11 +94,20 @@ const readJsonFile = (() => {
   };
 })();
 
+function getAllPackageFilePath() {
+  const { packagesPath } = getConfig();
+  const allPkgFilePaths = fg.sync(packagesPath, {
+    absolute: true,
+    ignore: ['**/node_modules/**'],
+  });
+  return allPkgFilePaths;
+}
+
 function getPkgJson(pkgName) {
   if (pkgName in pkgNameMap) {
     return readJsonFile(pkgNameMap[pkgName]);
   }
-  const allPkgFilePaths = fg.sync('packages/**/package.json', { absolute: true });
+  const allPkgFilePaths = getAllPackageFilePath();
   for (const key in allPkgFilePaths) {
     const path = allPkgFilePaths[key];
     const pkgInfo = readJsonFile(path);
@@ -76,6 +126,8 @@ function checkNeedPublish(files, packageFile, clPublishConfig) {
 }
 
 async function checkLocalCommitStatus() {
+  const { skipCheck } = getConfig();
+  if (skipCheck) return;
   const [stdout] = await execCommand('git diff-index --name-only HEAD');
   const files = stdout.split('\n').filter(Boolean);
   if (files.length) {
@@ -117,21 +169,23 @@ async function asyncFilter(arr, callback) {
 }
 
 async function filterNeedPublishPackage(files, pkgFiles) {
+  const { customPublish } = getConfig();
   const temp = pkgFiles.filter((file) => {
     const { clPublish } = readJsonFile(file);
+    if (customPublish && clPublish) return true;
     return checkNeedPublish(files, file, clPublish);
   });
   return asyncFilter(temp, (file) => checkVersionUpgrade(file));
 }
 
 async function checkPassword() {
+  const { usePassword } = getConfig();
+  if (!usePassword) return;
   const homeDir = os.homedir();
   const passHash = fs.readFileSync(path.join(homeDir, '.cl-publish-hash'), 'utf-8');
   const { password } = await prompt({ type: 'password', name: 'password', message: '请输入密码' });
   if (!(await argon2.verify(passHash, password))) return exportError('密码错误');
 }
-
-const fetchPkgFiles = [];
 
 async function fetchWorkspaceVersion(pkgFile) {
   const pkgVerMap = { dependencies: [], devDependencies: [] };
@@ -156,53 +210,27 @@ async function fetchWorkspaceVersion(pkgFile) {
       pkgInfo[depType][pkgName] = `^${pkgVersion}`;
     });
   }
-  fetchPkgFiles.push([pkgInfo.name, pkgFile, readJsonFile(pkgFile, true)]);
   fs.writeFileSync(pkgFile, JSON.stringify(pkgInfo, null, 2));
+  return [pkgInfo.name, pkgFile, readJsonFile(pkgFile, true)];
 }
 
-function getRelativePath(filePath) {
-  return path.relative(path.resolve(), filePath);
-}
-
-async function rollbackWorkspacePaddingPackage() {
+async function rollbackWorkspacePaddingPackage(fetchPkgFiles) {
   fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
     fs.writeFileSync(pkgPath, pkgOldFile);
   });
-  // const { pkgPaths } = await prompt({
-  //   type: 'autocompleteMultiselect',
-  //   name: 'pkgPaths',
-  //   choices: [
-  //     { title: 'all', value: 'all' },
-  //     ...fetchPkgFiles.map(([pkgName, pkgPath]) => {
-  //       return { title: `${pkgName} - ${getRelativePath(pkgPath)}`, value: pkgPath };
-  //     }),
-  //   ],
-  //   message: '脚本自动更新下列文件的 workspace 依赖版本, 请选择需要回滚的文件',
-  //   instructions: false,
-  // });
-
-  // if (pkgPaths?.length) {
-  //   let rollbacks = pkgPaths;
-  //   if (pkgPaths.includes('all')) {
-  //     rollbacks = fetchPkgFiles.map(([, pkgPath]) => pkgPath);
-  //   }
-  //   const outputs = await Promise.all(
-  //     rollbacks.map(async (pkgPath) => [pkgPath, await execCommand(`git checkout -- ${pkgPath}`)]),
-  //   );
-  //   outputs.forEach(([pkgPath, [err]]) => {
-  //     if (err) console.log(chalk.red(`回滚失败:> ${pkgPath}`));
-  //     console.log(chalk.green(`回滚成功:> ${pkgPath}`));
-  //   });
-  // }
 }
 
 async function publish(pkgFiles) {
   if (!pkgFiles.length) return console.log('未选择需要发布的包, 跳过发布流程');
 
-  let optCode = '';
+  const { optCode: _optCode } = getConfig();
+
+  let optCode = _optCode;
+  const fetchPkgFiles = [];
 
   const action = async (pkgFile, reInputCode = false) => {
-    fetchWorkspaceVersion(pkgFile);
+    const fetchPkgFile = fetchWorkspaceVersion(pkgFile);
+    fetchPkgFiles.push(fetchPkgFile);
     const { name, version } = readJsonFile(pkgFile);
     changePwd(pkgFile);
     if (reInputCode) {
@@ -233,15 +261,20 @@ async function publish(pkgFiles) {
       console.log(`发布 ${name} 需要在 ${registryUrl} 登陆, 尝试使用 \`${commandTip} --registry ${registryUrl}\``);
       process.exit(1);
     }
+    if (error) {
+      rollbackWorkspacePaddingPackage(fetchPkgFiles);
+    }
     exportError(error);
     console.log(chalk.green(`发布 ${name}@${version} 成功\n`));
   };
 
-  for (const idx in pkgFiles) {
-    await action(pkgFiles[idx]);
+  try {
+    for (const idx in pkgFiles) {
+      await action(pkgFiles[idx]);
+    }
+  } finally {
+    await rollbackWorkspacePaddingPackage(fetchPkgFiles);
   }
-
-  await rollbackWorkspacePaddingPackage();
 }
 
 async function getPkgMap(pkgFiles) {
@@ -256,7 +289,7 @@ async function selectPublishPkgs(pkgMap) {
   const choices = [{ title: 'all', value: 'all' }];
   for (const pkgName in pkgMap) {
     const [pkgVersion, pkgPath] = pkgMap[pkgName];
-    choices.push({ title: `${pkgName}@${pkgVersion}`, value: pkgPath });
+    choices.push({ title: `${pkgName}@${pkgVersion}`, value: pkgPath, disabled: pkgVersion === '0.0.0' });
   }
   const { pkgs } = await prompt({
     type: 'autocompleteMultiselect',
@@ -269,7 +302,7 @@ async function selectPublishPkgs(pkgMap) {
 }
 
 (async function main() {
-  // await checkPassword();
+  await checkPassword();
 
   await checkLocalCommitStatus();
 

@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/monitor",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "cl项目监控",
   "type": "module",
   "main": "./dist/index.umd.js",
