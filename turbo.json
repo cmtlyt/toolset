@@ -5,20 +5,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "deploy": {
-      "dependsOn": ["^deploy$"]
-    },
     "dev": {
-      "dependsOn": ["^dev$"],
       "cache": false
     },
     "dev:doc": {
-      "dependsOn": ["^dev:doc$"],
       "cache": false,
       "persistent": true
     },
     "build:doc": {
-      "dependsOn": ["^build:doc$"],
       "cache": false,
       "persistent": true
     }
