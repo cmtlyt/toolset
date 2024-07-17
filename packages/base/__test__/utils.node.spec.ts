@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, expectTypeOf } from 'vitest';
-import { getDeviceInfo, getNow, getOsType, safeGetGlobal } from '../src/utils';
+import { getDeviceInfo, getNow, getOsType, safeGetGlobal } from '../src';
 
 describe('utils/node', () => {
   it('getOsType', () => {

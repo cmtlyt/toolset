@@ -1,30 +1,17 @@
-import { cacheByReturn } from './funcHandler';
-import { getAliAppEnv, getDeviceInfo, getUserAgent } from './getData';
-import { isUndef } from './verify';
-
-// node 环境
-export const isNode = cacheByReturn(() => {
-  const ua = getUserAgent().toLocaleLowerCase();
-  return ua.includes('node');
-});
-
-// web 环境
-export const isWeb = cacheByReturn(() => {
-  const ua = getUserAgent().toLocaleLowerCase();
-  return !ua.includes('node') && window && 'onload' in window;
-});
-
-// ios
-export const isIOS = cacheByReturn(() => {
-  const ua = getUserAgent().toLocaleLowerCase();
-  return ua.includes('iphone') || ua.includes('ipad');
-});
-
-// 安卓
-export const isAndroid = cacheByReturn(() => {
-  const ua = getUserAgent().toLocaleLowerCase();
-  return ua.includes('android');
-});
+import {
+  cacheByReturn,
+  getAliAppEnv,
+  getDeviceInfo,
+  getUserAgent,
+  isAliMiniApp,
+  isByteDanceMicroApp,
+  isIOS,
+  isNode,
+  isUndef,
+  isWeb,
+  isWeChatMiniProgram,
+  isWeex,
+} from '../cirDep';
 
 // chrome
 export const isChrome = cacheByReturn(() => {
@@ -60,11 +47,6 @@ export const isOldEdge = cacheByReturn(() => {
 export const isEdge = cacheByReturn(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('edge');
-});
-
-// weex 环境
-export const isWeex = cacheByReturn(() => {
-  return typeof WXEnvironment !== 'undefined' && WXEnvironment.platform !== 'Web';
 });
 
 // kraken 环境
@@ -151,13 +133,6 @@ const AlipayAppNames = ['alipay'];
 const CaiNiaoAppNames = ['cn', 'cainiao', 'com.cainiao.wireless'];
 const AlipayMiniAppNames = [...AlipayAppNames, ...CaiNiaoAppNames];
 
-export const isMiniApp = cacheByReturn(() => {
-  return typeof my !== 'undefined' && my !== null && typeof my.alert !== 'undefined';
-});
-
-// 阿里小程序
-export const isAliMiniApp = isMiniApp;
-
 // 钉钉小程序
 export const isDingdingMiniapp = cacheByReturn(() => {
   return !isUndef(typeof dd) && dd !== null && !isUndef(typeof dd.alert) && !isWeb();
@@ -210,11 +185,6 @@ export const isAlipayApp = cacheByReturn(() => {
   return isAliMiniApp() && AlipayAppNames.includes(appName);
 });
 
-// 字节小程序
-export const isByteDanceMicroApp = cacheByReturn(() => {
-  return typeof tt !== 'undefined' && tt !== null && typeof tt.showToast !== 'undefined';
-});
-
 // 百度小程序
 export const isBaiduSmartProgram = cacheByReturn(() => {
   return typeof swan !== 'undefined' && swan !== null && typeof swan.showToast !== 'undefined';
@@ -223,13 +193,6 @@ export const isBaiduSmartProgram = cacheByReturn(() => {
 // 快手小程序
 export const isKuaiShouMiniProgram = cacheByReturn(() => {
   return typeof ks !== 'undefined' && ks !== null && typeof ks.showToast !== 'undefined';
-});
-
-// 微信小程序
-export const isWeChatMiniProgram = cacheByReturn(() => {
-  return (
-    !isWeb() && !isByteDanceMicroApp() && !isUndef(typeof wx) && (!isUndef(wx?.login) || !isUndef(wx?.miniProgram))
-  );
 });
 
 // 小程序
@@ -370,11 +333,6 @@ export const isAliWebInMiniApp = cacheByReturn(() => {
 // 阿里应用小程序
 export const isAliAppMiniApp = cacheByReturn(() => {
   return isTBMiniapp() || isLTMiniapp() || isAlipayMiniapp() || isMMCMiniapp();
-});
-
-export const isOpenHarmony = cacheByReturn(() => {
-  const ua = getUserAgent();
-  return /\sOpenHarmony\s\d/i.test(ua);
 });
 
 /**

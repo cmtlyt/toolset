@@ -113,7 +113,7 @@ import {
   isIPhoneXR,
   isIPhone14PM,
   isIOSNotchScreen,
-} from '../src/utils';
+} from '../src';
 import { EMPTY } from '../src';
 
 describe('utils', () => {

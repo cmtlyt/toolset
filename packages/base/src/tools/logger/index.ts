@@ -1,8 +1,7 @@
-import { warning } from '@com/warning';
-
 import { TExclude } from '../../types/base';
-
-import { getArray, isNull, cacheByReturn, formatDate } from '@/utils';
+import { getArray, isNull, formatDate } from '../../utils';
+import { warning } from '../../common/warning';
+import { cacheByReturn } from '../../cirDep';
 
 interface Constant {
   moduleIdReg: RegExp;

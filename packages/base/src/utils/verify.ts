@@ -1,16 +1,9 @@
-import { warning } from '@com/warning';
-import { EMPTY } from '@com/constant';
-
-import { cacheByReturn } from './funcHandler';
-import { isWeb } from './ua';
-import { getType } from './getData';
+import { EMPTY } from '../common/constant';
+import { warning } from '../common/warning';
+import { cacheByReturn, getType, isWeb } from '../cirDep';
 
 export function isNull(value: any): boolean {
   return typeof value === 'undefined' || (typeof value === 'object' && value === null);
-}
-
-export function isUndef(value: any): boolean {
-  return value === 'undefined' || typeof value === 'undefined';
 }
 
 export function isNaN(value: any): boolean {
@@ -19,10 +12,6 @@ export function isNaN(value: any): boolean {
 
 export function isNumber(value: any): boolean {
   return typeof value === 'number';
-}
-
-export function isString(value: any): boolean {
-  return typeof value === 'string';
 }
 
 export function isPromise(value: any): boolean {

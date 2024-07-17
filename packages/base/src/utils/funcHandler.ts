@@ -1,5 +1,3 @@
-import { EMPTY } from '@com/constant';
-
 import {
   GetArgs,
   GetReturnType,
@@ -14,32 +12,10 @@ import {
   TLastType,
   TLength,
 } from '../types/base';
+import { cacheByReturn } from '../cirDep';
 
 import { getArray } from './dataHandler';
-import { getNow, safeGetGlobal } from './getData';
-
-export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
-  cacheLoad: T,
-) => (...args: GetArgs<R>) => GetReturnType<R> = (() => {
-  if (Reflect?.apply) {
-    return (cacheLoad) => {
-      let cache: any = EMPTY;
-      return (...args) => {
-        if (cache === EMPTY) cache = cacheLoad();
-        if (typeof cache !== 'function') return cache;
-        return Reflect.apply(cache, null, args);
-      };
-    };
-  }
-  return (cacheLoad) => {
-    let cache: any = EMPTY;
-    return (...args) => {
-      if (cache === EMPTY) cache = cacheLoad();
-      if (typeof cache !== 'function') return cache;
-      return cache.apply(null, args);
-    };
-  };
-})();
+import { getNow } from './getData';
 
 class MemoizeMap {
   #_map = new Map();
@@ -208,7 +184,7 @@ export function throttle<F extends TAnyFunc>(func: F, time = 100, immediately = 
 
 const _runTask = cacheByReturn(
   (): ((task: TAnyFunc, args: any[], resolve: (value: any) => void, reject: (reason?: any) => void) => void) => {
-    if (safeGetGlobal().requestIdleCallback) {
+    if (globalThis.requestIdleCallback) {
       return (task, args, resolve, reject) => {
         requestIdleCallback((idle) => {
           if (idle.timeRemaining() > 0) {
@@ -224,7 +200,7 @@ const _runTask = cacheByReturn(
         });
       };
     }
-    if (safeGetGlobal().requestAnimationFrame) {
+    if (globalThis.requestAnimationFrame) {
       return (task, args, resolve, reject) => {
         const start = getNow();
         requestAnimationFrame(() => {

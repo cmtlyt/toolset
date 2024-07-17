@@ -1,8 +1,6 @@
-import { warning } from '@com/warning';
-
 import { TAnyFunc, TExclude, TFlatPromise } from '../../types/base';
-
-import { caniuse, createLinkByString, getRandomString } from '@/utils';
+import { caniuse, createLinkByString, getRandomString } from '../../utils';
+import { warning } from '../../common/warning';
 
 function generateWorkerScript(func: TAnyFunc, importScript: string[] = [], userNeedPost = false) {
   return `

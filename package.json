@@ -19,7 +19,7 @@
     "email": "cmtlyt@163.com"
   },
   "license": "MIT",
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.5.0",
   "lint-staged": {
     "packages/**/*.{js,jsx,tsx,ts}": [
       "npm run lint",

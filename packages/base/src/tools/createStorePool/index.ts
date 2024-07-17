@@ -1,7 +1,6 @@
-import { EMPTY } from '@com/constant';
-
 import { TFunc } from '../../types/base';
 import { EventEmitter } from '../eventEmitter';
+import { EMPTY } from '../../common/constant';
 
 class DefaultStoreController {
   static instance = null;

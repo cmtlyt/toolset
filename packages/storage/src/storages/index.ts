@@ -1,5 +1,4 @@
-export * from './memary';
+export * from './memory';
 export * from './session';
 export * from './local';
-export * from './cookie';
 export * from './indexdb';

@@ -9,6 +9,37 @@
 - (CV) 常量
 - -> 别名
 
+### v0.7.0
+
+扩展更多工具类型
+
+! 循环依赖处理, 部分指定文件导入的模块会失效 例如: `import { cacheByReturn } from '@cmtlyt/base/utils/funcHandler'`, 如果使用 `import { cacheByReturn } from '@cmtlyt/base'` 的方式导入则不受本次修改的影响
+
+受影响的方法:
+
+- cacheByReturn
+- getAliAppEnv
+- getOsType
+- getDeviceInfo
+- getType
+- getUserAgent
+- isWeb
+- isNode
+- isMiniApp
+- isAliMiniApp
+- isByteDanceMicroApp
+- isWeChatMiniProgram
+- isWeex
+- isIOS
+- isAndroid
+- isOpenHarmony
+- isString
+- isUndef
+
+### v0.6.9
+
+对外暴露工具类型
+
 ### v0.6.8
 
 修复 createWorkerFunc 传递函数依赖打包混淆后, 函数丢失问题

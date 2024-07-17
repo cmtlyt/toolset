@@ -43,3 +43,5 @@ export type TFlatPromise<T> = T extends Promise<infer R> ? TFlatPromise<R> : Pro
 
 export type ReverseArray<T extends any[], L = TLength<T>, R extends any[] = []> =
   L extends TLength<[]> ? R : T extends [infer H, ...infer E] ? ReverseArray<E, TLength<E>, TPrepend<H, R>> : [];
+
+export type TRequired<T, K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;

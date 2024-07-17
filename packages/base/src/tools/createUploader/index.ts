@@ -1,10 +1,9 @@
-import { warning } from '@com/warning';
-
 import { createPool, PoolType } from '../createPool';
 import { createWorkerFunc, WorkerFuncs } from '../createWorkerFunc';
-
-import { createLinkByString, getArraySlice, getRandomString, getType, isBlob, isFile, isUrl } from '@/utils';
-import { TObject } from '@/types/base';
+import { createLinkByString, getArraySlice, getRandomString, isBlob, isFile, isUrl } from '../../utils';
+import { TObject } from '../../types/base';
+import { warning } from '../../common/warning';
+import { getType } from '../../cirDep';
 
 // 允许的上传请求体格式
 const ALLOWED_DATA_TYPES = ['FormData', 'binary'];

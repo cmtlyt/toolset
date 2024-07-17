@@ -1,1 +1,8 @@
 # @cmtlyt/storage
+
+### v0.1.0
+
+实现基本的存储功能, 支持 localStorage, sessionStorage, IndexedDB, Memory
+对应暴露类: LocalStorage, SessionStorage, IndexedDBStorage, MemoryStorage
+
+存储降级 (浏览器不支持的情况下会进行降级处理): IndexedDB -> localStorage -> sessionStorage -> Memory

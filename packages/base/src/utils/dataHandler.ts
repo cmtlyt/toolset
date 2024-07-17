@@ -1,9 +1,8 @@
-import { warning } from '@com/warning';
-
 import { TObject } from '../types/base';
+import { getType } from '../cirDep';
+import { warning } from '../common/warning';
 
 import { isNull } from './verify';
-import { getType } from './getData';
 
 type GetArray<T> = T extends any[] ? T : T[];
 
