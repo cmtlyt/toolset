@@ -11,3 +11,5 @@ dist/
 .vscode/
 
 doc_build/
+
+coverage/

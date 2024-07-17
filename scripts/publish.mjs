@@ -269,7 +269,7 @@ async function selectPublishPkgs(pkgMap) {
 }
 
 (async function main() {
-  await checkPassword();
+  // await checkPassword();
 
   await checkLocalCommitStatus();
 
