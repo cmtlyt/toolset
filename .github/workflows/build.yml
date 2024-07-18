@@ -22,7 +22,7 @@ jobs:
       - name: Install PNPM
         uses: pnpm/action-setup@v4
         with:
-          version: 9.4.0
+          version: 9.5.0
 
       - name: Install Deps
         run: pnpm i --no-frozen-lockfile
