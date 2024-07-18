@@ -1,7 +1,6 @@
 // @ts-nocheck
 import { describe, expect, it } from 'vitest';
-// import { Calculator } from '../src/tools/calculator';
-import { Calculator } from '../dist/index.esm.js';
+import { Calculator } from '../src/tools/calculator';
 
 describe('calculator', () => {
   const calc = new Calculator();
