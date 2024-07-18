@@ -215,9 +215,15 @@ async function fetchWorkspaceVersion(pkgFile) {
 }
 
 async function rollbackWorkspacePaddingPackage(fetchPkgFiles) {
-  fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
-    fs.writeFileSync(pkgPath, pkgOldFile);
-  });
+  try {
+    fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
+      fs.writeFileSync(pkgPath, pkgOldFile);
+    });
+  } catch (e) {
+    console.log(chalk.red('--- 出错了 ---'));
+    console.log(e);
+    console.log(fetchPkgFiles);
+  }
 }
 
 async function publish(pkgFiles) {
@@ -230,7 +236,6 @@ async function publish(pkgFiles) {
 
   const action = async (pkgFile, reInputCode = false) => {
     const fetchPkgFile = fetchWorkspaceVersion(pkgFile);
-    fetchPkgFiles.push(fetchPkgFile);
     const { name, version } = readJsonFile(pkgFile);
     changePwd(pkgFile);
     if (reInputCode) {
@@ -242,6 +247,7 @@ async function publish(pkgFiles) {
       if (!opt) exportError('OTP 码错误');
       optCode = opt;
     } else {
+      fetchPkgFiles.push(fetchPkgFile);
       console.log(chalk.blue(`开始打包 ${name}@${version}`));
       console.time(`build ${name}@${version}`);
       await execCommand(`npm run build`);
