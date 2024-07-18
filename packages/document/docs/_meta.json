@@ -10,6 +10,11 @@
     "activeMatch": "^/wiki/"
   },
   {
+    "text": "日常",
+    "link": "daily/index",
+    "activeMatch": "^/daily/"
+  },
+  {
     "text": "工具包",
     "link": "/packages/index",
     "activeMatch": "^/packages/",
