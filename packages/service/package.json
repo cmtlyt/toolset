@@ -1,8 +1,8 @@
 {
-  "name": "@cmtlyt/json-schema",
+  "name": "@cmtlyt/service",
   "type": "module",
-  "version": "0.3.2",
-  "description": "json schema 处理相关方法",
+  "version": "0.0.0",
+  "description": "cmtlyt的基础工具库",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
   "exports": {
@@ -18,10 +18,7 @@
   },
   "keywords": [
     "cmtlyt",
-    "json-schema",
-    "verify",
-    "generator",
-    "mock",
+    "service",
     "基础工具库"
   ],
   "author": {
@@ -40,19 +37,21 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cmtlyt/toolset/",
-    "directory": "packages/jsonSchema"
+    "directory": "packages/service"
   },
   "clPublish": {
     "checkDir": [
       "src/**/*.ts"
     ]
   },
-  "homepage": "https://cmtlyt.github.io/toolset/packages/jsonSchema/",
+  "homepage": "https://cmtlyt.github.io/toolset/packages/service/",
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues",
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
-    "@cmtlyt/base": "workspace:../base"
+    "@cmtlyt/base": "workspace:*",
+    "@cmtlyt/json-schema": "workspace:*",
+    "@cmtlyt/storage": "workspace:*"
   }
 }

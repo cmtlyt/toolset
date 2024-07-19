@@ -8,6 +8,11 @@
 - 校验
 - mock
 
+### v0.3.2
+
+新增工具方法 typeObjectToSchema 用于将 `{ aaa: 'string', bbb: 'number' }` 类似对象转换为 json schema
+修复数组非值 (0, '', ...) 生成scheam失败问题
+
 ### v0.3.1
 
 修订类型文件指向

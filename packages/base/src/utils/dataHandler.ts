@@ -1,6 +1,7 @@
 import { TObject } from '../types/base';
 import { getType } from '../cirDep';
 import { warning } from '../common/warning';
+import { STATIC_TYPE } from '../common/constant';
 
 import { isNull } from './verify';
 
@@ -23,7 +24,7 @@ export function getArraySlice<T>(array: T[], size = 0, skip = 0): T[][] {
 }
 
 export function deepClone<T extends TObject<any>>(obj: T, hash = new WeakMap()): T {
-  if (obj === null || typeof obj !== 'object') return obj;
+  if (obj === null || typeof obj !== 'object' || STATIC_TYPE.includes(getType(obj))) return obj;
   if (hash.has(obj)) return hash.get(obj);
 
   const newObj: TObject<any> = Array.isArray(obj) ? [] : {};
@@ -37,24 +38,27 @@ export function deepClone<T extends TObject<any>>(obj: T, hash = new WeakMap()):
 }
 
 function _merge(target: any, source: any) {
-  if (getType(target) !== getType(source)) {
+  const targetType = getType(target);
+  if (STATIC_TYPE.includes(targetType)) return target;
+  if (targetType !== getType(source)) {
+    if (STATIC_TYPE.includes(getType(source))) return source;
     warning('传入的两个参数类型不同,无法合并');
     return target;
   }
-  if (typeof target === 'string' || typeof target === 'number') return target + source;
+  if (targetType === 'string' || targetType === 'number') return target + source;
   if (Array.isArray(target)) return target.concat(source);
-  if (typeof target === 'object' && target !== null) {
+  if (targetType === 'object') {
     for (const key in source) {
       const item = source[key];
       let current = target[key] ?? item;
-      if (typeof item === 'object' && item !== null) {
-        current = target[key] || Array.isArray(item) ? [] : {};
+      if (!STATIC_TYPE.includes(getType(current)) && typeof item === 'object' && item !== null) {
+        current = target[key] || (Array.isArray(item) ? [] : {});
         current = _merge(current, item);
       }
       target[key] = current;
     }
   }
-  return target;
+  return target || source;
 }
 
 export function merge(target: any, ...source: any[]) {

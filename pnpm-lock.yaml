@@ -149,6 +149,18 @@ importers:
 
   packages/monitor: {}
 
+  packages/service:
+    dependencies:
+      '@cmtlyt/base':
+        specifier: workspace:*
+        version: link:../base
+      '@cmtlyt/json-schema':
+        specifier: workspace:*
+        version: link:../jsonSchema
+      '@cmtlyt/storage':
+        specifier: workspace:*
+        version: link:../storage
+
   packages/storage:
     dependencies:
       '@cmtlyt/base':
