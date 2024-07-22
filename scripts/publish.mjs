@@ -7,6 +7,7 @@ import * as semver from 'semver';
 import fg from 'fast-glob';
 import chalk from 'chalk';
 import prompt from 'prompts';
+import { format } from 'prettier';
 
 function normalizeConfig(config) {
   return {
@@ -19,6 +20,13 @@ function normalizeConfig(config) {
     ...config,
   };
 }
+
+const getPrettierOptions = (() => {
+  let option;
+  return () => {
+    return option || (option = JSON.parse(fs.readFileSync(path.join(path.resolve(), '../.prettierrc.json'), 'utf-8')));
+  };
+})();
 
 const getConfig = (() => {
   const configMap = [
@@ -211,15 +219,17 @@ async function fetchWorkspaceVersion(pkgFile) {
       pkgInfo[depType][pkgName] = `^${pkgVersion}`;
     });
   }
-  fs.writeFileSync(pkgFile, JSON.stringify(pkgInfo, null, 2));
+  fs.writeFileSync(pkgFile, await format(JSON.stringify(pkgInfo, null, 2), getPrettierOptions()));
   return [pkgInfo.name, pkgFile, readJsonFile(pkgFile, true)];
 }
 
 async function rollbackWorkspacePaddingPackage(fetchPkgFiles) {
   try {
-    fetchPkgFiles.forEach(([, pkgPath, pkgOldFile]) => {
-      fs.writeFileSync(pkgPath, pkgOldFile);
-    });
+    for (const key in fetchPkgFiles) {
+      const [, pkgPath, pkgOldFile] = fetchPkgFiles[key];
+      const formatFile = await format(pkgOldFile, getPrettierOptions());
+      fs.writeFileSync(pkgPath, formatFile);
+    }
   } catch (e) {
     console.log(chalk.red('--- 出错了 ---'));
     console.log(e);
