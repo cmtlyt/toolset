@@ -1,18 +1,3 @@
-/**
- * 请求拦截 - 发送请求前, 获取响应后
- * 通过配置生成api
- *
- * 支持配置项:
- * - 接口地址
- * - 请求方法
- * - 请求参数类型
- * - 默认请求参数
- * - 接口拦截
- * - 请求头
- * - 是否缓存
- * - 缓存时间
- */
-
 import { cacheByReturn, cloneMerge } from '@cmtlyt/base';
 import { typeObjectToSchema } from '@cmtlyt/json-schema';
 
@@ -86,6 +71,7 @@ export class Service {
 
   batchCreateService<T extends Record<string, APIConfig>>(config: T): ServiceMethods<T> {
     const _config = this.#configurePreprocessing(config);
+    console.log(_config);
     return this.#createService(_config) as any;
   }
 }

@@ -108,3 +108,13 @@ export function generateClassName(...args: GCArgs[]) {
  * @alias generateClassName
  */
 export const gc = generateClassName;
+
+export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (reason?: any) => void) => any) {
+  let resolve: (value: T) => void, reject: (reason?: any) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+    func?.(res, rej);
+  });
+  return { resolve, reject, promise };
+}

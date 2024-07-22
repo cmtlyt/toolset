@@ -1,7 +1,7 @@
 import { Service } from '.';
 
 const service = new Service({
-  base: 'https://localhost:3000/',
+  base: 'http://localhost:3300/',
   // dataType: {
   //   aaa: 'string',
   //   ccc: 'number',
@@ -28,6 +28,9 @@ const service = new Service({
 const api = service.batchCreateService({
   test: {
     api: '/test',
+    cache: {
+      cacheTime: 1000,
+    },
     dataType: {
       array: [{ a: 'number' }],
       array2: ['number'],
@@ -44,6 +47,7 @@ const api = service.batchCreateService({
     headers: {
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
     interceptors: {
       request: (config) => {
         config.headers['Content-Type'] = 'application/json';
@@ -55,5 +59,22 @@ const api = service.batchCreateService({
 });
 
 api.test({ aaa: '1' }).then(console.log, console.error);
+api.test({ aaa: '1' }).then(console.log, console.error);
+api.test({ aaa: '1' }).then(console.log, console.error);
+api.test({ aaa: '1' }).then(console.log, console.error);
+api
+  .test({ aaa: '1' })
+  .then(console.log, console.error)
+  .then(() => {
+    api.test({ aaa: '1' }).then(console.log, console.error);
+    api
+      .test({ aaa: '2' })
+      .then(console.log, console.error)
+      .then(() => {
+        api.test({ aaa: '2' }).then(console.log.bind(console, '3'), console.error);
+      });
+    api.test({ aaa: '1' }).then(console.log, console.error);
+    api.test({ aaa: '2' }).then(console.log, console.error);
+  });
 
 api.postTest(new FormData()).then(console.log, console.error);

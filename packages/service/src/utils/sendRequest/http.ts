@@ -1,6 +1,6 @@
 import { getType } from '@cmtlyt/base';
 
-import { FinialRequestConfig } from '../../types';
+import { FinialRequestConfig, ResponseConfig } from '../../types';
 
 function getData(data) {
   if (getType(data) === 'object' || Array.isArray(data)) {
@@ -9,15 +9,44 @@ function getData(data) {
   return data;
 }
 
+function parseResponseHeaders(headerStr: string) {
+  return headerStr
+    .split('\r\n')
+    .filter((line) => line)
+    .reduce((headers, line) => {
+      const [key, value] = line.split(': ');
+      headers[key] = value;
+      return headers;
+    }, {});
+}
+
+function tryParseResponse(response: ResponseConfig) {
+  // todo
+  return response;
+}
+
+function getResponse(xhr: XMLHttpRequest) {
+  return {
+    headers: parseResponseHeaders(xhr.getAllResponseHeaders()),
+    data: xhr.responseText,
+    status: xhr.status,
+    statusText: xhr.statusText,
+    timestamp: Date.now(),
+  };
+}
+
 export const getHttpRequest = () => {
   return function (config: FinialRequestConfig & { data: any }) {
-    const { method, data, headers, url } = config;
+    const { method, data, withCredentials, headers, url } = config;
     const xhr = new XMLHttpRequest();
-    return new Promise((resolve, reject) => {
+    xhr.withCredentials = !!withCredentials || true;
+    return new Promise<ResponseConfig>((resolve, reject) => {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            resolve(xhr.responseText);
+            const response = { method, requestConfig: config, ...getResponse(xhr) };
+            const parseResponse = tryParseResponse(response);
+            resolve(parseResponse);
           }
         }
       };

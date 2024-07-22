@@ -11,14 +11,25 @@ interface RequestConfig {
 export interface FinialRequestConfig {
   url: URL;
   headers: Record<string, string>;
-  method: string;
+  method: MethodType;
   query: Record<string, any>;
   cache: CahceInfo;
+  withCredentials: boolean;
+}
+
+export interface ResponseConfig {
+  data: any;
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  method: MethodType;
+  requestConfig: FinialRequestConfig & TObject<any>;
+  timestamp: number;
 }
 
 interface Interceptors {
   request?: (config: RequestConfig) => Partial<FinialRequestConfig & TObject<any>> | false;
-  response?: (response: any, config: FinialRequestConfig & TObject<any>) => any;
+  response?: (response: ResponseConfig) => any;
 }
 
 type Headers = TObject<string> | ((header: TObject<string>) => TObject<string>);
@@ -65,6 +76,7 @@ export interface BaseAPIConfig {
   interceptors?: Interceptors;
   headers?: Headers;
   cache?: CahceInfo;
+  withCredentials?: boolean;
   requestHandler?: (config: FinialRequestConfig & TObject<any>) => Promise<any>;
 }
 

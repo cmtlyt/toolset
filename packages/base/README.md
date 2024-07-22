@@ -17,6 +17,8 @@
 
 修复 merge 函数逻辑错误
 
+新增 withResolvers 可同步获取 resolve, reject 和 promise 实例, 通常用于需要在外部完成 promise 的场景
+
 ### v0.7.0
 
 扩展更多工具类型
