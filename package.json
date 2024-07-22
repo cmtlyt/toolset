@@ -11,7 +11,7 @@
     "dev:doc": "turbo dev:doc",
     "build:doc": "turbo build:doc",
     "lint": "eslint --ext js,jsx,tsx,ts --fix",
-    "deploy": "node scripts/publish.mjs"
+    "deploy": "node scripts/publish.mjs -c -s"
   },
   "keywords": [],
   "author": {

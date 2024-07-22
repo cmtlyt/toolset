@@ -146,6 +146,7 @@ async function checkLocalCommitStatus() {
 
 async function searchPkgVersionFormNpm(pkgFile) {
   const pkgInfo = readJsonFile(pkgFile);
+  if (pkgInfo.version === '0.0.0') return [, pkgInfo.version];
   const [stdout] = await execCommand(`npm search ${pkgInfo.name} --json --registry https://registry.npmjs.org/`);
   const npmPkgSearchResults = JSON.parse(stdout);
   const npmPkgInfo = npmPkgSearchResults.find((info) => info.name === pkgInfo.name);
@@ -154,8 +155,8 @@ async function searchPkgVersionFormNpm(pkgFile) {
 
 async function checkVersionUpgrade(pkgFile) {
   const [stdout] = await execCommand(`git diff HEAD^ HEAD -- ${pkgFile}`);
-  const reg = /(-\s+"version":\s*"(.*?)")?.*?\+\s+"version":\s*"(.*?)"/s;
-  let [, oldVersion, , newVersion] = reg.exec(stdout) || [];
+  const reg = /(-\s+"version":\s*"(.*?)").*?\+\s+"version":\s*"(.*?)"/s;
+  let [, , oldVersion, newVersion] = reg.exec(stdout) || [];
   if (!oldVersion || !newVersion) {
     [oldVersion, newVersion] = await searchPkgVersionFormNpm(pkgFile);
     if (!newVersion || newVersion === '0.0.0') return false;
