@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/service",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "cmtlyt的基础请求库",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",

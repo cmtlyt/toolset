@@ -264,3 +264,26 @@ export const sleepSync = (time: number) => {
 export function reverseArgs<F extends TAnyFunc>(callback: F) {
   return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback.apply(null, args.reverse());
 }
+
+export function tryCallFunc<F extends TAnyFunc>(
+  runner: F,
+  catcher?: (e: any) => void,
+): TFunc<Parameters<F>, ReturnType<F>> {
+  return (...args: Parameters<F>) => {
+    try {
+      return runner.apply(null, args);
+    } catch (e) {
+      if (catcher) catcher(e);
+      throw e;
+    }
+  };
+}
+
+export function tryCall<F extends TAnyFunc>(runner: F, catcher?: (e: any) => void): ReturnType<F> {
+  try {
+    return runner();
+  } catch (e) {
+    if (catcher) catcher(e);
+    throw e;
+  }
+}

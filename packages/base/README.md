@@ -13,6 +13,13 @@
 - (CV) 常量
 - -> 别名
 
+### v0.7.2
+
+新增
+
+- tryCall
+- tryCallFunc
+
 ### v0.7.1
 
 修复 merge 函数逻辑错误

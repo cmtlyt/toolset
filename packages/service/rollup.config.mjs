@@ -7,7 +7,7 @@ import terser from '@rollup/plugin-terser';
 export default defineConfig({
   input: 'src/index.ts',
   output: [
-    { name: 'ClBase', format: 'umd', esModule: true, file: 'dist/index.umd.js' },
+    { name: 'ClService', format: 'umd', esModule: true, file: 'dist/index.umd.js' },
     { format: 'esm', esModule: true, file: 'dist/index.esm.js' },
   ],
   plugins: [
