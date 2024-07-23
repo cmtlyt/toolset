@@ -201,7 +201,7 @@ async function checkPassword() {
 }
 
 function formatJson(json) {
-  return json + '\n';
+  return json.trimEnd() + '\n';
 }
 
 async function fetchWorkspaceVersion(pkgFile) {
