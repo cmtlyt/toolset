@@ -1,6 +1,7 @@
-import { getType } from '@cmtlyt/base';
+import { getType, withResolvers } from '@cmtlyt/base';
 
-import { FinialRequestConfig, ResponseConfig } from '../../types';
+import { FinialRequestConfig } from '../../types';
+import { tryParseResponse } from '../tryParseResponse';
 
 function getData(data) {
   if (getType(data) === 'object' || Array.isArray(data)) {
@@ -15,20 +16,15 @@ function parseResponseHeaders(headerStr: string) {
     .filter((line) => line)
     .reduce((headers, line) => {
       const [key, value] = line.split(': ');
-      headers[key] = value;
+      headers[key.toLowerCase()] = value;
       return headers;
     }, {});
-}
-
-function tryParseResponse(response: ResponseConfig) {
-  // todo
-  return response;
 }
 
 function getResponse(xhr: XMLHttpRequest) {
   return {
     headers: parseResponseHeaders(xhr.getAllResponseHeaders()),
-    data: xhr.responseText,
+    data: xhr.response,
     status: xhr.status,
     statusText: xhr.statusText,
     timestamp: Date.now(),
@@ -40,27 +36,32 @@ export const getHttpRequest = () => {
     const { method, data, withCredentials, headers, url } = config;
     const xhr = new XMLHttpRequest();
     xhr.withCredentials = !!withCredentials || true;
-    return new Promise<ResponseConfig>((resolve, reject) => {
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            const response = { method, requestConfig: config, ...getResponse(xhr) };
-            const parseResponse = tryParseResponse(response);
-            resolve(parseResponse);
-          }
+
+    xhr.responseType = 'blob';
+
+    const { resolve, reject, promise } = withResolvers();
+
+    xhr.onreadystatechange = async () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const response = { method, requestConfig: config, ...getResponse(xhr) };
+          const parseResponse = await tryParseResponse(response);
+          resolve(parseResponse);
         }
-      };
-      xhr.onerror = reject;
-      xhr.open(method, url);
-      Object.keys(headers || {}).forEach((key) => {
-        xhr.setRequestHeader(key, headers[key]);
-      });
-      if (method === 'GET') {
-        Object.keys(data || {}).forEach((key) => {
-          url.searchParams.set(key, data[key]);
-        });
       }
-      xhr.send(method === 'GET' ? null : getData(data));
+    };
+    xhr.onerror = reject;
+    if (method === 'GET') {
+      Object.keys(data || {}).forEach((key) => {
+        url.searchParams.set(key, data[key]);
+      });
+    }
+    xhr.open(method, url);
+    Object.keys(headers || {}).forEach((key) => {
+      xhr.setRequestHeader(key, headers[key]);
     });
+    xhr.send(method === 'GET' ? null : getData(data));
+
+    return promise;
   };
 };

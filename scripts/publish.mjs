@@ -23,8 +23,12 @@ function normalizeConfig(config) {
 
 const getPrettierOptions = (() => {
   let option;
+  const root = process.cwd();
   return () => {
-    return option || (option = JSON.parse(fs.readFileSync(path.join(path.resolve(), '../.prettierrc.json'), 'utf-8')));
+    return (
+      option ||
+      (option = { parser: 'json', ...JSON.parse(fs.readFileSync(path.resolve(root, './.prettierrc'), 'utf-8')) })
+    );
   };
 })();
 
@@ -196,6 +200,10 @@ async function checkPassword() {
   if (!(await argon2.verify(passHash, password))) return exportError('密码错误');
 }
 
+function formatJson(json) {
+  return json + '\n';
+}
+
 async function fetchWorkspaceVersion(pkgFile) {
   const pkgVerMap = { dependencies: [], devDependencies: [] };
   const pkgInfo = readJsonFile(pkgFile);
@@ -219,7 +227,7 @@ async function fetchWorkspaceVersion(pkgFile) {
       pkgInfo[depType][pkgName] = `^${pkgVersion}`;
     });
   }
-  fs.writeFileSync(pkgFile, await format(JSON.stringify(pkgInfo, null, 2), getPrettierOptions()));
+  fs.writeFileSync(pkgFile, formatJson(JSON.stringify(pkgInfo, null, 2)));
   return [pkgInfo.name, pkgFile, readJsonFile(pkgFile, true)];
 }
 
@@ -227,7 +235,7 @@ async function rollbackWorkspacePaddingPackage(fetchPkgFiles) {
   try {
     for (const key in fetchPkgFiles) {
       const [, pkgPath, pkgOldFile] = fetchPkgFiles[key];
-      const formatFile = await format(pkgOldFile, getPrettierOptions());
+      const formatFile = formatJson(pkgOldFile);
       fs.writeFileSync(pkgPath, formatFile);
     }
   } catch (e) {
@@ -246,7 +254,7 @@ async function publish(pkgFiles) {
   const fetchPkgFiles = [];
 
   const action = async (pkgFile, reInputCode = false) => {
-    const fetchPkgFile = fetchWorkspaceVersion(pkgFile);
+    const fetchPkgFile = await fetchWorkspaceVersion(pkgFile);
     const { name, version } = readJsonFile(pkgFile);
     changePwd(pkgFile);
     if (reInputCode) {

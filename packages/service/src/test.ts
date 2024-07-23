@@ -26,6 +26,12 @@ const service = new Service({
 });
 
 const api = service.batchCreateService({
+  getImage: {
+    api: '/uploads/receivedFile.png',
+    defaultQuery: {
+      aaa: '123',
+    },
+  },
   test: {
     api: '/test',
     cache: {
@@ -78,3 +84,12 @@ api
   });
 
 api.postTest(new FormData()).then(console.log, console.error);
+
+api.getImage().then((res) => {
+  console.log(res);
+  const { data } = res;
+  const url = URL.createObjectURL(data);
+  const img = new Image();
+  img.src = url;
+  document.body.appendChild(img);
+}, console.error);
