@@ -21,5 +21,6 @@
   { "name": "Turbo", "label": "Turbo" },
   "CI_CD",
   "dataType",
-  "ConstructorMethod"
+  "ConstructorMethod",
+  "WebRTC"
 ]
