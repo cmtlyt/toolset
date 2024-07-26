@@ -80,7 +80,7 @@ export function Call(func: TAnyFunc, ctx: any, args: any[] = []) {
   return func.apply(ctx, args);
 }
 
-function IsCallable(func: any) {
+export function IsCallable(func: any) {
   return typeof func === 'function';
 }
 

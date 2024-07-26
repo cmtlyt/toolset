@@ -6,6 +6,7 @@ import {
   CreateDataPropertyOrThrow,
   GetIterator,
   GetMethod,
+  IsCallable,
   IsConstructor,
 } from './utils';
 
@@ -28,11 +29,7 @@ export async function arrayFromAsync<T = any>(
     try {
       // a & b: Check and handle mapfn
       const mapping =
-        typeof mapfn === 'undefined'
-          ? false
-          : typeof mapfn === 'function'
-            ? true
-            : throwTypeError('mapfn is not callable');
+        typeof mapfn === 'undefined' ? false : IsCallable(mapfn) ? true : throwTypeError('mapfn is not callable');
 
       let iteratorRecord;
 
