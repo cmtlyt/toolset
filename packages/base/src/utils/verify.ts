@@ -121,3 +121,16 @@ export function caniuse(feature: keyof typeof window): boolean {
   if (typeof window === 'undefined') return false;
   return typeof window[feature] !== 'undefined';
 }
+
+export function isConstructor(obj: any) {
+  if (!(obj instanceof Object)) return false;
+  if (typeof Object.getPrototypeOf(obj).constructor === 'function') return true;
+  return false;
+}
+
+export function isArrayLike(data: any) {
+  if (Array.isArray(data)) return true;
+  if (data instanceof String) return true;
+  if (data && typeof data === 'object' && typeof data.length === 'number') return true;
+  return false;
+}

@@ -11,7 +11,17 @@
 - (F) 函数
 - (I) 接口
 - (CV) 常量
+- (T) 类型
 - -> 别名
+
+### v0.7.3
+
+新增
+
+- (F) isConstructor
+- (F) isArrayLike
+- (T) TPromiseConstructor
+- (T) TConstructor
 
 ### v0.7.2
 

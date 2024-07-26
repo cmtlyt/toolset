@@ -149,6 +149,12 @@ importers:
 
   packages/monitor: {}
 
+  packages/polyfill:
+    dependencies:
+      '@cmtlyt/base':
+        specifier: workspace:../base
+        version: link:../base
+
   packages/service:
     dependencies:
       '@cmtlyt/base':

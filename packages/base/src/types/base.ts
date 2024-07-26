@@ -46,6 +46,13 @@ export type ReverseArray<T extends any[], L = TLength<T>, R extends any[] = []> 
 
 export type TRequired<T, K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
+export type TConstructor<R, A extends any[] = any[]> = new (...args: A) => R;
+
+export type TPromiseConstructor<T> = TConstructor<
+  Promise<T>,
+  [func: (resolve: (data: T) => void, reject: TFunc<any, void>) => any]
+>;
+
 export type TAllType =
   | 'string'
   | 'number'
