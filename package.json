@@ -34,6 +34,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rspress/shared": "^1.26.3",
     "@types/node": "^20.14.9",
     "@types/prettier": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",

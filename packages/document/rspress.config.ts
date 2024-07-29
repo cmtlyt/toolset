@@ -60,6 +60,8 @@ const config: any = defineConfig({
         content: 'cmt_lyt',
       },
     ],
+    lastUpdated: true,
+    lastUpdatedText: '最后更新',
     nextPageText: '下一页',
     prevPageText: '上一页',
     hideNavbar: 'never',
@@ -68,6 +70,7 @@ const config: any = defineConfig({
     searchPlaceholderText: '搜索',
     outlineTitle: '目录',
   },
+  head: [['link', { rel: 'manifest', href: '/toolset/manifest.json' }]],
   plugins: [
     pluginPreview({ defaultRenderMode: 'pure' }),
     pluginPlayground({
