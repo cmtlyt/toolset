@@ -144,3 +144,109 @@ export async function asyncFilter<T>(
     Boolean,
   );
 }
+
+export async function streamToString(stream: ReadableStream) {
+  const reader = stream.getReader();
+  const chunks = [];
+  let result = '';
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    chunks.push(value);
+  }
+
+  const decoder = new TextDecoder('utf-8');
+  for (const chunk of chunks) {
+    result += decoder.decode(chunk);
+  }
+  result += decoder.decode();
+
+  return result;
+}
+
+export async function streamToArrayBuffer(stream: ReadableStream) {
+  const reader = stream.getReader();
+  const chunks = [];
+  let totalSize = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      break;
+    }
+    chunks.push(value);
+    totalSize += value.byteLength;
+  }
+
+  const arrayBuffer = new ArrayBuffer(totalSize);
+  let offset = 0;
+  for (const chunk of chunks) {
+    const chunkArray = new Uint8Array(chunk);
+    const destArray = new Uint8Array(arrayBuffer, offset, chunkArray.length);
+    destArray.set(chunkArray);
+    offset += chunkArray.length;
+  }
+
+  return arrayBuffer;
+}
+
+export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
+}
+
+export function base64StringToUint8Array(base64String: string) {
+  const binaryString = atob(base64String);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+export function stringToStream(source: string) {
+  const encoder = new TextEncoder();
+  const stringStream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(source));
+      controller.close();
+    },
+  });
+  return stringStream;
+}
+
+export function stringToBinary(source: string) {
+  const encoder = new TextEncoder();
+  return encoder.encode(source);
+}
+
+export function binaryToString(binary: AllowSharedBufferSource) {
+  const decoder = new TextDecoder();
+  return decoder.decode(binary);
+}
+
+export async function streamToBase64String(stream: ReadableStream) {
+  const arrayBuffer = await streamToArrayBuffer(stream);
+  return arrayBufferToBase64String(arrayBuffer);
+}
+
+export function arrayBufferToStream(source: AllowSharedBufferSource) {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(source);
+      controller.close();
+    },
+  });
+  return stream;
+}
+
+export function base64StringToStream(source: string) {
+  const uint8Array = base64StringToUint8Array(source);
+  const stream = arrayBufferToStream(uint8Array);
+  return stream;
+}

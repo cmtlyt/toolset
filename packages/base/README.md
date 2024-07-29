@@ -14,6 +14,21 @@
 - (T) 类型
 - -> 别名
 
+### v0.8.0
+
+新增一组数据转换方法
+
+- (F) streamToString
+- (F) stringToStream
+- (F) stringToBinary
+- (F) binaryToString
+- (F) arrayBufferToBase64String
+- (F) base64StringToUint8Array
+- (F) streamToBase64String
+- (F) base64StringToStream
+- (F) streamToArrayBuffer
+- (F) base64StringToStream
+
 ### v0.7.3
 
 新增

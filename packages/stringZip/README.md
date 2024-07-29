@@ -2,6 +2,10 @@
 
 字符串字典压缩
 
+### v0.3.0
+
+新增 gzip, unGzip 方法, 如果不支持 gzip 压缩的话则会降级为原来的 **字典压缩**
+
 ### v0.2.0
 
 新增 createZip, createUnzip 方法
