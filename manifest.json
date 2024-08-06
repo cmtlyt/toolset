@@ -3,12 +3,12 @@
   "name": "cmtlyt docuemnt",
   "icons": [
     {
-      "src": "/utils-rabbit.png",
+      "src": "/toolset/utils-rabbit.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/utils-rabbit.png",
+      "src": "/toolset/utils-rabbit.png",
       "sizes": "512x512",
       "type": "image/png"
     }
