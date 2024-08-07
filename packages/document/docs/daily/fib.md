@@ -45,7 +45,7 @@ function fib(n, map = new Map()) {
 
 看似没啥问题了，重新写一个函数，返回一整个斐波那契数列
 
-```JavaScript
+```js
 function fibs(n) {
   const res = [];
   for (let i = 0; i <= n; i++) {
@@ -59,7 +59,7 @@ function fibs(n) {
 
 由于现在有两个函数了，但是对于`fibs` 函数里面的循环中，每次调用`fib` 函数都会实例化一个`map`，但这是放在在外层的，在`fib` 函数引用了外部的`map` 变量（闭包）。
 
-```JavaScript
+```js
 function createFibFunction() {
   const mp = new Map();
 
@@ -86,14 +86,118 @@ function createFibFunction() {
 
 最后，将两个方法进行导出就能提供给外部使用了
 
-```JavaScript
+```js
 const { fib, fibs } = createFibFunction();
 export { fib, fibs };
 ```
 
+## reduce
+
+在reduce中，有点像`for`循环遍历叠加，参数中有四个参数：
+
+| 参数         | 说明                         | 是否必选 |
+| ------------ | ---------------------------- | -------- |
+| total        | 初始值，每次迭代后返回的结果 | ✔️       |
+| currentVal   | 当前遍历到的元素             | ✔️       |
+| currentIndex | 当前遍历到的元素下标         | ❌       |
+| arr          | 当前元素所属的数组对象       | ❌       |
+
+```js
+function fibs(n) {
+  return Array.from({ length: n }).reduce((res, _, index) => {
+    if (index < 2) {
+      res.push(1);
+    } else {
+      res.push(res[index - 1] + res[index - 2]);
+    }
+    return res;
+  }, []);
+}
+```
+
+`Array.from({ length: n })` 是为了构造一个长度为n的数组。
+
+还可以通过增加一个函数来给数组里面每个值赋值：`Array.from({length:9},(_, index)=> index)`
+
+## 生成器
+
+> 迭代器的作用就是可以是数据结构可以通过循环遍历，比如Array、Object、Map和Set。
+>
+> 他们都可以通过调用`next()`方法进行迭代
+
+### 自定义迭代器
+
+在Object中可以自定义实现一个`Symbol.iterator` 来自定义迭代器方法，在`next()`方法中通过返回`{done: 是否终止, value: 返回值}`来判断关闭（没法继续遍历）。
+
+```js
+const obj = {
+  arr: [1, 2, 3, 4, 5],
+  [Symbol.iterator]() {
+    let index = 0;
+    return {
+      arr: this.arr,
+      next() {
+        if (index < 5) {
+          return {
+            value: this.arr[index++],
+            done: false,
+          };
+        }
+        return {
+          value: undefined,
+          done: true,
+        };
+      },
+    };
+  },
+};
+for (let i of obj) {
+  console.log(i);
+}
+```
+
+而生成器就是在`ES6`新增的一个结构，拥有在一个函数块内暂停和恢复代码执行的能力。
+
+在声明生成器只需要在`function`前面加一个`星号(*)`，通过`yield` 关键字进行暂停，通过调用该生成器返回实例的`next()` 方法恢复执行。
+
+```js
+function* fibIterator(n) {
+  let now = 1,
+    next = 1,
+    count = 0;
+  while (true) {
+    yield now;
+    [now, next] = [next, now + next];
+    count++;
+    if (count >= n) {
+      return;
+    }
+  }
+}
+
+function fibs(n) {
+  const iterator = fibIterator(n);
+  const res = [];
+  for (let i of iterator) {
+    res.push(i);
+  }
+  return res;
+}
+```
+
+另外一种解法，利用`take(n)`会给定`n`个迭代次数的迭代器。
+
+```js
+function* fibIterator(i = 1, j = 1) {
+  while (!(yield i)) [i, j] = [j, i + j];
+}
+
+console.log([...fibIterator().take(10)]);
+```
+
 ## 完整code
 
-```JavaScript
+```js
 // getFib.js
 function createFibFunction() {
   const mp = new Map();
@@ -155,42 +259,42 @@ export { fib, fibs };
 
 1. 分别导出
 
-   ```JavaScript
-     export const a = 1;
-     export function test() {
-       console.log('test');
-     }
+   ```js
+   export const a = 1;
+   export function test() {
+     console.log('test');
+   }
 
-     // 引入
-     import {a, test} from './test.js';
+   // 引入
+   import { a, test } from './test.js';
    ```
 
 2. 统一导出
 
-   ```JavaScript
-     const a = 1;
-     function test() {
-       console.log('test');
-     }
-     export { a, test };
+   ```js
+   const a = 1;
+   function test() {
+     console.log('test');
+   }
+   export { a, test };
 
-     // 引入
-     import * as myFunc from './test.js';
-     console.log(myFunc.a); // 1
-     console.log(myFunc.test()); // test
+   // 引入
+   import * as myFunc from './test.js';
+   console.log(myFunc.a); // 1
+   console.log(myFunc.test()); // test
    ```
 
 3. 默认导出
 
-   ```JavaScript
-     function test() {
-       console.log('test');
-     }
-     export default test;
-   
-     // 引入
-     import myFunc from './test.js';
-     console.log(myFunc.test()); // test
+   ```js
+   function test() {
+     console.log('test');
+   }
+   export default test;
+
+   // 引入
+   import myFunc from './test.js';
+   console.log(myFunc.test()); // test
    ```
 
 ## 总结
