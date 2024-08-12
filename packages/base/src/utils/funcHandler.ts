@@ -287,3 +287,13 @@ export function tryCall<F extends TAnyFunc>(runner: F, catcher?: (e: any) => voi
     throw e;
   }
 }
+
+export function onceFunc<T extends TAnyFunc>(func: T): T {
+  let called = false;
+  let result: ReturnType<T> = null;
+  return function (...args) {
+    if (called) return result;
+    called = true;
+    return (result = func.apply(null, args));
+  } as T;
+}
