@@ -17,6 +17,10 @@ writeFileSync('storage/test.txt', 'test');
 
 ## 更新日志
 
+### v0.1.1
+
+修复 vite 设置 base 后导致资源类型错误问题
+
 ### v0.1.0
 
 提供 buildContainerPlugin / injectSourcePlugin 两个插件
