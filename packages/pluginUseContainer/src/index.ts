@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { gzipSync } from 'zlib';
+import { fileURLToPath } from 'url';
 
 import { Plugin, UserConfig, mergeConfig, build, normalizePath } from 'vite';
 import type { PluginContext } from 'rollup';
@@ -15,7 +16,8 @@ interface ConfigStore {
   runningPath: string;
 }
 
-const __dirname = import.meta.dirname;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function getDirTree(dir: string, ignoreFiles: RegExp[] = [], rootDir = dir) {
   const files = fs.readdirSync(dir);
@@ -226,6 +228,7 @@ async function getBuildContainerConfig(
 
 function transformSourceConfig(config: UserConfig, configStore: ConfigStore) {
   return mergeConfig(config, {
+    base: '/',
     build: {
       outDir: normalizePath(path.resolve(configStore.userOutDir, './source')),
     },
@@ -271,6 +274,7 @@ export function buildContainerPlugin(options: BuildContainerOptions = {}): Plugi
     config(config) {
       configStore.userOutDir =
         config.build?.outDir || normalizePath(path.resolve(config.root || runningPath, './dist'));
+      configStore.base = config.base;
       if (!path.isAbsolute(configStore.userOutDir)) {
         configStore.userOutDir = normalizePath(path.resolve(config.root || runningPath, configStore.userOutDir));
       }
@@ -279,7 +283,6 @@ export function buildContainerPlugin(options: BuildContainerOptions = {}): Plugi
     },
     configResolved(config) {
       configStore.root = config.root;
-      configStore.base = config.base;
       configStore.outDir = config.build.outDir;
     },
     async closeBundle(this: PluginContext) {

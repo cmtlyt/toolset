@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/plugin-use-container",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "将使用vite构建的项目运行在容器中",
   "type": "module",
   "main": "./dist/index.js",
@@ -50,14 +50,12 @@
     "容器"
   ],
   "license": "ISC",
-  "engines": {
-    "vite": ">=5.0.0"
+  "peerDependencies": {
+    "vite": "^5.0.0"
   },
   "devDependencies": {
-    "@cmtlyt/storage": "workspace:*",
-    "@cmtlyt/string-zip": "workspace:*"
-  },
-  "dependencies": {
+    "@cmtlyt/storage": "^0.1.1",
+    "@cmtlyt/string-zip": "^0.3.0",
     "@webcontainer/api": "1.3.0-internal.2",
     "vite": "^5.4.0"
   }

@@ -82,7 +82,7 @@ async function runningBackend(container: WebContainer) {
       })();
     });
   }
-  return Promise.reject();
+  return Promise.reject('不需要运行后端');
 }
 
 async function initStorage(container: WebContainer, dbName: string) {
@@ -127,7 +127,7 @@ onceFunc(() => {
       process.output.pipeTo(
         new WritableStream({
           write(chunk) {
-            console.log(chunk);
+            console.debug(chunk);
           },
         }),
       );
@@ -152,7 +152,8 @@ onceFunc(() => {
           frameWindow?.postMessage({ type: 'backend-url', url }, '*');
         },
         (err) => {
-          console.log(err);
+          if (typeof err === 'string') return;
+          console.error(err);
         },
       );
     });
