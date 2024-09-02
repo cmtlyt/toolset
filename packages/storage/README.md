@@ -1,5 +1,9 @@
 # @cmtlyt/storage
 
+### v0.1.1
+
+数据保存使用 gzip 压缩
+
 ### v0.1.0
 
 实现基本的存储功能, 支持 localStorage, sessionStorage, IndexedDB, Memory

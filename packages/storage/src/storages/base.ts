@@ -1,6 +1,6 @@
 import { deepClone, type TObject } from '@cmtlyt/base';
 import { decodeDataSchema, encodeDataSchema } from '@cmtlyt/json-schema';
-import { unzipSync, createZip } from '@cmtlyt/string-zip';
+import { gzip, unGzip } from '@cmtlyt/string-zip';
 
 interface BaseStorageOptions {
   dbName: string;
@@ -11,8 +11,6 @@ interface BaseStorageOptions {
 export type StorageBaseOptions = Partial<BaseStorageOptions>;
 
 export type ExtendStorageBaseOptions<T extends TObject<any> = Record<string, any>> = Partial<BaseStorageOptions> & T;
-
-const zip = createZip({ reuse: true });
 
 function mormalizeConfig(options: Partial<BaseStorageOptions> = {}): BaseStorageOptions {
   return {
@@ -37,7 +35,7 @@ export abstract class BaseStorage {
         try {
           const initialData = await this.init();
           if (typeof initialData === 'string') {
-            this.#_cache = decodeDataSchema(unzipSync(initialData));
+            this.#_cache = decodeDataSchema(await unGzip(initialData));
           } else {
             this.#_cache = initialData || {};
           }
@@ -82,7 +80,7 @@ export abstract class BaseStorage {
   protected autoSave(_data: string): void {}
 
   protected async getDataSchema() {
-    return zip(encodeDataSchema(this.#_cache), this.config.zipKeyLength);
+    return gzip(encodeDataSchema(this.#_cache), this.config.zipKeyLength);
   }
 
   async setItem(key: string, value: any) {
