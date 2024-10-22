@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { gzipSync } from 'zlib';
+import { fileURLToPath } from 'url';
 
 import { Plugin, UserConfig, mergeConfig, build, normalizePath } from 'vite';
 import type { PluginContext } from 'rollup';
@@ -15,7 +16,8 @@ interface ConfigStore {
   runningPath: string;
 }
 
-const __dirname = import.meta.dirname;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function getDirTree(dir: string, ignoreFiles: RegExp[] = [], rootDir = dir) {
   const files = fs.readdirSync(dir);
