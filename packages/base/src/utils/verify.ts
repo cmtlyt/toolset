@@ -2,19 +2,19 @@ import { EMPTY } from '../common/constant';
 import { warning } from '../common/warning';
 import { cacheByReturn, getType, isWeb } from '../cirDep';
 
-export function isNull(value: any): boolean {
+export function isNull(value: any): value is null {
   return typeof value === 'undefined' || (typeof value === 'object' && value === null);
 }
 
-export function isNaN(value: any): boolean {
+export function isNaN(value: any): value is typeof NaN {
   return typeof value === 'number' && value !== value;
 }
 
-export function isNumber(value: any): boolean {
+export function isNumber(value: any): value is number {
   return typeof value === 'number';
 }
 
-export function isPromise(value: any): boolean {
+export function isPromise(value: any): value is Promise<any> {
   return (value || false) && typeof value.then === 'function';
 }
 
@@ -85,15 +85,15 @@ export function isUrl(value: any): boolean {
   );
 }
 
-export function isTrue(value: any): boolean {
+export function isTrue(value: any): value is true {
   return value === true || String(value).toLowerCase() === 'true';
 }
 
-export function isFalse(value: any): boolean {
+export function isFalse(value: any): value is false {
   return value === false || String(value).toLowerCase() === 'false';
 }
 
-export function isAsyncFunc(value: any): boolean {
+export function isAsyncFunc(value: any): value is (...args: any[]) => Promise<any> {
   warning('该方法存在生产环境和开发环境结果不一致风险, 请谨慎使用, 例如使用 babel 转换后 async 函数会变成普通函数');
   return getType(value) === 'asyncfunction';
 }
@@ -133,4 +133,8 @@ export function isArrayLike(data: any) {
   if (data instanceof String) return true;
   if (data && typeof data === 'object' && typeof data.length === 'number') return true;
   return false;
+}
+
+export function isArray(value: any): value is Array<any> {
+  return Array.isArray(value);
 }
