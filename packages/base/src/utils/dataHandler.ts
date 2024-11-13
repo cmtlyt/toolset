@@ -196,12 +196,12 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
 }
 
 export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
-  if (arrayBuffer.byteLength >= 65556) throw new Error('buffer size too large, use arrayBufferToChunkBase64String');
+  if (arrayBuffer.byteLength >= 65556) warning('buffer size too large, use arrayBufferToChunkBase64String');
   return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
 }
 
 export function base64StringToUint8Array(base64String: string) {
-  if (base64String.length >= 65556) throw new Error('base64 size too large, use chunkBase64StringToArrayBuffer');
+  if (base64String.length >= 65556) warning('base64 size too large, use chunkBase64StringToArrayBuffer');
   const binaryString = atob(base64String);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);

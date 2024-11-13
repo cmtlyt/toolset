@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/storage",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "cl存储管理",
   "type": "module",
   "main": "./dist/index.umd.js",
