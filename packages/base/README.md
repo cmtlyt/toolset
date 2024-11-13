@@ -14,6 +14,19 @@
 - (T) 类型
 - -> 别名
 
+### v0.8.3
+
+新增
+
+chunk string 相关方法需要使用对应方法解析
+
+- (F) arrayBufferToChunkBase64String
+- (F) chunkBase64StringToBlob
+- (F) chunkBase64StringToArrayBuffer
+- (F) blobToChunkBase64String
+- (F) streamToChunkBase64String
+- (F) chunkBase64StringToStream
+
 ### v0.8.2
 
 更新 verify 分类下的类型声明, 使 `isNumber`, `isTrue` 等函数能直接断言数据类型

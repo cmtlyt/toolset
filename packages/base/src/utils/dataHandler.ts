@@ -9,7 +9,7 @@ type GetArray<T> = T extends any[] ? T : T[];
 
 export function getArray<T>(value?: T): GetArray<T> {
   if (isNull(value)) return [] as any;
-  return Array.isArray(value) ? value : ([value] as any);
+  return Array.isArray(value) ? (value as any) : ([value] as any);
 }
 
 export function getArraySlice<T>(array: T[], size = 0, skip = 0): T[][] {
@@ -196,10 +196,12 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
 }
 
 export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
+  if (arrayBuffer.byteLength >= 65556) throw new Error('buffer size too large, use arrayBufferToChunkBase64String');
   return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
 }
 
 export function base64StringToUint8Array(base64String: string) {
+  if (base64String.length >= 65556) throw new Error('base64 size too large, use chunkBase64StringToArrayBuffer');
   const binaryString = atob(base64String);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
@@ -207,6 +209,27 @@ export function base64StringToUint8Array(base64String: string) {
     bytes[i] = binaryString.charCodeAt(i);
   }
   return bytes;
+}
+
+export function arrayBufferToChunkBase64String(arrayBuffer: ArrayBuffer) {
+  const chunkSize = 1024 * 10;
+  const base64Chunks = [];
+  let currArrayBuffer = arrayBuffer.slice(base64Chunks.length * chunkSize, base64Chunks.length * chunkSize + chunkSize);
+  while (currArrayBuffer.byteLength > 0) {
+    base64Chunks.push(arrayBufferToBase64String(currArrayBuffer));
+    currArrayBuffer = arrayBuffer.slice(base64Chunks.length * chunkSize, base64Chunks.length * chunkSize + chunkSize);
+  }
+  return base64Chunks.join('|');
+}
+
+export function chunkBase64StringToBlob(base64String: string) {
+  const chunks = base64String.split('|');
+  return new Blob(chunks.map((chunk) => base64StringToUint8Array(chunk)));
+}
+
+export async function chunkBase64StringToArrayBuffer(base64String: string) {
+  const blob = chunkBase64StringToBlob(base64String);
+  return blob.arrayBuffer();
 }
 
 export function stringToStream(source: string) {
@@ -235,6 +258,16 @@ export async function streamToBase64String(stream: ReadableStream) {
   return arrayBufferToBase64String(arrayBuffer);
 }
 
+export async function streamToChunkBase64String(stream: ReadableStream) {
+  const arrayBuffer = await streamToArrayBuffer(stream);
+  return arrayBufferToChunkBase64String(arrayBuffer);
+}
+
+export async function chunkBase64StringToStream(base64: string) {
+  const blob = chunkBase64StringToBlob(base64);
+  return blob.stream();
+}
+
 export function arrayBufferToStream(source: AllowSharedBufferSource) {
   const stream = new ReadableStream({
     start(controller) {
@@ -249,4 +282,9 @@ export function base64StringToStream(source: string) {
   const uint8Array = base64StringToUint8Array(source);
   const stream = arrayBufferToStream(uint8Array);
   return stream;
+}
+
+export async function blobToChunkBase64String(blob: Blob) {
+  const arrayBuffer = await blob.arrayBuffer();
+  return arrayBufferToChunkBase64String(arrayBuffer);
 }

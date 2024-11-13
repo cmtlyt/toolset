@@ -1,8 +1,8 @@
 import {
-  base64StringToStream,
   cacheByReturn,
   caniuse,
-  streamToBase64String,
+  chunkBase64StringToStream,
+  streamToChunkBase64String,
   streamToString,
   stringToStream,
 } from '@cmtlyt/base';
@@ -26,13 +26,14 @@ export async function gzip(source: string, keyLength: number = 6) {
 
   const compressedStream = stringToStream(source).pipeThrough(new CompressionStream('gzip'));
 
-  return streamToBase64String(compressedStream);
+  return streamToChunkBase64String(compressedStream);
 }
 
 export async function unGzip(zipSource: string) {
   if (!caniuse('DecompressionStream') || !caniuseGip()) return unzipSync(zipSource);
 
-  const decompressedStream = base64StringToStream(zipSource).pipeThrough(new DecompressionStream('gzip'));
+  const stream = await chunkBase64StringToStream(zipSource);
+  const decompressedStream = stream.pipeThrough(new DecompressionStream('gzip'));
 
   return streamToString(decompressedStream);
 }
