@@ -269,7 +269,7 @@ async function publish(pkgFiles) {
       fetchPkgFiles.push(fetchPkgFile);
       console.log(chalk.blue(`开始打包 ${name}@${version}`));
       console.time(`build ${name}@${version}`);
-      await execCommand(`npm run build`);
+      await execCommand(`pnpm run build`);
       console.timeEnd(`build ${name}@${version}`);
       console.log(chalk.green(`打包 ${name}@${version} 成功`));
     }
@@ -295,7 +295,12 @@ async function publish(pkgFiles) {
 
   try {
     for (const idx in pkgFiles) {
-      await action(pkgFiles[idx]);
+      const pkgFile = pkgFiles[idx];
+      const { name } = readJsonFile(pkgFile);
+      console.log(chalk.blue(`开始安装 ${name} 依赖`));
+      await execCommand(`pnpm i`);
+      console.log(chalk.blue(`安装 ${name} 依赖成功`));
+      await action(pkgFile);
     }
   } finally {
     await rollbackWorkspacePaddingPackage(fetchPkgFiles);
