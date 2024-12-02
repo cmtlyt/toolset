@@ -18,6 +18,12 @@
     "label": "软件开发流程相关",
     "collapsed": true
   },
+  {
+    "type": "dir",
+    "name": "elpis",
+    "label": "Elpis",
+    "collapsed": true
+  },
   { "name": "Turbo", "label": "Turbo" },
   "CI_CD",
   "dataType",
