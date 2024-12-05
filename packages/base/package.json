@@ -1,14 +1,17 @@
 {
   "name": "@cmtlyt/base",
   "type": "module",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "cmtlyt的基础工具库",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
+  "main": "./dist/index.cjs.js",
+  "unpkg": "./dist/index.umd.js",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
       "default": "./dist/index.umd.js",
+      "require": "./dist/index.cjs.js",
       "types": "./dist/index.d.ts"
     },
     "./*": "./dist/*"

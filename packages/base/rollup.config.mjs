@@ -9,6 +9,7 @@ export default defineConfig({
   output: [
     { name: 'ClBase', format: 'umd', esModule: true, file: 'dist/index.umd.js' },
     { format: 'esm', esModule: true, file: 'dist/index.esm.js' },
+    { format: 'cjs', file: 'dist/index.cjs.js' },
   ],
   plugins: [
     resolve(),

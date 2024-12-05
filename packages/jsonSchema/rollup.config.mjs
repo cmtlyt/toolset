@@ -16,12 +16,11 @@ const plugins = [
 export default defineConfig([
   {
     input: 'src/index.ts',
-    output: [{ format: 'esm', file: 'dist/index.esm.js', esModule: true }],
-    plugins,
-  },
-  {
-    input: 'src/index.ts',
-    output: [{ name: 'ClJsonSchema', format: 'umd', esModule: true, file: 'dist/index.umd.js' }],
+    output: [
+      { name: 'ClJsonSchema', format: 'umd', esModule: true, file: 'dist/index.umd.js' },
+      { format: 'esm', file: 'dist/index.esm.js', esModule: true },
+      { format: 'cjs', file: 'dist/index.cjs.js' },
+    ],
     plugins,
   },
 ]);

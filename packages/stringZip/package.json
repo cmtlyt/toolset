@@ -1,15 +1,17 @@
 {
   "name": "@cmtlyt/string-zip",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "cl字符串数据压缩",
   "type": "module",
-  "main": "./dist/index.umd.js",
+  "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/index.umd.js",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
       "default": "./dist/index.umd.js",
+      "require": "./dist/index.cjs.js",
       "types": "./dist/index.d.ts"
     },
     "./*": "./dist/*"

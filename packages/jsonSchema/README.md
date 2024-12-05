@@ -8,6 +8,10 @@
 - 校验
 - mock
 
+### v0.3.3
+
+单独导出 commonjs 模块
+
 ### v0.3.2
 
 新增工具方法 typeObjectToSchema 用于将 `{ aaa: 'string', bbb: 'number' }` 类似对象转换为 json schema
