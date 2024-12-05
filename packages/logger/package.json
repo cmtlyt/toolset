@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/logger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "cmtlyt的日志输出工具",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
@@ -49,8 +49,5 @@
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues",
     "email": "cmtlyt@163.com"
-  },
-  "dependencies": {
-    "ms": "^2.1.3"
   }
 }

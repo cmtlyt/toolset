@@ -286,9 +286,7 @@ async function publish(pkgFiles) {
       console.log(`发布 ${name} 需要在 ${registryUrl} 登陆, 尝试使用 \`${commandTip} --registry ${registryUrl}\``);
       process.exit(1);
     }
-    if (error) {
-      rollbackWorkspacePaddingPackage(fetchPkgFiles);
-    }
+    rollbackWorkspacePaddingPackage(fetchPkgFiles);
     exportError(error);
     console.log(chalk.green(`发布 ${name}@${version} 成功\n`));
   };
