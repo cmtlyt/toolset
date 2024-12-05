@@ -6,7 +6,6 @@
     "dev:doc": "rspress dev",
     "build:doc": "rspress build"
   },
-  "type": "module",
   "devDependencies": {
     "@rspress/plugin-playground": "^1.25.2",
     "@rspress/plugin-preview": "^1.25.2",

@@ -153,6 +153,12 @@ importers:
         specifier: workspace:../base
         version: link:../base
 
+  packages/logger:
+    dependencies:
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
+
   packages/monitor: {}
 
   packages/pluginUseContainer:

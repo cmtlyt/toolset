@@ -1,7 +1,6 @@
 {
   "name": "@cmtlyt/base",
-  "type": "module",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "cmtlyt的基础工具库",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",

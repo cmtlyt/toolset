@@ -1,6 +1,5 @@
 {
   "name": "@cmtlyt/service",
-  "type": "module",
   "version": "0.1.1",
   "description": "cmtlyt的基础请求库",
   "module": "./dist/index.esm.js",

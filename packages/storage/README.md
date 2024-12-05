@@ -1,5 +1,9 @@
 # @cmtlyt/storage
 
+### v0.1.5
+
+包类型调整
+
 ### v0.1.4
 
 单独导出 commonjs 模块

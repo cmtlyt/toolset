@@ -1,16 +1,14 @@
 {
-  "name": "@cmtlyt/json-schema",
-  "version": "0.3.4",
-  "description": "json schema 处理相关方法",
+  "name": "@cmtlyt/logger",
+  "version": "0.1.0",
+  "description": "cmtlyt的日志输出工具",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",
-  "main": "./dist/index.cjs.js",
   "unpkg": "./dist/index.umd.js",
   "exports": {
     ".": {
       "import": "./dist/index.esm.js",
       "default": "./dist/index.umd.js",
-      "require": "./dist/index.umd.js",
       "types": "./dist/index.d.ts"
     },
     "./*": "./dist/*"
@@ -20,11 +18,9 @@
   },
   "keywords": [
     "cmtlyt",
-    "json-schema",
-    "verify",
-    "generator",
-    "mock",
-    "基础工具库"
+    "logger",
+    "日志输出",
+    "埋点"
   ],
   "author": {
     "name": "cmtlyt",
@@ -42,19 +38,19 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cmtlyt/toolset.git",
-    "directory": "packages/jsonSchema"
+    "directory": "packages/logger"
   },
   "clPublish": {
     "checkDir": [
       "src/**/*.ts"
     ]
   },
-  "homepage": "https://cmtlyt.github.io/toolset/packages/jsonSchema/",
+  "homepage": "https://cmtlyt.github.io/toolset/packages/logger/",
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues",
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
-    "@cmtlyt/base": "workspace:../base"
+    "ms": "^2.1.3"
   }
 }

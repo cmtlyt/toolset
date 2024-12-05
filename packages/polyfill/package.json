@@ -2,7 +2,6 @@
   "name": "@cmtlyt/polyfill",
   "version": "0.1.1",
   "description": "cmtlyt 新特性尝鲜",
-  "type": "module",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",

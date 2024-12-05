@@ -1,8 +1,7 @@
 {
   "name": "@cmtlyt/string-zip",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "cl字符串数据压缩",
-  "type": "module",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
