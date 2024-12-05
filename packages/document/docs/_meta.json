@@ -28,6 +28,11 @@
         "text": "@cmtlyt/json-schema",
         "link": "/packages/jsonSchema",
         "activeMatch": "^/packages/jsonSchema/"
+      },
+      {
+        "text": "@cmtlyt/logger",
+        "link": "/packages/logger",
+        "activeMatch": "^/packages/logger/"
       }
     ]
   }

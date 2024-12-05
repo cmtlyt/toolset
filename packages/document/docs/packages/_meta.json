@@ -1,5 +1,5 @@
 [
-  "index",
+  { "type": "file", "name": "index", "label": "目录" },
   {
     "type": "dir",
     "name": "base",
@@ -7,5 +7,6 @@
     "collapsible": false,
     "collapsed": true
   },
-  "jsonSchema/index"
+  "jsonSchema/index",
+  "logger/index"
 ]
