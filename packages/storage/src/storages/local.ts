@@ -6,6 +6,8 @@ import { SessionStorage } from './session';
 interface LocalStorageOptions extends TRequired<StorageBaseOptions, 'dbName'> {}
 
 export class LocalStorage extends BaseStorage {
+  name = 'LocalStorage';
+
   constructor(options: LocalStorageOptions) {
     if (caniuse('localStorage')) {
       warning('当前浏览器不支持 localStorage, 已自动降级为 SessionStorage');

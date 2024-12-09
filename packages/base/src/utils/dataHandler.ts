@@ -211,6 +211,7 @@ export function base64StringToUint8Array(base64String: string) {
   return bytes;
 }
 
+// TODO 不使用 chunk 方式转换
 export function arrayBufferToChunkBase64String(arrayBuffer: ArrayBuffer) {
   const chunkSize = 1024 * 10;
   const base64Chunks = [];
@@ -222,11 +223,13 @@ export function arrayBufferToChunkBase64String(arrayBuffer: ArrayBuffer) {
   return base64Chunks.join('|');
 }
 
+// TODO 不使用 chunk 方式转换
 export function chunkBase64StringToBlob(base64String: string) {
   const chunks = base64String.split('|');
   return new Blob(chunks.map((chunk) => base64StringToUint8Array(chunk)));
 }
 
+// TODO 不使用 chunk 方式转换
 export async function chunkBase64StringToArrayBuffer(base64String: string) {
   const blob = chunkBase64StringToBlob(base64String);
   return blob.arrayBuffer();
@@ -258,11 +261,13 @@ export async function streamToBase64String(stream: ReadableStream) {
   return arrayBufferToBase64String(arrayBuffer);
 }
 
+// TODO 不使用 chunk 方式转换
 export async function streamToChunkBase64String(stream: ReadableStream) {
   const arrayBuffer = await streamToArrayBuffer(stream);
   return arrayBufferToChunkBase64String(arrayBuffer);
 }
 
+// TODO 不使用 chunk 方式转换
 export async function chunkBase64StringToStream(base64: string) {
   const blob = chunkBase64StringToBlob(base64);
   return blob.stream();
@@ -284,6 +289,7 @@ export function base64StringToStream(source: string) {
   return stream;
 }
 
+// TODO 不使用 chunk 方式转换
 export async function blobToChunkBase64String(blob: Blob) {
   const arrayBuffer = await blob.arrayBuffer();
   return arrayBufferToChunkBase64String(arrayBuffer);

@@ -25,6 +25,8 @@ export abstract class BaseStorage {
   #_cache: Record<string, any> = {};
   #_initPromise: Promise<void>;
 
+  name = 'BaseStorage';
+
   protected config = {} as BaseStorageOptions;
 
   constructor(options?: Partial<BaseStorageOptions>) {

@@ -21,14 +21,17 @@ const caniuseGip = cacheByReturn(() => {
   );
 });
 
+// TODO 提供对 node 环境的支持
 export async function gzip(source: string, keyLength: number = 6) {
   if (!caniuse('CompressionStream') || !caniuseGip()) return zipSync(source, keyLength);
 
   const compressedStream = stringToStream(source).pipeThrough(new CompressionStream('gzip'));
 
+  // TODO 不使用分片方式存储 base64
   return streamToChunkBase64String(compressedStream);
 }
 
+// TODO 提供对 node 环境的支持
 export async function unGzip(zipSource: string) {
   if (!caniuse('DecompressionStream') || !caniuseGip()) return unzipSync(zipSource);
 

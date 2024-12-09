@@ -5,6 +5,8 @@ import { BaseStorage, StorageBaseOptions } from './base';
 interface MemoryStorageOptions extends TExclude<StorageBaseOptions, 'autoSaveDelay'> {}
 
 export class MemoryStorage extends BaseStorage {
+  name = 'MemoryStorage';
+
   constructor(options: MemoryStorageOptions) {
     super({ ...options, autoSaveDelay: 0 });
   }

@@ -1,6 +1,38 @@
 # @cmtlyt/string-zip
 
-字符串字典压缩
+## 介绍
+
+可用于前端环境的字符串压缩, 如果客户端环境不支持 gzip 则会降级为字典压缩
+
+node 环境 暂时不支持使用 gzip
+
+## 安装
+
+npm
+
+```bash
+npm i @cmtlyt/string-zip
+```
+
+yarn
+
+```bash
+yarn add @cmtlyt/string-zip
+```
+
+pnpm
+
+```bash
+pnpm add @cmtlyt/string-zip
+```
+
+### v0.4.0
+
+调整打包策略
+
+- esm 不打包生产依赖
+
+原打包策略会将生产依赖一并打包到输出结果中, 导致依赖模块更新后需要重新打包并发布版本
 
 ### v0.3.4
 

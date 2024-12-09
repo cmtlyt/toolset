@@ -1,11 +1,11 @@
 import { defineConfig } from 'rollup';
 import typescript from 'rollup-plugin-typescript2';
-import resolve from '@rollup/plugin-node-resolve';
+// import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 
 const plugins = [
-  resolve(),
+  // resolve(),
   commonjs(),
   typescript({
     tsconfig: './tsconfig.json',

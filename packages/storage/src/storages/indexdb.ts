@@ -9,6 +9,7 @@ const fieldName = 'value';
 
 export class IndexedDBStorage extends BaseStorage {
   #_db: IDBDatabase;
+  name = 'IndexedDBStorage';
 
   constructor(options: IndexedDBStorageOptions) {
     if (!caniuse('indexedDB')) {

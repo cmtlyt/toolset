@@ -1,6 +1,30 @@
 # @cmtlyt/base
 
+## 简介
+
+cmtlyt 的基础工具库
+
 > README 每次发包才会更新，如果需要看最新的更新日志或文档，请前往 homepage 查看
+
+## 安装
+
+npm
+
+```bash
+npm i @cmtlyt/base
+```
+
+yarn
+
+```bash
+yarn add @cmtlyt/base
+```
+
+pnpm
+
+```bash
+pnpm add @cmtlyt/base
+```
 
 ## 更新日志
 
@@ -13,6 +37,14 @@
 - (CV) 常量
 - (T) 类型
 - -> 别名
+
+### v0.9.0
+
+调整打包策略
+
+- esm 不打包生产依赖
+
+原打包策略会将生产依赖一并打包到输出结果中, 导致依赖模块更新后需要重新打包并发布版本
 
 ### v0.8.6
 
