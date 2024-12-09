@@ -267,11 +267,11 @@ async function publish(pkgFiles) {
       optCode = opt;
     } else {
       fetchPkgFiles.push(fetchPkgFile);
-      console.log(chalk.blue(`开始打包 ${name}@${version}`));
-      console.time(`build ${name}@${version}`);
-      await execCommand(`pnpm run build`);
-      console.timeEnd(`build ${name}@${version}`);
-      console.log(chalk.green(`打包 ${name}@${version} 成功`));
+      // console.log(chalk.blue(`开始打包 ${name}@${version}`));
+      // console.time(`build ${name}@${version}`);
+      // await execCommand(`pnpm run build`);
+      // console.timeEnd(`build ${name}@${version}`);
+      // console.log(chalk.green(`打包 ${name}@${version} 成功`));
     }
     console.log(chalk.blue(`开始发布 ${name}@${version}`));
     const [error] = await execCommand(`npm publish ${optCode ? `--otp=${optCode}` : ''}`, false);
@@ -294,10 +294,10 @@ async function publish(pkgFiles) {
   try {
     for (const idx in pkgFiles) {
       const pkgFile = pkgFiles[idx];
-      const { name } = readJsonFile(pkgFile);
-      console.log(chalk.blue(`开始安装 ${name} 依赖`));
-      await execCommand(`pnpm i`);
-      console.log(chalk.blue(`安装 ${name} 依赖成功`));
+      // const { name } = readJsonFile(pkgFile);
+      // console.log(chalk.blue(`开始安装 ${name} 依赖`));
+      // await execCommand(`pnpm i`);
+      // console.log(chalk.blue(`安装 ${name} 依赖成功`));
       await action(pkgFile);
     }
   } finally {
