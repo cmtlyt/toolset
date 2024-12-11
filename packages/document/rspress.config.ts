@@ -4,12 +4,12 @@ import { defineConfig } from 'rspress/config';
 import { pluginPreview } from '@rspress/plugin-preview';
 import { pluginPlayground } from '@rspress/plugin-playground';
 import readingTime from 'rspress-plugin-reading-time';
-import live2d from 'rspress-plugin-live2d';
+// import live2d from 'rspress-plugin-live2d';
 import ghPages from 'rspress-plugin-gh-pages';
 import fileTree from 'rspress-plugin-file-tree';
 import { globSync } from 'glob';
 
-import live2dModels from './live2d.model.json';
+// import live2dModels from './live2d.model.json';
 
 const resolve = (url: string) => path.resolve(__dirname, url);
 
@@ -75,17 +75,20 @@ const config: any = defineConfig({
     pluginPreview({ defaultRenderMode: 'pure' }),
     pluginPlayground({
       defaultRenderMode: 'pure',
-      include: [['@cmtlyt/base', '@cmtlyt/base']],
+      include: [
+        ['@cmtlyt/base', '@cmtlyt/base'],
+        ['web-vitals', 'web-vitals'],
+      ],
     }),
     readingTime({ defaultLocale: 'zh-CN' }),
-    live2d({
-      dockedPosition: 'left',
-      mobileDisplay: false,
-      sayHello: false,
-      statusBar: {},
-      tips: {},
-      models: live2dModels as any,
-    }),
+    // live2d({
+    //   dockedPosition: 'left',
+    //   mobileDisplay: false,
+    //   sayHello: false,
+    //   statusBar: {},
+    //   tips: {},
+    //   models: live2dModels as any,
+    // }),
     ghPages({ repo: 'https://github.com/cmtlyt/toolset.git', branch: 'document' }),
     fileTree({ initialExpandDepth: 0 }),
   ],

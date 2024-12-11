@@ -121,6 +121,13 @@ importers:
         version: 2.1.3
 
   packages/document:
+    dependencies:
+      '@cmtlyt/base':
+        specifier: ^0.9.0
+        version: 0.9.0
+      web-vitals:
+        specifier: ^4.2.4
+        version: 4.2.4
     devDependencies:
       '@rspress/plugin-playground':
         specifier: ^1.25.2
@@ -400,6 +407,9 @@ packages:
 
   '@cmtlyt/base@0.8.0':
     resolution: {integrity: sha512-82gUdtFe/NAIJBiPEEpA6w0WcAwj+vvjjHeD9UInbK7Ukt2w07wDogZFeI7HrxQiWRjG4X0p2kWWjEUjSkZ7jw==}
+
+  '@cmtlyt/base@0.9.0':
+    resolution: {integrity: sha512-MYlZhMMaQ0MfIM3ooYne/WpWuC6DDuKBa719UFEsvX/SXuAOw5dMXq9euen7adNnlDWKF7TOt/af6slPX7+A/w==}
 
   '@cmtlyt/json-schema@0.3.2':
     resolution: {integrity: sha512-i3q/2RrhheLxKOZM9Wf9WQUBuRVEtLqym3Es1l63SYxmtwETGw6+OzhEgSb/h5SI8RcTJfyIjp+HVwDdUBUoeg==}
@@ -4520,6 +4530,9 @@ packages:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
 
+  web-vitals@4.2.4:
+    resolution: {integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==}
+
   webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
     engines: {node: '>=12'}
@@ -4884,6 +4897,10 @@ snapshots:
       ms: 2.1.3
 
   '@cmtlyt/base@0.8.0':
+    dependencies:
+      ms: 2.1.3
+
+  '@cmtlyt/base@0.9.0':
     dependencies:
       ms: 2.1.3
 
@@ -9811,6 +9828,8 @@ snapshots:
   web-namespaces@2.0.1: {}
 
   web-streams-polyfill@3.3.3: {}
+
+  web-vitals@4.2.4: {}
 
   webidl-conversions@7.0.0: {}
 

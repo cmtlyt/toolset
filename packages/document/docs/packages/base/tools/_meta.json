@@ -8,6 +8,5 @@
   "createUploader",
   "createWorkerFunc",
   "eventEmitter",
-  "logger",
-  "jsonSchema"
+  "logger"
 ]

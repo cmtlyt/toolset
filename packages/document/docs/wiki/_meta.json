@@ -24,7 +24,13 @@
     "label": "Elpis",
     "collapsed": true
   },
-  { "name": "Turbo", "label": "Turbo" },
+  {
+    "type": "dir",
+    "name": "性能优化",
+    "label": "性能优化",
+    "collapsed": true
+  },
+  { "name": "Turbo/index", "label": "Turbo" },
   "CI_CD",
   "dataType",
   "ConstructorMethod",
