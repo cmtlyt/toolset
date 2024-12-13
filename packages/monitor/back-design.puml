@@ -1,0 +1,56 @@
+@startuml 监控设计
+!theme plain
+!pragma teoz true
+
+participant 客户端页面 as clientPage
+participant 前端监控 as monitor
+participant 日志服务 as server
+participant 消息总线 as messageBus
+participant 数据库 as db
+participant 运维视图 as ywst
+actor 运维 as yw
+
+?-> clientPage : 访问
+&clientPage -> server ++: 请求资源
+&server -> messageBus : 推送存储\n访问日志任务
+server --> clientPage --++ : 响应页面
+
+activate monitor
+
+clientPage -> monitor : 上报性能信息
+&server -> messageBus : 推送存储\n前端性能信息任务
+
+
+clientPage -> monitor -- : 通知监控上报历史信息
+||12||
+group 用户操作自动上报 [每个操作都会触发这个链路]
+
+?-> clientPage ++ : 触发事件
+&clientPage -> monitor : 通知监控
+&monitor -> monitor : 本地存储日志
+clientPage -> clientPage : 响应事件
+clientPage -> monitor -- : 通知监控
+
+end
+||12||
+group 系统主动上报 [报错或一些重要行动点]
+
+clientPage -> monitor : 通知监控
+&monitor -> monitor : 本地存储
+
+end
+||12||
+?-> clientPage : 关闭页面
+&-> monitor : 通知监控上报上报日志
+||12||
+group 自动执行 [上报策略(定时, 重要消息直接上报)]
+
+monitor -> server : 日志上报
+&server -> messageBus : 推送存储日志任务
+monitor -> monitor : 删除已上报的日志
+
+end
+
+deactivate monitor
+
+@enduml

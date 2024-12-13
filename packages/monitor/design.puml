@@ -1,0 +1,63 @@
+@startuml 监控设计
+!theme plain
+!pragma teoz true
+
+title 前端监控系统
+
+participant 客户端页面 as clientPage
+participant 前端监控 as monitor
+participant 日志服务 as server
+
+[-> clientPage : 访问
+&clientPage ->]: 请求资源
+]--> clientPage : 响应页面
+
+clientPage -> monitor ** : 创建前端监控实例
+monitor -> server : 链接日志服务
+clientPage -> monitor : 上报性能信息
+clientPage -> monitor -- : 通知监控上报历史信息
+
+||12||
+
+group 用户操作自动上报 [每个操作都会触发这个链路]
+  ?-> clientPage ++ : 触发事件
+  &clientPage -> monitor : 通知监控
+  clientPage -> clientPage : 响应事件
+  clientPage -> monitor -- : 通知监控
+end
+
+||12||
+
+group 接口请求 [请求拦截上报]
+  clientPage ->] ++ : 请求接口
+  clientPage -> monitor : 通知监控
+  ]--> clientPage : 接口响应
+  clientPage -> monitor -- : 通知监控 (记录请求时间等)
+end
+
+||12||
+
+group 系统主动上报 [报错或一些重要行动点]
+  clientPage -> monitor : 通知监控
+end
+
+||12||
+
+[-> clientPage : 关闭页面
+&-> monitor : 通知监控上报上报日志
+
+||12||
+
+group 监控运行时
+  ?-> monitor ++ : 接收通知
+  &monitor -> monitor : 本地存储
+  alt 上报策略判断 [直接上报]
+    monitor -> server : 日志上报
+    monitor -> monitor -- : 删除已上报的日志\n(可标记已上报的日志\n存储一定时间后删除)
+  else 其他情况 [定时或定量上报]
+    monitor -> monitor ++ : 读取日志
+    monitor -> server : 日志上报
+    monitor -> monitor -- : 删除已上报的日志\n(可标记已上报的日志\n存储一定时间后删除)
+  end
+end
+@enduml
