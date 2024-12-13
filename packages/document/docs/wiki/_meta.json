@@ -34,5 +34,6 @@
   "CI_CD",
   "dataType",
   "ConstructorMethod",
-  "WebRTC"
+  "WebRTC",
+  "http"
 ]
