@@ -50,4 +50,4 @@ export function createLogger<T extends string, E = unknown>(
 
 export const logger = createLogger();
 
-export { Kind, Logger };
+export { Kind, Logger, LoggerOptions };

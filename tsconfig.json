@@ -9,7 +9,7 @@
     "preserveConstEnums": false, // true 的话 const enum 产生内联成员, 会导致没有引入的 const enum 也会生成代码
     "isolatedModules": false, // 将模块视为独立的, 不会被其他模块所引用
     "experimentalDecorators": true, // 启用装饰器
-    "moduleResolution": "Node", // 引入 package.json 不会报错
+    "moduleResolution": "bundler",
     "sourceMap": false, // 关闭 source map
     "esModuleInterop": true, // 允许 import * as
     "resolveJsonModule": true, // 允许 import json

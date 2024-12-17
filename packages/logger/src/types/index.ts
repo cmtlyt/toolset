@@ -16,7 +16,7 @@ export interface StyleConfig {
   };
 }
 
-export interface LoggerConfig<T extends string = ''> extends StyleConfig {
+export interface LoggerConfig<T extends string = Kind> extends StyleConfig {
   kind: Kind | T;
   inherit?: Kind | T;
   noOutput?: boolean;
@@ -29,17 +29,17 @@ export interface ContentInfo {
   hasChinese: boolean;
 }
 
-export interface LogEvent<T extends string = ''> {
+export interface LogEvent<T extends string = Kind> {
   kind: Kind | T;
   messages: unknown[];
   logConf: LoggerConfig<T>;
   preventDefault: () => void;
 }
 
-export type LoggerOptions<T extends string = '', E = unknown> = {
+export type LoggerOptions<T extends string = Kind, E = unknown> = {
   needTrace?: boolean;
   noOutput?: boolean;
-  logConfig?: Partial<LoggerConfigObj> & { [key in T]: LoggerConfig<T> };
+  logConfig?: Partial<LoggerConfigObj> & { [K in T]: LoggerConfig<K> };
   /** 该配置会覆盖 getPrintFunc 配置, 推荐优先使用 getPrintFunc */
   printFunc?: ((...args: unknown[]) => void) | null;
   getPrintFunc?: (this: LoggerOptions<T, E>, kind: Kind | T) => ((...args: unknown[]) => void) | null;

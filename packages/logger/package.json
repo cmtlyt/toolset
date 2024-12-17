@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/logger",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "cmtlyt的日志输出工具",
   "module": "./dist/index.esm.js",
   "types": "'./dist/index.d.ts",

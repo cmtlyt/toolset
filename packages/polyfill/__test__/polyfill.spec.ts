@@ -98,6 +98,7 @@ describe('polyfill', () => {
         { num: 2 },
       ),
     ).resolves.toEqual([2, 3, 4, 5, 6]);
+    // @ts-expect-error error
     expect(arrayFromAsync(makeAsyncIterable(), {})).rejects.toThrowErrorMatchingInlineSnapshot(
       `[TypeError: mapfn is not callable]`,
     );

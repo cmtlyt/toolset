@@ -1,5 +1,10 @@
 import { TAnyFunc, TPromiseConstructor } from '@cmtlyt/base';
 
+export type PromiseTry = <F extends TAnyFunc = TAnyFunc>(
+  callbackFn: F,
+  ...args: Parameters<F>
+) => Promise<ReturnType<F>>;
+
 export function promiseTry<F extends TAnyFunc = TAnyFunc>(
   this: TPromiseConstructor<ReturnType<F>>,
   callbackFn: F,

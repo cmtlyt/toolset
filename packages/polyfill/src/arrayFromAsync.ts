@@ -14,6 +14,12 @@ function throwTypeError(message: string) {
   throw new TypeError(message);
 }
 
+export type ArrayFromAsync<T = any> = (
+  asyncItems: any,
+  mapfn?: (value: any, index: number) => T,
+  thisArg?: any,
+) => Promise<T[]>;
+
 export async function arrayFromAsync<T = any>(
   this: TConstructor<T[]>,
   asyncItems: any,

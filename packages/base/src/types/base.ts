@@ -25,7 +25,7 @@ export type TLastTwoArg<T extends any[]> = T extends [...any, infer I, any] ? I 
 
 export type THeadTwoArg<T extends any[]> = T extends [any, infer I, ...any] ? I : any;
 
-export type TObject<T> = Record<string | symbol | number, T>;
+export type TObject<T> = Record<TObjKeyType, T>;
 
 export type TArrayItem<T> = T extends [...infer R] ? R : T;
 
@@ -92,3 +92,7 @@ export type TAllType =
   | 'bigint64array'
   | 'biguint64array'
   | 'blob';
+
+export type TMany<T> = T | T[];
+
+export type TObjKeyType = string | number | symbol;

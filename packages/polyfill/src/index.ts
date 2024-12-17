@@ -1,8 +1,11 @@
-import { arrayFromAsync as _arrayFromAsync } from './arrayFromAsync';
-import { promiseTry as _promiseTry } from './promiseTry';
+import { arrayFromAsync as _arrayFromAsync, type ArrayFromAsync } from './arrayFromAsync';
+import { promiseTry as _promiseTry, type PromiseTry } from './promiseTry';
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export class ClPromise<T> extends Promise<T> {
-  // @ts-expect-error 原生支持直接使用原生
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   static try = Promise.try || _promiseTry;
 }
 
@@ -11,6 +14,6 @@ export class ClArray<T> extends Array<T> {
     Array.fromAsync || _arrayFromAsync;
 }
 
-export const arrayFromAsync: typeof _arrayFromAsync = _arrayFromAsync.bind(Array);
+export const arrayFromAsync: ArrayFromAsync = _arrayFromAsync.bind(Array);
 
-export const promiseTry: typeof _promiseTry = _promiseTry.bind(Promise);
+export const promiseTry: PromiseTry = _promiseTry.bind(Promise);

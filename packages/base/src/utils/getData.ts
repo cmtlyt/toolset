@@ -1,8 +1,11 @@
 import ms from 'ms';
 
 import { cacheByReturn, isByteDanceMicroApp, isMiniApp, isWeb, isWeChatMiniProgram, isWeex } from '../cirDep';
+import { TObjKeyType, TMany, TObject } from '../types/base';
+import { curry } from '../cirDep/funcHandler';
 
 import { isEmpty } from './verify';
+import { getArray } from './dataHandler';
 
 export const safeGetGlobal = cacheByReturn((): any => {
   if (isWeb()) return window;
@@ -118,3 +121,19 @@ export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (r
   });
   return { resolve, reject, promise };
 }
+
+export const pick = curry((keys: TMany<TObjKeyType>, obj: TObject<any>): TObject<any> => {
+  const result = {};
+  const keyList = getArray(keys);
+  keyList.forEach((key: any) => (result[key] = obj[key]));
+  return result;
+});
+
+export const omit = curry((keys: TMany<TObjKeyType>, obj: TObject<any>): TObject<any> => {
+  const result = {};
+  const keyList = getArray(keys) as any[];
+  Object.keys(obj).forEach((key) => {
+    if (!keyList.includes(key)) result[key] = obj[key];
+  });
+  return result;
+});
