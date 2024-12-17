@@ -192,7 +192,7 @@ importers:
   packages/polyfill:
     dependencies:
       '@cmtlyt/base':
-        specifier: workspace:../base
+        specifier: workspace:*
         version: link:../base
 
   packages/service:

@@ -49,8 +49,8 @@
     "email": "cmtlyt@163.com"
   },
   "dependencies": {
-    "@cmtlyt/base": "workspace:*",
-    "@cmtlyt/json-schema": "workspace:*",
-    "@cmtlyt/storage": "workspace:*"
+    "@cmtlyt/base": "workspace:^",
+    "@cmtlyt/json-schema": "workspace:^",
+    "@cmtlyt/storage": "workspace:^"
   }
 }

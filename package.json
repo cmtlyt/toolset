@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/toolset",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "cmtlyt 工具集合",
   "scripts": {
     "dev": "turbo dev",
@@ -11,7 +11,7 @@
     "dev:doc": "turbo dev:doc",
     "build:doc": "turbo build:doc",
     "lint": "eslint --ext js,jsx,tsx,ts --fix",
-    "deploy": "node scripts/publish.mjs -c -s"
+    "deploy": "pnpm -r --filter \"./packages/**\" --filter=\\!document publish --no-git-checks"
   },
   "keywords": [],
   "author": {

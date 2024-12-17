@@ -55,6 +55,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@cmtlyt/base": "workspace:*"
+    "@cmtlyt/base": "workspace:^"
   }
 }

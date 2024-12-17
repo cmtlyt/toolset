@@ -53,8 +53,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@cmtlyt/base": "workspace:*",
-    "@cmtlyt/json-schema": "workspace:*",
-    "@cmtlyt/string-zip": "workspace:*"
+    "@cmtlyt/base": "workspace:^",
+    "@cmtlyt/json-schema": "workspace:^",
+    "@cmtlyt/string-zip": "workspace:^"
   }
 }

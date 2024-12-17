@@ -17,8 +17,8 @@
     "build": "tsc && rollup -c"
   },
   "dependencies": {
-    "@cmtlyt/base": "workspace:*",
-    "@cmtlyt/logger": "workspace:*",
+    "@cmtlyt/base": "workspace:^",
+    "@cmtlyt/logger": "workspace:^",
     "web-vitals": "^4.2.4"
   },
   "files": [
