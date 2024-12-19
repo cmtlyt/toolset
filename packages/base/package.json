@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/base",
   "type": "module",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "cmtlyt的基础工具库",
@@ -47,8 +47,7 @@
     "build": "unbuild",
     "test": "vitest run",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "pnpm test && pnpm build",
-    "release": "bumpp && pnpm publish"
+    "prepublishOnly": "pnpm test && pnpm build"
   },
   "dependencies": {
     "ms": "^2.1.3",

@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/monitor",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "cl项目监控",
@@ -45,18 +45,12 @@
     "build": "unbuild",
     "test": "vitest run",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "pnpm test && pnpm build",
-    "release": "bumpp && pnpm publish"
+    "prepublishOnly": "pnpm test && pnpm build"
   },
   "dependencies": {
     "@cmtlyt/base": "workspace:^",
     "@cmtlyt/logger": "workspace:^",
     "web-vitals": "^4.2.4"
-  },
-  "clPublish": {
-    "checkDir": [
-      "src/**/*.ts"
-    ]
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

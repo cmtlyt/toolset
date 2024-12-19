@@ -1,6 +1,6 @@
 {
   "name": "@cmtlyt/json-schema",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "json schema 处理相关方法",
@@ -49,8 +49,7 @@
     "build": "unbuild",
     "test": "vitest run",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "pnpm test && pnpm build",
-    "release": "bumpp && pnpm publish"
+    "prepublishOnly": "pnpm test && pnpm build"
   },
   "dependencies": {
     "@cmtlyt/base": "workspace:^"
