@@ -1,9 +1,8 @@
-import { TObject } from '@cmtlyt/base';
-
+import type { TObject } from '@cmtlyt/base';
 import { logCache } from '../store';
 import { getTargetSelector } from '../util';
 
-const eventMap = {};
+const eventMap: TObject<(event: Event) => void> = {};
 
 const defaultEventList: (keyof WindowEventMap)[] = ['click'];
 
@@ -11,8 +10,12 @@ export function initEventListener(eventList?: (keyof WindowEventMap)[], needList
   (eventList || defaultEventList).forEach((event) => {
     const getCallback = (extendObj: TObject<any>) => {
       return (eventMap[event] = (event: Event) => {
-        console.log(event, getTargetSelector(event.target as HTMLElement));
-        logCache.push({ kind: 'event', message: 'click', extra: { timestamp: Date.now(), event, ...extendObj } });
+        logCache.push({
+          kind: 'event',
+          message: 'click',
+          extra: { timestamp: Date.now(), event, selector: getTargetSelector(event.target as HTMLElement) },
+          ...extendObj,
+        });
       });
     };
 

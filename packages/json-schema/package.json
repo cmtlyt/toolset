@@ -1,0 +1,58 @@
+{
+  "name": "@cmtlyt/json-schema",
+  "version": "0.4.1",
+  "private": false,
+  "packageManager": "pnpm@9.14.4",
+  "description": "json schema 处理相关方法",
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "license": "MIT",
+  "homepage": "https://cmtlyt.github.io/toolset/packages/jsonSchema/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/jsonSchema"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues",
+    "email": "cmtlyt@163.com"
+  },
+  "keywords": [
+    "cmtlyt",
+    "json-schema",
+    "verify",
+    "generator",
+    "mock",
+    "基础工具库"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "release": "bumpp && pnpm publish"
+  },
+  "dependencies": {
+    "@cmtlyt/base": "workspace:^"
+  }
+}

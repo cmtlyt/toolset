@@ -38,11 +38,13 @@ export abstract class BaseStorage {
           const initialData = await this.init();
           if (typeof initialData === 'string') {
             this.#_cache = decodeDataSchema(await unGzip(initialData));
-          } else {
+          }
+          else {
             this.#_cache = initialData || {};
           }
           resolve();
-        } catch (e) {
+        }
+        catch (e) {
           reject(e);
         }
       })();
@@ -52,7 +54,8 @@ export abstract class BaseStorage {
   }
 
   private _createAutoSaveInterval() {
-    if (this.config.autoSaveDelay < 1) return;
+    if (this.config.autoSaveDelay < 1)
+      return;
     setTimeout(async () => {
       const dataSchema = await this.getDataSchema();
       this.autoSave(dataSchema);

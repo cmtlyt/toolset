@@ -1,6 +1,6 @@
-import { TAnyFunc, TExclude, TFlatPromise } from '../../types/base';
-import { caniuse, createLinkByString, getRandomString } from '../../utils';
+import type { TAnyFunc, TExclude, TFlatPromise, TObject } from '../../types/base';
 import { warning } from '../../common/warning';
+import { caniuse, createLinkByString, getRandomString } from '../../utils';
 
 function generateWorkerScript(func: TAnyFunc, importScript: string[] = [], userNeedPost = false) {
   return `
@@ -34,10 +34,10 @@ function createWorker(scriptUrl: string | URL) {
 }
 
 interface EventFuncs {
-  on: <T>(callback: (data: T) => void) => void;
+  on: <T extends any[]>(callback: (...data: T) => void) => void;
   remove: (callback: TAnyFunc) => void;
   clearOn: () => void;
-  onOnce: <T>(callback: (data: T) => void) => void;
+  onOnce: <T extends any[]>(callback: (...data: T) => void) => void;
   emit: (data: any) => void;
 }
 
@@ -48,7 +48,7 @@ export interface WorkerFuncs<F extends TAnyFunc, A extends any[] = Parameters<F>
 }
 
 function createEventFunc(): EventFuncs {
-  const userOnMessage = [];
+  const userOnMessage: any[] = [];
   const on: EventFuncs['on'] = (callback) => {
     userOnMessage.push(callback);
   };
@@ -60,7 +60,8 @@ function createEventFunc(): EventFuncs {
   };
   const onOnce: EventFuncs['onOnce'] = (callback) => {
     const onceCallback = (...args: any[]) => {
-      callback.apply(null, args);
+      // @ts-expect-error any
+      callback(...args);
       remove(onceCallback);
     };
     on(onceCallback);
@@ -97,14 +98,17 @@ function messageHandle({
   if (isSysCall) {
     if (type === 'success') {
       resolve(result);
-    } else {
+    }
+    else {
       reject(error);
     }
-  } else {
+  }
+  else {
     const { __clUserCall, data } = eventData;
     if (__clUserCall) {
       emit(data);
-    } else {
+    }
+    else {
       emit(eventData);
     }
   }
@@ -115,7 +119,7 @@ function createWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
   let isClose = false;
   // 缓存每次调用的promise, 区分不同的调用
   // 只存不删缓存会膨胀
-  let cache = {};
+  let cache: TObject<any> = {};
   const { emit, ...eventFuncs } = createEventFunc();
   // 绑定一次事件就好了
   worker.onmessage = (e) => {
@@ -138,7 +142,8 @@ function createWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
     });
   };
   const run = async (...args: any[]) => {
-    if (isClose) throw new Error('worker资源已释放');
+    if (isClose)
+      throw new Error('worker资源已释放');
     // 生成调用id
     const id = getRandomString(16);
     return new Promise((resolve, reject) => {
@@ -150,6 +155,7 @@ function createWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
   // 这个是复用的,就需要释放被复用的worker了,但是...url
   const dispose = () => {
     worker.terminate();
+    // @ts-expect-error 释放缓存
     cache = null;
     isClose = true;
     URL.revokeObjectURL(scriptUrl);
@@ -161,7 +167,8 @@ function createOnceWorkerFuncs(scriptUrl: string): WorkerFuncs<TAnyFunc> {
   let isClose = false;
   const { emit, ...eventFuncs } = createEventFunc();
   const run = async (...args: any[]) => {
-    if (isClose) throw new Error('worker资源已释放');
+    if (isClose)
+      throw new Error('worker资源已释放');
     const worker = createWorker(scriptUrl);
     return new Promise((resolve, reject) => {
       // 反正每次都会创建一个新的,没必要管多次调用之间的冲突
@@ -196,8 +203,10 @@ function formatImportScripts(input: (string | TAnyFunc)[]): string[] {
   const funcs: TAnyFunc[] = [];
   const strs: string[] = [];
   input.forEach((item) => {
-    if (typeof item === 'string') strs.push(item);
-    else if (typeof item === 'function') funcs.push(item);
+    if (typeof item === 'string')
+      strs.push(item);
+    else if (typeof item === 'function')
+      funcs.push(item);
   });
   strs.push(
     createLinkByString(
@@ -219,7 +228,7 @@ interface CreateWorkerFuncOptions {
 export function createWorkerFunc<F extends TAnyFunc>(
   func: F,
   importScripts: (string | TAnyFunc)[] = [],
-  options?: CreateWorkerFuncOptions,
+  options: CreateWorkerFuncOptions = {},
 ): WorkerFuncs<F> {
   if (!caniuse('Worker')) {
     warning('不支持 web worker 已降级');
@@ -231,7 +240,7 @@ export function createWorkerFunc<F extends TAnyFunc>(
       ...createEventFunc(),
     };
   }
-  const { reuse = true, needPost = false } = options;
+  const { reuse = true, needPost = false } = options || {};
   const workerScript = generateWorkerScript(func, formatImportScripts(importScripts), needPost);
   const scriptUrl = createLinkByString(workerScript);
   // 复用版的funcs

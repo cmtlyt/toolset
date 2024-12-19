@@ -1,12 +1,13 @@
+import { cacheByReturn, getType, isWeb } from '../cirDep';
 import { EMPTY } from '../common/constant';
 import { warning } from '../common/warning';
-import { cacheByReturn, getType, isWeb } from '../cirDep';
 
 export function isNull(value: any): value is null {
   return typeof value === 'undefined' || (typeof value === 'object' && value === null);
 }
 
-export function isNaN(value: any): value is typeof NaN {
+export function isNaN(value: any): value is typeof Number.NaN {
+  // eslint-disable-next-line no-self-compare
   return typeof value === 'number' && value !== value;
 }
 
@@ -19,13 +20,18 @@ export function isPromise(value: any): value is Promise<any> {
 }
 
 export function isEmpty(value: any): boolean {
-  if (value === EMPTY) return true;
-  if (typeof value === 'boolean') return false;
-  if (typeof value === 'number') return isNaN(value) || false;
+  if (value === EMPTY)
+    return true;
+  if (typeof value === 'boolean')
+    return false;
+  if (typeof value === 'number')
+    return isNaN(value) || false;
   if (typeof value === 'object' && value !== null) {
     const type = getType(value);
-    if (['set', 'map'].includes(type)) return value.size === 0;
-    if (['weakmap', 'weakset'].includes(type)) return value.size === 0;
+    if (['set', 'map'].includes(type))
+      return value.size === 0;
+    if (['weakmap', 'weakset'].includes(type))
+      return value.size === 0;
     return Object.keys(value).length === 0;
   }
   return isNull(value) || !value;
@@ -36,9 +42,10 @@ export const isFile = cacheByReturn(() => {
     warning('iframe 中无法正确判断!!!');
     return false;
   }
-  if (!File) return false;
-  if (File.prototype.isPrototypeOf) {
-    return (value: any): boolean => File.prototype.isPrototypeOf(value);
+  if (!File)
+    return false;
+  if (File.prototype) {
+    return (value: any): boolean => Object.prototype.isPrototypeOf.call(File.prototype, value);
   }
   return (value: any): boolean => value instanceof File;
 });
@@ -48,9 +55,10 @@ export const isBlob = cacheByReturn(() => {
     warning('iframe 中无法正确判断!!!');
     return false;
   }
-  if (!Blob) return false;
-  if (Blob.prototype.isPrototypeOf) {
-    return (value: any): boolean => Blob.prototype.isPrototypeOf(value);
+  if (!Blob)
+    return false;
+  if (Blob.prototype) {
+    return (value: any): boolean => Object.prototype.isPrototypeOf.call(Blob.prototype, value);
   }
   return (value: any): boolean => value instanceof Blob;
 });
@@ -64,11 +72,11 @@ export function isHttpsUrlString(value: any): boolean {
 }
 
 export function isBlobUrlString(value: any): boolean {
-  return typeof value === 'string' && /^blob:/.test(value);
+  return typeof value === 'string' && value.startsWith('blob:');
 }
 
 export function isDataUrlString(value: any): boolean {
-  return typeof value === 'string' && /^data:/.test(value);
+  return typeof value === 'string' && value.startsWith('data:');
 }
 
 export function isUrl(value: any): boolean {
@@ -77,11 +85,11 @@ export function isUrl(value: any): boolean {
     return false;
   }
   return (
-    value instanceof URL ||
-    isHttpUrlString(value) ||
-    isHttpsUrlString(value) ||
-    isBlobUrlString(value) ||
-    isDataUrlString(value)
+    value instanceof URL
+    || isHttpUrlString(value)
+    || isHttpsUrlString(value)
+    || isBlobUrlString(value)
+    || isDataUrlString(value)
   );
 }
 
@@ -99,8 +107,10 @@ export function isAsyncFunc(value: any): value is (...args: any[]) => Promise<an
 }
 
 export function isInIframe(): boolean {
-  if (!isWeb()) return false;
-  if (window?.frames?.length !== window?.parent?.frames?.length) return true;
+  if (!isWeb())
+    return false;
+  if (window?.frames?.length !== window?.parent?.frames?.length)
+    return true;
   return false;
 }
 
@@ -109,7 +119,8 @@ export function caniuseCSSFeature(feature: string): boolean {
     warning('caniuse 只能在浏览器环境中使用');
     return false;
   }
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined')
+    return false;
   return window?.CSS?.supports?.(feature) || false;
 }
 
@@ -118,20 +129,26 @@ export function caniuse(feature: keyof typeof window): boolean {
     warning('caniuse 只能在浏览器环境中使用');
     return false;
   }
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined')
+    return false;
   return typeof window[feature] !== 'undefined';
 }
 
-export function isConstructor(obj: any) {
-  if (!(obj instanceof Object)) return false;
-  if (typeof Object.getPrototypeOf(obj).constructor === 'function') return true;
+export function isConstructor(obj: any): boolean {
+  if (!(obj instanceof Object))
+    return false;
+  if (typeof Object.getPrototypeOf(obj).constructor === 'function')
+    return true;
   return false;
 }
 
-export function isArrayLike(data: any) {
-  if (Array.isArray(data)) return true;
-  if (data instanceof String) return true;
-  if (data && typeof data === 'object' && typeof data.length === 'number') return true;
+export function isArrayLike(data: any): boolean {
+  if (Array.isArray(data))
+    return true;
+  if (data instanceof String)
+    return true;
+  if (data && typeof data === 'object' && typeof data.length === 'number')
+    return true;
   return false;
 }
 

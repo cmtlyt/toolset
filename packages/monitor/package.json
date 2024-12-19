@@ -1,29 +1,24 @@
 {
   "name": "@cmtlyt/monitor",
+  "type": "module",
   "version": "0.1.0",
+  "private": false,
+  "packageManager": "pnpm@9.14.4",
   "description": "cl项目监控",
-  "main": "./dist/index.umd.js",
-  "module": "./dist/index.esm.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.esm.js",
-      "default": "./dist/index.umd.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./*": "./dist/*"
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
   },
-  "scripts": {
-    "build": "tsc && rollup -c"
+  "license": "MIT",
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/monitor/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/monitor"
   },
-  "dependencies": {
-    "@cmtlyt/base": "workspace:^",
-    "@cmtlyt/logger": "workspace:^",
-    "web-vitals": "^4.2.4"
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues"
   },
-  "files": [
-    "dist"
-  ],
   "keywords": [
     "cl",
     "monitor",
@@ -34,28 +29,37 @@
     "数据上报",
     "report"
   ],
-  "author": {
-    "name": "cmtlyt",
-    "email": "cmtlyt@163.com"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
   },
-  "bugs": {
-    "url": "https://github.com/cmtlyt/toolset/issues"
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "release": "bumpp && pnpm publish"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cmtlyt/toolset.git",
-    "directory": "packages/monitor"
+  "dependencies": {
+    "@cmtlyt/base": "workspace:^",
+    "@cmtlyt/logger": "workspace:^",
+    "web-vitals": "^4.2.4"
   },
-  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/monitor/README.md",
   "clPublish": {
     "checkDir": [
       "src/**/*.ts"
     ]
   },
-  "private": false,
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
-  },
-  "license": "MIT"
+  }
 }

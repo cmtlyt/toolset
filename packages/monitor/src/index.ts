@@ -1,6 +1,6 @@
+import type { MonitorConfig, MonitorKind, MonitorLogger } from './type';
 import { initErrorListener, initEventListener } from './listener';
 import { setStore } from './store';
-import type { MonitorConfig, MonitorKind, MonitorLogger } from './type';
 import { batchReportLog, createMonitorLogger, listenerCacheChange, savePagePerformanceInfo } from './util';
 
 export { MonitorLogger };
@@ -11,7 +11,8 @@ initErrorListener();
 /**
  * 创建监控
  */
-export function createMonitor<ExtendLogType extends string = MonitorKind, ExtendConfig = unknown>(
+// @ts-expect-error 默认值
+export function createMonitor<ExtendLogType extends string = MonitorKind, ExtendConfig extends TObject<any> = unknown>(
   config: MonitorConfig<ExtendLogType, ExtendConfig>,
 ): MonitorLogger<ExtendLogType> {
   // 存储配置

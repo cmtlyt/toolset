@@ -1,66 +1,79 @@
 {
-  "name": "@cmtlyt/toolset",
+  "name": "template-pack",
+  "type": "module",
   "version": "0.0.0",
-  "description": "cmtlyt 工具集合",
-  "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "publish": "turbo publish",
-    "test": "vitest --ui",
-    "test:ci": "vitest run",
-    "dev:doc": "turbo dev:doc",
-    "build:doc": "turbo build:doc",
-    "lint": "eslint --ext js,jsx,tsx,ts --fix",
-    "deploy": "pnpm -r --filter \"./packages/**\" --filter=\\!document publish --no-git-checks"
-  },
-  "keywords": [],
+  "packageManager": "pnpm@9.14.4",
+  "description": "开箱即用的 npm 包模板",
   "author": {
     "name": "cmtlyt",
     "email": "cmtlyt@163.com"
   },
   "license": "MIT",
-  "packageManager": "pnpm@9.5.0",
-  "lint-staged": {
-    "packages/**/*.{js,jsx,tsx,ts}": [
-      "npm run lint",
-      "git add ."
-    ]
+  "homepage": "https://github.com/cmtlyt/template-pack#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/template-pack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/template-pack/issues"
+  },
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint packages --fix",
+    "stub": "pnpm -r --filter=\"./packages/*\" --parallel run stub",
+    "build": "pnpm -r --filter=\"./packages/*\" run build",
+    "test": "vitest",
+    "changelog": "pnpm -r --filter=\"./packages/*\" run changelog",
+    "release": "pnpm -r --filter=\"./packages/*\" run release",
+    "test:ci": "pnpm -r --filter=\"./packages/*\" run test",
+    "gsp": "esno ./scripts/generate-sub-package.ts",
+    "dev:doc": "rspress dev",
+    "build:doc": "rspress build"
+  },
+  "dependencies": {
+    "@cmtlyt/base": "workspace:^",
+    "web-vitals": "^4.2.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^26.0.1",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rspress/shared": "^1.26.3",
-    "@types/node": "^20.14.9",
-    "@types/prettier": "^3.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.15.0",
-    "@typescript-eslint/parser": "^7.15.0",
-    "@vitest/coverage-v8": "^2.0.5",
-    "@vitest/ui": "^2.0.5",
-    "argon2": "^0.40.3",
-    "chalk": "^5.3.0",
-    "commitlint": "^19.3.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-prettier": "^5.1.3",
-    "fast-glob": "^3.3.2",
-    "happy-dom": "^14.12.3",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.7",
-    "prettier": "^3.3.2",
-    "prompts": "^2.4.2",
-    "rollup": "^4.18.0",
-    "rollup-plugin-copy": "^3.5.0",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "semver": "^7.6.2",
-    "tslib": "^2.6.3",
-    "turbo": "^2.0.6",
-    "typescript": "^5.5.3",
-    "vitest": "^2.0.5"
+    "@antfu/eslint-config": "^3.12.0",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@rspress/plugin-playground": "^1.38.0",
+    "@rspress/plugin-preview": "^1.38.0",
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "2.1.8",
+    "bumpp": "^9.9.1",
+    "chai": "^5.1.2",
+    "conventional-changelog-cli": "^5.0.0",
+    "eslint": "^9.17.0",
+    "eslint-plugin-format": "^0.1.3",
+    "esno": "^4.8.0",
+    "glob": "^11.0.0",
+    "happy-dom": "^15.11.7",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "rspress": "^1.38.0",
+    "rspress-plugin-file-tree": "^0.4.0",
+    "rspress-plugin-gh-pages": "^0.3.0",
+    "rspress-plugin-reading-time": "^0.3.0",
+    "typescript": "^5.7.2",
+    "unbuild": "^3.0.1",
+    "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --cache --fix"
+    ]
   }
 }

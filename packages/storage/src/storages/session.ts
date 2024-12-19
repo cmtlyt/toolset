@@ -1,6 +1,7 @@
-import { caniuse, TRequired, warning } from '@cmtlyt/base';
-
-import { BaseStorage, StorageBaseOptions } from './base';
+import type { TRequired } from '@cmtlyt/base';
+import type { StorageBaseOptions } from './base';
+import { caniuse, warning } from '@cmtlyt/base';
+import { BaseStorage } from './base';
 import { MemoryStorage } from './memory';
 
 interface SessionStorageOptions extends TRequired<StorageBaseOptions, 'dbName'> {}
@@ -14,6 +15,7 @@ export class SessionStorage extends BaseStorage {
       // @ts-expect-error fullback to MemoryStorage
       return new MemoryStorage(options);
     }
+    // @ts-expect-error 默认 dbName
     super({ dbName: 'cl-storage', autoSaveDelay: 1000 * 60 * 1, ...options });
   }
 

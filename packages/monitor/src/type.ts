@@ -1,7 +1,7 @@
 import type { TExclude, TObject } from '@cmtlyt/base';
 import type { Kind, Logger, LoggerOptions as OrigianlLoggerOptions } from '@cmtlyt/logger';
 
-export type OriginalOnLogBefore<T extends string> = OrigianlLoggerOptions<T, unknown>['onLogBefore'];
+export type OriginalOnLogBefore<T extends string> = Required<OrigianlLoggerOptions<T, unknown>>['onLogBefore'];
 
 export type OriginalOnLogBeforeEvent<T extends string> = Parameters<OriginalOnLogBefore<T>>[0];
 
@@ -9,7 +9,7 @@ export type LoggerOptions<T extends string> = TExclude<OrigianlLoggerOptions<T>,
 
 export type MonitorKind = 'system' | 'event';
 
-export interface LogInfo<T extends string, E> {
+export interface LogInfo<T extends string, E extends TObject<any>> {
   /** 日志信息 */
   logInfo: OriginalOnLogBeforeEvent<T>;
   config: MonitorConfig<T, E>;
@@ -17,6 +17,7 @@ export interface LogInfo<T extends string, E> {
 
 export interface BaseMonitorConfig<
   UserExtendLogType extends string = MonitorKind,
+  // @ts-expect-error 默认值
   ExtendConfig extends TObject<any> = unknown,
   ReportInfo = unknown,
   ExtendLogType extends string = UserExtendLogType | MonitorKind,
@@ -37,6 +38,7 @@ export interface BaseMonitorConfig<
 
 export type MonitorConfig<
   ExtendLogType extends string = MonitorKind,
+  // @ts-expect-error 默认值
   ExtendConfig extends TObject<any> = unknown,
 > = BaseMonitorConfig<ExtendLogType, ExtendConfig> & ExtendConfig;
 

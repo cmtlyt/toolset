@@ -1,7 +1,8 @@
-import { defaultConf, fontStyle, lineBreakStyle } from '../constant';
-import { ContentInfo, Kind, LoggerConfig, LoggerConfigObj, LoggerOptions, LogThrow } from '../types';
-
+import type { ContentInfo, Kind, LoggerConfig, LoggerConfigObj, LoggerOptions } from '../types';
 import { getContentInfo, getLineWidth, getTrace, joinContentInfo } from '.';
+
+import { defaultConf, fontStyle, lineBreakStyle } from '../constant';
+import { LogThrow } from '../types';
 
 export function generateLoggerConfig(logConfig?: Partial<LoggerConfigObj>): LoggerConfigObj {
   const conf = { ...defaultConf };
@@ -12,7 +13,8 @@ export function generateLoggerConfig(logConfig?: Partial<LoggerConfigObj>): Logg
         const inheritConf = conf[inherit as Kind];
         Object.assign(item, { ...inheritConf, ...userConf });
       }
-      if (key in conf) Object.assign(conf[key as Kind], item);
+      if (key in conf)
+        Object.assign(conf[key as Kind], item);
       else conf[key as Kind] = item;
     });
   }
@@ -53,10 +55,12 @@ export function generateMessage(userConfig: LoggerOptions, logConf: LoggerConfig
     let preventDefault = false;
     const event = { kind, messages, logConf, preventDefault: () => (preventDefault = true) };
     onLogBefore?.call(userConfig, event);
-    if (preventDefault) throw LogThrow.PREVENT_DEFAULT;
+    if (preventDefault)
+      throw LogThrow.PREVENT_DEFAULT;
   }
 
-  if (noOutput) throw LogThrow.NO_OUTPUT;
+  if (noOutput)
+    throw LogThrow.NO_OUTPUT;
 
   const tag = `${kind.toUpperCase()}`;
   const contentInfo = getContentInfo(messages);

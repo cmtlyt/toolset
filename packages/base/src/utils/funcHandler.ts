@@ -1,4 +1,4 @@
-import {
+import type {
   GetArgs,
   GetReturnType,
   ReverseArray,
@@ -25,16 +25,19 @@ class MemoizeMap {
   set(key: any, value: any) {
     if (this.#_isObject(key)) {
       this.#_weakMap.set(key, value);
-    } else {
+    }
+    else {
       this.#_map.set(key, value);
     }
   }
+
   get(key: any) {
     if (this.#_isObject(key)) {
       return this.#_weakMap.get(key);
     }
     return this.#_map.get(key);
   }
+
   has(key: any) {
     if (this.#_isObject(key)) {
       return this.#_weakMap.has(key);
@@ -45,12 +48,12 @@ class MemoizeMap {
 
 export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (...args: GetArgs<F>) => any) {
   const memoized = function (...args: GetArgs<F>): GetReturnType<F> {
-    const key = resolver ? resolver.apply(this, args) : args[0];
+    const key = resolver ? resolver(...args) : args[0];
     const cache = memoized.cache;
     if (cache.has(key)) {
       return cache.get(key);
     }
-    const result = func.apply(this, args);
+    const result = func(...args);
     cache.set(key, result);
     return result;
   };
@@ -61,8 +64,10 @@ export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (
 type TCurryFuncReturnType<F> = F extends TCurry<any, infer R> ? R : F extends TAnyFunc ? ReturnType<F> : any;
 
 function _generateRunFunc(funcs: TAnyFunc[], callback: (funcs: TAnyFunc[], args: any[]) => any) {
-  if (funcs.length === 0) return (arg: any) => arg;
-  if (funcs.length === 1) return funcs[0];
+  if (funcs.length === 0)
+    return (arg: any) => arg;
+  if (funcs.length === 1)
+    return funcs[0];
   const runFunc = (...args: any[]) => callback(funcs, args);
   return runFunc;
 }
@@ -78,8 +83,7 @@ type TComposeFunc = <F extends TCompose<F>>(
  */
 export const compose: TComposeFunc = function compose(...funcs) {
   const func = _generateRunFunc(funcs, (funcs: TAnyFunc[], args: any) =>
-    funcs.reduceRight((data, func) => func.apply(null, getArray(data)), args),
-  );
+    funcs.reduceRight((data, func) => func(...getArray(data)), args));
   const firstFunc = funcs[funcs.length - 1];
   // @ts-expect-error 自定义属性
   func.clength = firstFunc?.clength || firstFunc?.length;
@@ -97,8 +101,7 @@ type TPipeFunc = <F extends TPipe<F>>(
  */
 export const pipe: TPipeFunc = function pipe(...funcs) {
   const func = _generateRunFunc(funcs, (funcs, args) =>
-    funcs.reduce((data, func) => func.apply(null, getArray(data)), args),
-  );
+    funcs.reduce((data, func) => func(...getArray(data)), args));
   const firstFunc = funcs[0];
   // @ts-expect-error 自定义属性
   func.clength = firstFunc?.clength || firstFunc?.length;
@@ -110,44 +113,52 @@ export function debounce<F extends TAnyFunc>(
   time = 1000,
   immediately = false,
 ): (...args: TArgsType<F>) => void {
-  if (time <= 0) return func;
-  let timer = null;
+  if (time <= 0)
+    return func;
+  let timer: NodeJS.Timeout | null = null;
+  // @ts-expect-error return func
   return cacheByReturn(() => {
     if (immediately) {
       return (...args: any) => {
-        if (timer) clearTimeout(timer);
-        else func.apply(null, args);
+        if (timer)
+          clearTimeout(timer);
+        else func(...args);
         timer = setTimeout(() => {
           timer = null;
         }, time);
       };
     }
     return (...args: any) => {
-      if (timer) clearTimeout(timer);
+      if (timer)
+        clearTimeout(timer);
       timer = setTimeout(() => {
-        func.apply(null, args);
+        func(...args);
       }, time);
     };
   });
 }
 
 export function throttle<F extends TAnyFunc>(func: F, time = 100, immediately = true): (...args: TArgsType<F>) => void {
-  if (time <= 0) return func;
-  let timer = null;
+  if (time <= 0)
+    return func;
+  let timer: NodeJS.Timeout | null = null;
+  // @ts-expect-error return func
   return cacheByReturn(() => {
     if (immediately) {
       return (...args: any) => {
-        if (timer) return;
-        func.apply(null, args);
+        if (timer)
+          return;
+        func(...args);
         timer = setTimeout(() => {
           timer = null;
         }, time);
       };
     }
-    return (...args) => {
-      if (timer) return;
+    return (...args: any[]) => {
+      if (timer)
+        return;
       timer = setTimeout(() => {
-        func.apply(null, args);
+        func(...args);
         timer = null;
       }, time);
     };
@@ -156,34 +167,40 @@ export function throttle<F extends TAnyFunc>(func: F, time = 100, immediately = 
 
 const _runTask = cacheByReturn(
   (): ((task: TAnyFunc, args: any[], resolve: (value: any) => void, reject: (reason?: any) => void) => void) => {
+    // @ts-expect-error 兼容低版本
     if (globalThis.requestIdleCallback) {
       return (task, args, resolve, reject) => {
         requestIdleCallback((idle) => {
           if (idle.timeRemaining() > 0) {
             try {
-              const result = task.apply(null, args);
+              const result = task(...args);
               resolve(result);
-            } catch (error) {
+            }
+            catch (error) {
               reject(error);
             }
-          } else {
+          }
+          else {
             _runTask(task, args, resolve, reject);
           }
         });
       };
     }
+    // @ts-expect-error 兼容低版本
     if (globalThis.requestAnimationFrame) {
       return (task, args, resolve, reject) => {
         const start = getNow();
         requestAnimationFrame(() => {
           if (getNow() - start < 16.6) {
             try {
-              const result = task.apply(null, args);
+              const result = task(...args);
               resolve(result);
-            } catch (error) {
+            }
+            catch (error) {
               reject(error);
             }
-          } else {
+          }
+          else {
             _runTask(task, args, resolve, reject);
           }
         });
@@ -192,9 +209,10 @@ const _runTask = cacheByReturn(
     return (task, args, resolve, reject) => {
       setTimeout(() => {
         try {
-          const result = task.apply(null, args);
+          const result = task(...args);
           resolve(result);
-        } catch (error) {
+        }
+        catch (error) {
           reject(error);
         }
       }, 0);
@@ -204,17 +222,18 @@ const _runTask = cacheByReturn(
 
 export function chunkTask<F extends TAnyFunc>(task: F) {
   return (datas: Parameters<F>[] | number): Promise<ReturnType<F>[]> => {
-    const results = [];
+    const results: any[] = [];
     return new Promise((resolve, reject) => {
       const func = async (args: any[]) => {
-        return new Promise(_runTask.bind(null, task, args)).then((res) => results.push(res), reject);
+        return new Promise(_runTask.bind(null, task, args)).then(res => results.push(res), reject);
       };
       (async () => {
         if (typeof datas === 'number') {
           for (let i = 0; i < datas; ++i) {
             await func([i]);
           }
-        } else if (Array.isArray(datas)) {
+        }
+        else if (Array.isArray(datas)) {
           for (const key in datas) {
             const data = datas[key];
             await func(data);
@@ -226,15 +245,15 @@ export function chunkTask<F extends TAnyFunc>(task: F) {
   };
 }
 
-export const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
+export const sleep = (time: number) => new Promise(resolve => setTimeout(resolve, time));
 
-export const sleepSync = (time: number) => {
+export function sleepSync(time: number) {
   const start = getNow();
   while (getNow() - start < time);
-};
+}
 
 export function reverseArgs<F extends TAnyFunc>(callback: F) {
-  return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback.apply(null, args.reverse());
+  return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback(...args.reverse());
 }
 
 export function tryCallFunc<F extends TAnyFunc>(
@@ -243,9 +262,11 @@ export function tryCallFunc<F extends TAnyFunc>(
 ): TFunc<Parameters<F>, ReturnType<F>> {
   return (...args: Parameters<F>) => {
     try {
-      return runner.apply(null, args);
-    } catch (e) {
-      if (catcher) catcher(e);
+      return runner(...args);
+    }
+    catch (e) {
+      if (catcher)
+        catcher(e);
       throw e;
     }
   };
@@ -254,18 +275,21 @@ export function tryCallFunc<F extends TAnyFunc>(
 export function tryCall<F extends TAnyFunc>(runner: F, catcher?: (e: any) => void): ReturnType<F> {
   try {
     return runner();
-  } catch (e) {
-    if (catcher) catcher(e);
+  }
+  catch (e) {
+    if (catcher)
+      catcher(e);
     throw e;
   }
 }
 
 export function onceFunc<T extends TAnyFunc>(func: T): T {
   let called = false;
-  let result: ReturnType<T> = null;
+  let result: ReturnType<T> | null = null;
   return function (...args) {
-    if (called) return result;
+    if (called)
+      return result;
     called = true;
-    return (result = func.apply(null, args));
+    return (result = func(...args));
   } as T;
 }

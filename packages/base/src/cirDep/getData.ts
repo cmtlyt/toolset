@@ -1,4 +1,4 @@
-import { TAllType } from '../types/base';
+import type { TAllType } from '../types/base';
 
 import { cacheByReturn } from './funcHandler';
 import { getUserAgent } from './getUserAgent';
@@ -27,7 +27,8 @@ export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: str
         [, appNameI, appVersionI] = matched.map((item: any) => (isString(item) ? item.toLowerCase() : item));
       }
     }
-  } else if (isAliMiniApp()) {
+  }
+  else if (isAliMiniApp()) {
     const systemInfo = my.getSystemInfoSync() || {};
     const { version = '', app = '' } = systemInfo;
     appNameI = app.toLowerCase();
@@ -37,14 +38,21 @@ export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: str
 });
 
 export const getOsType = cacheByReturn(() => {
-  if (isIOS()) return 'ios';
-  if (isAndroid()) return 'android';
-  if (isOpenHarmony()) return 'openHarmony';
+  if (isIOS())
+    return 'ios';
+  if (isAndroid())
+    return 'android';
+  if (isOpenHarmony())
+    return 'openHarmony';
   if (isNode()) {
+    // eslint-disable-next-line node/prefer-global/process
     const platform = process.platform;
-    if (platform === 'darwin') return 'mac';
-    if (platform === 'win32') return 'windows';
-    if (platform === 'linux') return 'linux';
+    if (platform === 'darwin')
+      return 'mac';
+    if (platform === 'win32')
+      return 'windows';
+    if (platform === 'linux')
+      return 'linux';
     return platform;
   }
   return 'other';
@@ -134,6 +142,7 @@ export const getDeviceInfo = cacheByReturn(
 
 export function getType(value: any): TAllType {
   const baseType = typeof value;
-  if (baseType !== 'object' && baseType !== 'function') return baseType;
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
+  if (baseType !== 'object' && baseType !== 'function')
+    return baseType;
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase() as TAllType;
 }

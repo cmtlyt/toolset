@@ -1,6 +1,7 @@
-import { TExclude, warning } from '@cmtlyt/base';
-
-import { BaseStorage, StorageBaseOptions } from './base';
+import type { TExclude } from '@cmtlyt/base';
+import type { StorageBaseOptions } from './base';
+import { warning } from '@cmtlyt/base';
+import { BaseStorage } from './base';
 
 interface MemoryStorageOptions extends TExclude<StorageBaseOptions, 'autoSaveDelay'> {}
 

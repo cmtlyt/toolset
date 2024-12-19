@@ -56,6 +56,8 @@ export const isKraken = cacheByReturn(() => {
 
 // 快应用
 export const isQuickApp = cacheByReturn(() => {
+  // @ts-expect-error global
+  // eslint-disable-next-line no-restricted-globals
   return typeof global !== 'undefined' && global !== null && typeof global.callNative !== 'undefined' && !isWeex();
 });
 
@@ -349,9 +351,9 @@ export const isAliAppMiniApp = cacheByReturn(() => {
 export const isIPhoneX = cacheByReturn(() => {
   const { screenHeight } = getDeviceInfo();
   return (
-    isIOS() &&
-    [812, 896, 844, 926, 693, 780, 932, 852].includes(
-      isWeChatMiniProgram ? (wx.getSystemInfoSync() || {}).screenHeight : screenHeight,
+    isIOS()
+    && [812, 896, 844, 926, 693, 780, 932, 852].includes(
+      isWeChatMiniProgram() ? (wx.getSystemInfoSync() || {}).screenHeight : screenHeight,
     )
   );
 });

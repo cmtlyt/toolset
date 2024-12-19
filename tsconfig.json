@@ -1,29 +1,27 @@
 {
   "compilerOptions": {
-    "importHelpers": true,
-    "allowUnreachableCode": false, // 报告执行不到的代码错误
-    "allowUnusedLabels": false, // 报告未使用的标签错误
-    "alwaysStrict": false, // 以严格模式解析并为每个源文件生成 "use strict" 语句
-    "strictNullChecks": false, // 当尝试在可能为 null 或 undefined 的值上执行操作时，会产生错误
-    "baseUrl": ".", // 工作根目录, 会影响 vscode auto import 生成的路径
-    "preserveConstEnums": false, // true 的话 const enum 产生内联成员, 会导致没有引入的 const enum 也会生成代码
-    "isolatedModules": false, // 将模块视为独立的, 不会被其他模块所引用
-    "experimentalDecorators": true, // 启用装饰器
-    "moduleResolution": "bundler",
-    "sourceMap": false, // 关闭 source map
-    "esModuleInterop": true, // 允许 import * as
-    "resolveJsonModule": true, // 允许 import json
-    "pretty": true, // 格式化
-    "noImplicitAny": false, // 不禁用 any
-    "removeComments": true, // 移除注释
-    "forceConsistentCasingInFileNames": true, // 禁止对同一个文件不一致的引用
-    "types": ["node"],
-    "target": "ES2020", // 编译目标
-    "module": "ESNext", // 当前代码语法
-    "declaration": true, // 是否自动创建类型声明文件
-    "allowJs": false, // 不允许编译 js 文件
-    "lib": ["ES6", "ES2017", "DOM"]
+    "target": "ESNext",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": ["packages", "vitest.config.ts", "vitest.workspace.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "packages/**/*.ts"
+  ],
+  "exclude": [
+    "**/__test__"
+  ]
 }

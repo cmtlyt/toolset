@@ -1,4 +1,4 @@
-import { LoggerConfigObj } from 'src/types';
+import type { LoggerConfigObj } from 'src/types';
 
 export const fontStyle = `line-height:1.5;`;
 export const lineBreakStyle = `${fontStyle}`;

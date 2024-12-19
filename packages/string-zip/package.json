@@ -1,0 +1,63 @@
+{
+  "name": "@cmtlyt/string-zip",
+  "type": "module",
+  "version": "0.4.1",
+  "private": false,
+  "packageManager": "pnpm@9.14.4",
+  "description": "cl字符串数据压缩",
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "license": "MIT",
+
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/stringZip/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/stringZip"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues"
+  },
+  "keywords": [
+    "cl",
+    "string-zip",
+    "cmtlyt",
+    "string",
+    "zip",
+    "字符串",
+    "压缩"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "release": "bumpp && pnpm publish"
+  },
+  "clPublish": {
+    "checkDir": [
+      "src/**/*.ts"
+    ]
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@cmtlyt/base": "workspace:^"
+  }
+}

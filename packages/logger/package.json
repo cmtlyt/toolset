@@ -1,20 +1,28 @@
 {
   "name": "@cmtlyt/logger",
+  "type": "module",
   "version": "0.2.1",
-  "description": "cmtlyt的日志输出工具",
-  "module": "./dist/index.esm.js",
-  "types": "'./dist/index.d.ts",
-  "unpkg": "./dist/index.umd.js",
-  "exports": {
-    ".": {
-      "import": "./dist/index.esm.js",
-      "default": "./dist/index.umd.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./*": "./dist/*"
+  "private": false,
+  "packageManager": "pnpm@9.14.4",
+  "description": "",
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
   },
-  "scripts": {
-    "build": "tsc && rollup -c"
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "homepage": "https://cmtlyt.github.io/toolset/packages/logger/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/logger"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues",
+    "email": "cmtlyt@163.com"
   },
   "keywords": [
     "cmtlyt",
@@ -22,32 +30,25 @@
     "日志输出",
     "埋点"
   ],
-  "author": {
-    "name": "cmtlyt",
-    "email": "cmtlyt@163.com"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
   },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
-  "private": false,
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cmtlyt/toolset.git",
-    "directory": "packages/logger"
-  },
-  "clPublish": {
-    "checkDir": [
-      "src/**/*.ts"
-    ]
-  },
-  "homepage": "https://cmtlyt.github.io/toolset/packages/logger/",
-  "bugs": {
-    "url": "https://github.com/cmtlyt/toolset/issues",
-    "email": "cmtlyt@163.com"
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "release": "bumpp && pnpm publish"
   }
 }

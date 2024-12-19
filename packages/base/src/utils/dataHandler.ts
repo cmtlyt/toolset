@@ -1,20 +1,22 @@
-import { TObject } from '../types/base';
+import type { TObject } from '../types/base';
 import { getType } from '../cirDep';
-import { warning } from '../common/warning';
 import { STATIC_TYPE } from '../common/constant';
+import { warning } from '../common/warning';
 
 import { isNull } from './verify';
 
 type GetArray<T> = T extends any[] ? T : T[];
 
 export function getArray<T>(value?: T): GetArray<T> {
-  if (isNull(value)) return [] as any;
+  if (isNull(value))
+    return [] as any;
   return Array.isArray(value) ? (value as any) : ([value] as any);
 }
 
 export function getArraySlice<T>(array: T[], size = 0, skip = 0): T[][] {
-  if (size <= 0) return [array];
-  return array.slice(skip).reduce((acc, cur, index) => {
+  if (size <= 0)
+    return [array];
+  return array.slice(skip).reduce<T[][]>((acc, cur, index) => {
     if (index % size === 0) {
       acc.push([]);
     }
@@ -24,13 +26,15 @@ export function getArraySlice<T>(array: T[], size = 0, skip = 0): T[][] {
 }
 
 export function deepClone<T extends TObject<any>>(obj: T, hash = new WeakMap()): T {
-  if (obj === null || typeof obj !== 'object' || STATIC_TYPE.includes(getType(obj))) return obj;
-  if (hash.has(obj)) return hash.get(obj);
+  if (obj === null || typeof obj !== 'object' || STATIC_TYPE.includes(getType(obj)))
+    return obj;
+  if (hash.has(obj))
+    return hash.get(obj);
 
   const newObj: TObject<any> = Array.isArray(obj) ? [] : {};
   hash.set(obj, newObj);
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       newObj[key] = deepClone(obj[key], hash);
     }
   }
@@ -39,14 +43,18 @@ export function deepClone<T extends TObject<any>>(obj: T, hash = new WeakMap()):
 
 function _merge(target: any, source: any) {
   const targetType = getType(target);
-  if (STATIC_TYPE.includes(targetType)) return target;
+  if (STATIC_TYPE.includes(targetType))
+    return target;
   if (targetType !== getType(source)) {
-    if (STATIC_TYPE.includes(getType(source))) return source;
+    if (STATIC_TYPE.includes(getType(source)))
+      return source;
     warning('传入的两个参数类型不同,无法合并');
     return target;
   }
-  if (targetType === 'string' || targetType === 'number') return target + source;
-  if (Array.isArray(target)) return target.concat(source);
+  if (targetType === 'string' || targetType === 'number')
+    return target + source;
+  if (Array.isArray(target))
+    return target.concat(source);
   if (targetType === 'object') {
     for (const key in source) {
       const item = source[key];
@@ -72,7 +80,8 @@ export function cloneMerge(target: any, ...source: any) {
 
 export function formatDate(date = new Date(), format?: string) {
   warning('未来会实现~');
-  if (!format) return date.valueOf() + '';
+  if (!format)
+    return `${date.valueOf()}`;
   // todo format
   return date.toLocaleString();
 }
@@ -87,9 +96,10 @@ function _replaceOne(str: string, pattern: string | RegExp, replacer: (...args: 
     }
     (async () => {
       try {
-        const repStr = await replacer.apply(null, Array.from(match)).catch(reject);
+        const repStr = (await (replacer(...Array.from(match)) as Promise<string>).catch(reject))!;
         resolve(str.replace(pattern, repStr));
-      } catch (e) {
+      }
+      catch (e) {
         reject(e);
       }
     })();
@@ -101,7 +111,8 @@ export async function asyncReplace(
   pattern: string | RegExp,
   replacer: ((matchString: string, ...args: string[]) => string | Promise<string>) | string,
 ) {
-  if (typeof replacer === 'string') return str.replace(pattern, replacer);
+  if (typeof replacer === 'string')
+    return str.replace(pattern, replacer);
   if (typeof replacer !== 'function') {
     throw new TypeError('replacer 必须是字符串或函数');
   }
@@ -116,17 +127,21 @@ export async function asyncReplace(
       let match: any;
       let lastIndex = 0;
       const proms = [];
-      while ((match = pattern.exec(str)) !== null) {
-        const prom = replacer.apply(null, Array.from(match));
+      match = pattern.exec(str);
+      while (match !== null) {
+        // @ts-expect-error 通过 Array.from 直接转换 match
+        const prom = replacer(...Array.from(match));
         const preStr = str.slice(lastIndex, match.index);
         lastIndex = match.index + match[0].length;
         proms.push(preStr, prom);
+        match = pattern.exec(str);
       }
       const lastStr = str.slice(lastIndex);
       proms.push(lastStr);
       (async () => {
         const temp = await Promise.all(proms).catch(reject);
-        if (!temp) return;
+        if (!temp)
+          return;
         resolve(temp.join(''));
       })();
     });
@@ -138,11 +153,13 @@ export async function asyncFilter<T>(
   arr: T[],
   predicate: (item: T, index: number) => Promise<boolean> | boolean,
 ): Promise<T[]> {
-  if (!Array.isArray(arr)) throw new TypeError('arr 必须是数组');
-  if (!predicate || typeof predicate !== 'function') return arr;
+  if (!Array.isArray(arr))
+    throw new TypeError('arr 必须是数组');
+  if (!predicate || typeof predicate !== 'function')
+    return arr;
   return (await Promise.all(arr.map(async (item, idx) => ((await predicate(item, idx)) ? item : null)))).filter(
     Boolean,
-  );
+  ) as T[];
 }
 
 export async function streamToString(stream: ReadableStream) {
@@ -150,7 +167,6 @@ export async function streamToString(stream: ReadableStream) {
   const chunks = [];
   let result = '';
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { done, value } = await reader.read();
     if (done) {
@@ -173,7 +189,6 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
   const chunks = [];
   let totalSize = 0;
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     const { done, value } = await reader.read();
     if (done) {
@@ -196,12 +211,14 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
 }
 
 export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
-  if (arrayBuffer.byteLength >= 65556) warning('buffer size too large, use arrayBufferToChunkBase64String');
-  return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
+  if (arrayBuffer.byteLength >= 65556)
+    warning('buffer size too large, use arrayBufferToChunkBase64String');
+  return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
 }
 
 export function base64StringToUint8Array(base64String: string) {
-  if (base64String.length >= 65556) warning('base64 size too large, use chunkBase64StringToArrayBuffer');
+  if (base64String.length >= 65556)
+    warning('base64 size too large, use chunkBase64StringToArrayBuffer');
   const binaryString = atob(base64String);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
@@ -226,7 +243,7 @@ export function arrayBufferToChunkBase64String(arrayBuffer: ArrayBuffer) {
 // TODO 不使用 chunk 方式转换
 export function chunkBase64StringToBlob(base64String: string) {
   const chunks = base64String.split('|');
-  return new Blob(chunks.map((chunk) => base64StringToUint8Array(chunk)));
+  return new Blob(chunks.map(chunk => base64StringToUint8Array(chunk)));
 }
 
 // TODO 不使用 chunk 方式转换

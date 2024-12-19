@@ -21,9 +21,11 @@ export class Calculator {
   #_getValue(value: number | Calculator) {
     if (value instanceof Calculator) {
       return value.getCurrValue();
-    } else if (isNumber(value)) {
+    }
+    else if (isNumber(value)) {
       return value;
-    } else {
+    }
+    else {
       throw new TypeError('value 必须是一个数字或 Calculator');
     }
   }
@@ -34,25 +36,30 @@ export class Calculator {
     this.#_last = value;
     return this;
   }
+
   sub(value: number | Calculator) {
     value = this.#_getValue(value);
     this.#_result = this.#_result + this.#_last;
     this.#_last = -value;
     return this;
   }
+
   mut(value: number | Calculator) {
     value = this.#_getValue(value);
     this.#_last *= value;
     return this;
   }
+
   div(value: number | Calculator) {
     value = this.#_getValue(value);
     this.#_last /= value;
     return this;
   }
+
   getCurrValue() {
     return this.#_result + this.#_last;
   }
+
   valueOf() {
     this.#_last = this.getCurrValue();
     this.#_result = 0;

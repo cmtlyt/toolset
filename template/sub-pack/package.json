@@ -1,0 +1,40 @@
+{
+  "name": "sub-package",
+  "type": "module",
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.14.4",
+  "description": "",
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/cmtlyt/sub-package#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/sub-package.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/sub-package/issues"
+  },
+  "keywords": [],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pnpm test && pnpm build",
+    "release": "bumpp && pnpm publish"
+  }
+}

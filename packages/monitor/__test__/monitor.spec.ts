@@ -1,8 +1,10 @@
+// @vitest-environment happy-dom
+
 import { describe, it, expect } from 'vitest';
 import { createMonitor } from '../src';
 
 describe('monitor', () => {
-  const logs = [];
+  const logs: any[] = [];
   const logger = createMonitor({
     loggerOptions: {
       noOutput: true,

@@ -1,6 +1,6 @@
+import { cacheByReturn } from '../../cirDep';
 import { warning } from '../../common/warning';
 import { isHttpsUrlString, safeGetGlobal } from '../../utils';
-import { cacheByReturn } from '../../cirDep';
 
 const hasExecCommand = cacheByReturn(() => {
   return typeof safeGetGlobal().document?.execCommand === 'function';
@@ -39,7 +39,8 @@ const copy = cacheByReturn((): ((text: string) => void) => {
     return (text) => {
       navigator.clipboard.writeText(text);
     };
-  } else if (hasCopyCommand()) {
+  }
+  else if (hasCopyCommand()) {
     const doc = safeGetGlobal().document;
     return (text) => {
       const input = doc.createElement('input');
@@ -60,7 +61,8 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
     return () => {
       return navigator.clipboard.readText();
     };
-  } else if (hasPasteCommand()) {
+  }
+  else if (hasPasteCommand()) {
     const doc = safeGetGlobal().document;
     return () => {
       const input = doc.createElement('input');
@@ -68,8 +70,9 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
       input.select();
       try {
         doc.execCommand('paste');
-      } catch (e) {
-        return Promise.reject('paste not supported');
+      }
+      catch {
+        return Promise.reject(new Error('paste not supported'));
       }
       const text = input.value;
       doc.body.removeChild(input);
@@ -78,7 +81,7 @@ const paste = cacheByReturn((): (() => Promise<string>) => {
   }
   return () => {
     warning('paste not supported');
-    return Promise.reject('paste not supported');
+    return Promise.reject(new Error('paste not supported'));
   };
 });
 
@@ -87,7 +90,8 @@ const clear = cacheByReturn((): (() => void) => {
     return () => {
       navigator.clipboard.writeText('');
     };
-  } else if (hasCopyCommand()) {
+  }
+  else if (hasCopyCommand()) {
     const doc = safeGetGlobal().document;
     return () => {
       const input = doc.createElement('input');

@@ -1,120 +1,120 @@
 // @vitest-environment happy-dom
 // @ts-nocheck
 
-import { it, describe, expectTypeOf, expect } from 'vitest';
+import { describe, expect, expectTypeOf, it } from 'vitest';
 import {
+  asyncFilter,
+  asyncReplace,
+  chunkTask,
+  cloneMerge,
+  compose,
+  createLinkByString,
+  curry,
+  debounce,
+  deepClone,
+  EMPTY,
+  gc,
   generateClassName,
   generateCookieInfo,
-  getArray,
-  gc,
-  getType,
-  getNow,
-  getDeviceInfo,
-  safeGetGlobal,
-  getRandomString,
-  createLinkByString,
-  isUndef,
-  isNaN,
-  isNumber,
-  isString,
-  isPromise,
-  isEmpty,
-  isFile,
-  isBlob,
-  isUrl,
-  isTrue,
-  isFalse,
-  isAsyncFunc,
   getAliAppEnv,
-  memoize,
-  curry,
-  sleep,
-  reverseArgs,
-  throttle,
-  debounce,
-  compose,
-  pipe,
-  chunkTask,
-  sleepSync,
+  getArray,
   getArraySlice,
-  deepClone,
-  merge,
-  cloneMerge,
-  asyncReplace,
-  asyncFilter,
-  isNode,
-  isWeb,
-  isIOS,
-  isAndroid,
-  isChrome,
-  isFirefox,
-  isSafari,
-  isNewEdge,
-  isOldEdge,
-  isEdge,
-  isWeex,
-  isKraken,
-  isQuickApp,
-  isTBWeb,
-  isLTWeb,
-  isTbLive,
-  isTbWebEnv,
-  isWechatWeb,
-  isAliPayWeb,
-  isWebInDingding,
-  isTuan,
-  isLST,
-  isLXB,
-  isAliAppWeb,
-  isMiniApp,
-  isAliMiniApp,
-  isDingdingMiniapp,
-  isTaobaoMiniapp,
-  isAlipayMiniapp,
-  isTBMiniapp,
-  isLTMiniapp,
-  isMMCMiniapp,
-  isXiNiaoapp,
-  isCaiNiaoApp,
-  isAlipayApp,
-  isByteDanceMicroApp,
-  isBaiduSmartProgram,
-  isKuaiShouMiniProgram,
-  isWeChatMiniProgram,
-  isAliMiniappPlatform,
-  isTBNode,
-  isLTNode,
-  isWechatNode,
-  isTB,
-  isLT,
-  isAliPay,
-  isTmall,
+  getDeviceInfo,
+  getNow,
+  getRandomString,
+  getType,
   isAliApp,
-  isWechat,
-  isCaiNiaoBusiness,
-  isCaiNiao,
-  isAliUa,
-  isHmApp,
-  isYouKu,
-  isAlipayMiniWeb,
-  isLTMiniWeb,
-  isLBMiniWeb,
-  isTBMiniWeb,
-  isDingTalk,
-  isTuanWebview,
-  isWechatMiniWeb,
-  isWechatH5,
-  isWebInMiniApp,
-  isAliWebInMiniApp,
   isAliAppMiniApp,
-  isOpenHarmony,
-  isIPhoneX,
-  isIPhoneXSMax,
-  isIPhoneXR,
-  isIPhone14PM,
+  isAliAppWeb,
+  isAliMiniApp,
+  isAliMiniappPlatform,
+  isAliPay,
+  isAlipayApp,
+  isAlipayMiniapp,
+  isAlipayMiniWeb,
+  isAliPayWeb,
+  isAliUa,
+  isAliWebInMiniApp,
+  isAndroid,
+  isAsyncFunc,
+  isBaiduSmartProgram,
+  isBlob,
+  isByteDanceMicroApp,
+  isCaiNiao,
+  isCaiNiaoApp,
+  isCaiNiaoBusiness,
+  isChrome,
+  isDingdingMiniapp,
+  isDingTalk,
+  isEdge,
+  isEmpty,
+  isFalse,
+  isFile,
+  isFirefox,
+  isHmApp,
+  isIOS,
   isIOSNotchScreen,
+  isIPhone14PM,
+  isIPhoneX,
+  isIPhoneXR,
+  isIPhoneXSMax,
+  isKraken,
+  isKuaiShouMiniProgram,
+  isLBMiniWeb,
+  isLST,
+  isLT,
+  isLTMiniapp,
+  isLTMiniWeb,
+  isLTNode,
+  isLTWeb,
+  isLXB,
+  isMiniApp,
+  isMMCMiniapp,
+  isNaN,
+  isNewEdge,
+  isNode,
+  isNumber,
+  isOldEdge,
+  isOpenHarmony,
+  isPromise,
+  isQuickApp,
+  isSafari,
+  isString,
+  isTaobaoMiniapp,
+  isTB,
+  isTbLive,
+  isTBMiniapp,
+  isTBMiniWeb,
+  isTBNode,
+  isTBWeb,
+  isTbWebEnv,
+  isTmall,
+  isTrue,
+  isTuan,
+  isTuanWebview,
+  isUndef,
+  isUrl,
+  isWeb,
+  isWebInDingding,
+  isWebInMiniApp,
+  isWechat,
+  isWechatH5,
+  isWeChatMiniProgram,
+  isWechatMiniWeb,
+  isWechatNode,
+  isWechatWeb,
+  isWeex,
+  isXiNiaoapp,
+  isYouKu,
+  memoize,
+  merge,
+  pipe,
+  reverseArgs,
+  safeGetGlobal,
+  sleep,
+  sleepSync,
+  throttle,
 } from '../src';
-import { EMPTY } from '../src';
 
 describe('utils', () => {
   describe('getData', () => {
@@ -178,8 +178,8 @@ describe('utils', () => {
       expect(getType(new WeakMap())).toBe('weakmap');
       expect(getType(new Set())).toBe('set');
       expect(getType(new WeakSet())).toBe('weakset');
-      expect(getType(function () {})).toBe('function');
-      expect(getType(async function () {})).toBe('asyncfunction');
+      expect(getType(() => {})).toBe('function');
+      expect(getType(async () => {})).toBe('asyncfunction');
       expect(getType(Promise.resolve())).toBe('promise');
       expect(getType(new Int8Array())).toBe('int8array');
       expect(getType(new Uint8Array())).toBe('uint8array');
@@ -264,14 +264,14 @@ describe('utils', () => {
     });
 
     it('isNaN', () => {
-      expect(isNaN(NaN)).toBe(true);
+      expect(isNaN(Number.NaN)).toBe(true);
       expect(isNaN(0)).toBe(false);
       expect(isNaN('')).toBe(false);
       expect(isNaN(0 / 1)).toBe(false);
     });
 
     it('isNumber', () => {
-      expect(isNumber(NaN)).toBe(true);
+      expect(isNumber(Number.NaN)).toBe(true);
       expect(isNumber(0)).toBe(true);
       expect(isNumber('')).toBe(false);
       expect(isNumber(0 / 1)).toBe(true);
@@ -279,7 +279,7 @@ describe('utils', () => {
     });
 
     it('isString', () => {
-      expect(isString(NaN)).toBe(false);
+      expect(isString(Number.NaN)).toBe(false);
       expect(isString(0)).toBe(false);
       expect(isString('')).toBe(true);
       expect(isString(0 / 1)).toBe(false);
@@ -295,7 +295,7 @@ describe('utils', () => {
     });
 
     it('isEmpty', () => {
-      expect(isEmpty(NaN)).toBe(true);
+      expect(isEmpty(Number.NaN)).toBe(true);
       expect(isEmpty(0)).toBe(false);
       expect(isEmpty('')).toBe(true);
       expect(isEmpty(0 / 1)).toBe(false);
@@ -319,7 +319,7 @@ describe('utils', () => {
     it('isFile', () => {
       expect(isFile(new File([], 'test'))).toBe(true);
       expect(isBlob(new Blob(['test']))).toBe(true);
-      expect(isFile(NaN)).toBe(false);
+      expect(isFile(Number.NaN)).toBe(false);
       expect(isFile(0)).toBe(false);
       expect(isFile('')).toBe(false);
       expect(isFile(0 / 1)).toBe(false);
@@ -343,7 +343,7 @@ describe('utils', () => {
     it('isBlob', () => {
       expect(isBlob(new File([], 'test'))).toBe(true);
       expect(isBlob(new Blob(['test']))).toBe(true);
-      expect(isBlob(NaN)).toBe(false);
+      expect(isBlob(Number.NaN)).toBe(false);
       expect(isBlob(0)).toBe(false);
       expect(isBlob('')).toBe(false);
       expect(isBlob(0 / 1)).toBe(false);
@@ -376,7 +376,7 @@ describe('utils', () => {
       expect(isUrl('www.taobao.com')).toBe(false);
       expect(isUrl('')).toBe(false);
       expect(isUrl(0)).toBe(false);
-      expect(isUrl(NaN)).toBe(false);
+      expect(isUrl(Number.NaN)).toBe(false);
       expect(isUrl(null)).toBe(false);
       expect(isUrl(undefined)).toBe(false);
     });
@@ -389,7 +389,7 @@ describe('utils', () => {
       expect(isTrue(false)).toBe(false);
       expect(isTrue(0)).toBe(false);
       expect(isTrue('')).toBe(false);
-      expect(isTrue(NaN)).toBe(false);
+      expect(isTrue(Number.NaN)).toBe(false);
       expect(isTrue(null)).toBe(false);
       expect(isTrue(undefined)).toBe(false);
     });
@@ -402,7 +402,7 @@ describe('utils', () => {
       expect(isFalse(true)).toBe(false);
       expect(isFalse(0)).toBe(false);
       expect(isFalse('')).toBe(false);
-      expect(isFalse(NaN)).toBe(false);
+      expect(isFalse(Number.NaN)).toBe(false);
       expect(isFalse(null)).toBe(false);
       expect(isFalse(undefined)).toBe(false);
     });
@@ -476,7 +476,8 @@ describe('utils', () => {
     it('sleep', () => {
       const now = getNow();
       expect(sleep(100))
-        .resolves.toBeUndefined()
+        .resolves
+        .toBeUndefined()
         .then(() => {
           expect(Math.ceil(getNow() - now)).toBeGreaterThanOrEqual(100);
         });
@@ -664,7 +665,7 @@ describe('utils', () => {
       const dcObj = deepClone(obj);
       expect(dcObj.arr[1].b).not.toBe(obj.arr[1].b);
       expect(dcObj.arr[1].arr[1].arr[1]).not.toBe(obj.arr[1].arr[1].arr[1]);
-      expect(deepClone(NaN)).toBe(NaN);
+      expect(deepClone(Number.NaN)).toBe(Number.NaN);
       expect(deepClone(0)).toBe(0);
       expect(deepClone(0 / 1)).toBe(0 / 1);
       expect(deepClone(true)).toBe(true);
@@ -794,7 +795,7 @@ describe('utils', () => {
     });
 
     it('asyncFilter', async ({ expect }) => {
-      const fltFunc = (func) => asyncFilter([1, 2, 3, 4, 5, 6, 7, 8, 9], func);
+      const fltFunc = func => asyncFilter([1, 2, 3, 4, 5, 6, 7, 8, 9], func);
       expect(fltFunc((_, i) => i % 2)).resolves.toEqual([2, 4, 6, 8]);
       const now = getNow();
       expect(

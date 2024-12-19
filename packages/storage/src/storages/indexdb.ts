@@ -1,6 +1,7 @@
-import { caniuse, TRequired, warning } from '@cmtlyt/base';
-
-import { BaseStorage, StorageBaseOptions } from './base';
+import type { TRequired } from '@cmtlyt/base';
+import type { StorageBaseOptions } from './base';
+import { caniuse, warning } from '@cmtlyt/base';
+import { BaseStorage } from './base';
 import { LocalStorage } from './local';
 
 interface IndexedDBStorageOptions extends TRequired<StorageBaseOptions, 'dbName'> {}
@@ -8,6 +9,7 @@ interface IndexedDBStorageOptions extends TRequired<StorageBaseOptions, 'dbName'
 const fieldName = 'value';
 
 export class IndexedDBStorage extends BaseStorage {
+  // @ts-expect-error base storage init
   #_db: IDBDatabase;
   name = 'IndexedDBStorage';
 
@@ -17,6 +19,7 @@ export class IndexedDBStorage extends BaseStorage {
       // @ts-expect-error fullback to LocalStorage
       return new LocalStorage(options);
     }
+    // @ts-expect-error 默认 dbName
     super({ dbName: 'cl-storage', autoSaveDelay: 1000 * 60 * 1, ...options });
   }
 

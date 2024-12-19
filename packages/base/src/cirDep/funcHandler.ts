@@ -8,8 +8,10 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
     return (cacheLoad) => {
       let cache: any = EMPTY;
       return (...args) => {
-        if (cache === EMPTY) cache = cacheLoad();
-        if (typeof cache !== 'function') return cache;
+        if (cache === EMPTY)
+          cache = cacheLoad();
+        if (typeof cache !== 'function')
+          return cache;
         return Reflect.apply(cache, null, args);
       };
     };
@@ -17,9 +19,11 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   return (cacheLoad) => {
     let cache: any = EMPTY;
     return (...args) => {
-      if (cache === EMPTY) cache = cacheLoad();
-      if (typeof cache !== 'function') return cache;
-      return cache.apply(null, args);
+      if (cache === EMPTY)
+        cache = cacheLoad();
+      if (typeof cache !== 'function')
+        return cache;
+      return cache(...args);
     };
   };
 })();
@@ -38,9 +42,10 @@ export const curry: TCurryFunc = function (func) {
   }
   const curried = (...args: any) => {
     if (args.length >= length) {
-      return func.apply(null, args);
-    } else {
-      const tempFunc = (...args2: any) => curried.apply(null, args.concat(args2));
+      return func(...args);
+    }
+    else {
+      const tempFunc = (...args2: any) => curried(...args.concat(args2));
       tempFunc.clength = length - args.length;
       return tempFunc;
     }

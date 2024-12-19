@@ -1,6 +1,6 @@
-import { getRandomString } from '../../utils';
-import { TObject } from '../../types/base';
+import type { TObject } from '../../types/base';
 import { EMPTY } from '../../common/constant';
+import { getRandomString } from '../../utils';
 
 interface PoolItem<T> {
   __id: string;
@@ -18,7 +18,7 @@ interface PoolItem<T> {
 }
 
 interface StoreItem<T> {
-  data: () => T;
+  data: () => T | undefined;
   unUse: () => void;
 }
 
@@ -32,7 +32,8 @@ const poolMap: TObject<Pool<any>> = {};
 class Pool<T> {
   static getPool<T>(poolId: string | symbol = '', size = 5, initFunction?: (idx: number) => T) {
     const initFunc = initFunction || (() => EMPTY);
-    if (!poolId) return new Pool<T>(size, initFunc, poolId);
+    if (!poolId)
+      return new Pool<T>(size, initFunc, poolId);
     return (poolMap[poolId] ??= new Pool<T>(size, initFunc, poolId));
   }
 
@@ -44,12 +45,13 @@ class Pool<T> {
   usableCount: number;
   isClose: boolean;
 
-  constructor(size = 5, initFunction: (idx: number) => any = () => EMPTY, poolId: string | symbol = Symbol()) {
+  constructor(size = 5, initFunction: (idx: number) => any = () => EMPTY, poolId: string | symbol = Symbol('')) {
     this.#_poolId = poolId;
     this.#_pool = Array.from({ length: size }, (_, i) => this.#_genItem(initFunction(i)));
     this.#_waiting = [];
     this.usableCount = this.#_pool.reduce((prev, cur) => {
-      if (cur.data !== EMPTY) prev++;
+      if (cur.data !== EMPTY)
+        prev++;
       return prev;
     }, 0);
     this.isClose = false;
@@ -59,7 +61,8 @@ class Pool<T> {
   #_genItem(data: T): PoolItem<T> {
     return { data, __id: getRandomString(32) };
   }
-  #_putItem(data: T, index: number = null) {
+
+  #_putItem(data: T, index: number | null = null) {
     if (this.isClose) {
       this.#_closeCallback(data);
       throw new Error('池子已关闭');
@@ -69,16 +72,20 @@ class Pool<T> {
       const item = this.#_pool[index];
       item.data = data;
       item.__id = getRandomString(32);
-    } else {
+    }
+    else {
       // 添加
-      const index = this.#_pool.findIndex((item) => item.data === EMPTY);
-      if (!~index) throw new Error('池子已满');
+      const index = this.#_pool.findIndex(item => item.data === EMPTY);
+      if (!~index)
+        throw new Error('池子已满');
       this.#_pool[index] = this.#_genItem(data);
     }
     ++this.usableCount;
   }
+
   async #_genReturn(index: number): Promise<StoreItem<T>> {
-    if (this.isClose) throw new Error('池子已关闭');
+    if (this.isClose)
+      throw new Error('池子已关闭');
     const item = this.#_pool[index];
     // 如果不存在，则等待
     if (!item || item.data === EMPTY) {
@@ -93,7 +100,8 @@ class Pool<T> {
         this.#_putItem(data, index);
         throw new Error('池子已关闭');
       }
-      if (__id !== item.__id) throw new Error('数据已被返还');
+      if (__id !== item.__id)
+        throw new Error('数据已被返还');
     };
     const unUse = () => {
       this.#_putItem(data, index);
@@ -101,14 +109,18 @@ class Pool<T> {
 
     --this.usableCount;
 
-    const dataHandler = function () {
-      if (this !== itemHandler) return;
+    const dataHandler = function (this: typeof itemHandler) {
+      // eslint-disable-next-line ts/no-use-before-define
+      if (this !== itemHandler)
+        return;
       canIUse();
       return data;
     };
 
-    const unUseHandler = function () {
-      if (this !== itemHandler) return;
+    const unUseHandler = function (this: typeof itemHandler) {
+      // eslint-disable-next-line ts/no-use-before-define
+      if (this !== itemHandler)
+        return;
       canIUse();
       return unUse();
     };
@@ -129,16 +141,18 @@ class Pool<T> {
     this.#_putItem(data);
     // 如果存在等待队列，则取出第一个
     if (this.#_waiting.length) {
-      const { resolve } = this.#_waiting.shift();
+      const { resolve } = this.#_waiting.shift()!;
       this.get().then((item) => {
         resolve(item);
       });
     }
   }
+
   async get() {
-    const index = this.#_pool.findIndex((item) => item.data !== EMPTY);
+    const index = this.#_pool.findIndex(item => item.data !== EMPTY);
     return this.#_genReturn(index);
   }
+
   close(callback: (data: T) => void) {
     this.#_pool.forEach(({ data }) => callback(data));
     this.#_pool = [];

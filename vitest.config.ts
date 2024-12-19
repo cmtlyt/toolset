@@ -6,7 +6,7 @@ export default defineConfig({
       enabled: true,
       provider: 'v8',
       exclude: [
-        'packages/document/**',
+        'document/**',
         'packages/**/dist/**',
         '*.workspace.{js,ts}',
         '*.config.{js,ts}',
