@@ -1,21 +1,21 @@
 {
-  "name": "template-pack",
+  "name": "@cmtlyt/toolset",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@9.14.4",
-  "description": "开箱即用的 npm 包模板",
+  "description": "cmtlyt 工具集",
   "author": {
     "name": "cmtlyt",
     "email": "cmtlyt@163.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/cmtlyt/template-pack#readme",
+  "homepage": "https://github.com/cmtlyt/toolset#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cmtlyt/template-pack.git"
+    "url": "git+https://github.com/cmtlyt/toolset.git"
   },
   "bugs": {
-    "url": "https://github.com/cmtlyt/template-pack/issues"
+    "url": "https://github.com/cmtlyt/toolset/issues"
   },
   "keywords": [],
   "exports": {
@@ -34,7 +34,6 @@
     "stub": "pnpm -r --filter=\"./packages/*\" --parallel run stub",
     "build": "pnpm -r --filter=\"./packages/*\" run build",
     "test": "vitest",
-    "changelog": "pnpm -r --filter=\"./packages/*\" run changelog",
     "release": "esno ./scripts/release.ts && pnpm -r --filter=\"./packages/*\" publish",
     "test:ci": "pnpm -r --filter=\"./packages/*\" run test",
     "gsp": "esno ./scripts/generate-sub-package.ts",
