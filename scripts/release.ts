@@ -1,22 +1,33 @@
-import { execSync } from 'node:child_process';
-import process from 'node:process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { versionBump } from 'bumpp';
 import chalk from 'chalk';
 import { globSync } from 'glob';
+import prompt from 'prompts';
 
-function execCommand(command: string) {
-  execSync(command, {
-    stdio: [process.stdin, process.stdout, process.stderr],
+async function selectPackage(packages: string[]) {
+  const choices = packages.map((pkg) => {
+    const packageJson = JSON.parse(fs.readFileSync(pkg, 'utf-8'));
+    const { name, version } = packageJson;
+    return { title: `${name} v${version}`, value: { name, cwd: path.dirname(pkg), version } };
   });
+  const { pkgs } = await prompt({ type: 'autocompleteMultiselect', name: 'pkgs', choices, message: '请选择需要更新版本的包', instructions: false });
+  return pkgs;
 }
 
-(function run() {
-  const packages = globSync('packages/*', { absolute: true });
+async function patchVersion(cwd: string) {
+  await versionBump({ cwd, commit: false, tag: false, noGitCheck: true, push: false, confirm: false, files: ['package.json'] });
+}
 
-  for (const pkgPath of packages) {
-    const packageName: string = pkgPath.split('/').pop()!;
-    console.log(chalk.blue(`--- bumpp ${packageName} start ---`));
-    process.chdir(pkgPath);
-    execCommand('npx bumpp');
-    console.log(chalk.green(`--- bumpp ${packageName} success ---`));
+(async function run() {
+  const packages = globSync('packages/**/package.json', { absolute: true, ignore: ['**/node_modules/**'] });
+  const dumpPackages = await selectPackage(packages);
+  if (!dumpPackages || !dumpPackages.length)
+    return;
+  for (const pkgInfo of dumpPackages) {
+    const { cwd, name } = pkgInfo;
+    console.log(chalk.blue(`--- bumpp ${name} start ---`));
+    patchVersion(cwd);
+    console.log(chalk.green(`--- bumpp ${name} success ---`));
   }
 })();
