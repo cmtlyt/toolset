@@ -1,3 +1,4 @@
+/* eslint-disable ts/ban-ts-comment */
 // @ts-nocheck
 import { describe, expect, it } from 'vitest';
 import { Calculator } from '../src/tools/calculator';

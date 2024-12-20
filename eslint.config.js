@@ -11,7 +11,6 @@ export default antfu({
     '**/dist',
     '**/.temp',
     '**/*.svg',
-    '**/__test__',
   ],
   stylistic: {
     indent: 2,
@@ -21,5 +20,10 @@ export default antfu({
 }, {
   rules: {
     'ts/explicit-function-return-type': 'off',
+  },
+}, {
+  files: ['**/__test__/*'],
+  rules: {
+    'eslint-comments/no-unlimited-disable': 'off',
   },
 });

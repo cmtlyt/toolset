@@ -1,3 +1,4 @@
+/* eslint-disable */
 // @vitest-environment happy-dom
 // @ts-nocheck
 

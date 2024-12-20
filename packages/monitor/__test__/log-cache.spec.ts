@@ -1,5 +1,6 @@
+/* eslint-disable */
 // @ts-nocheck
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { logCache } from '../src/store';
 
 describe('log cache', () => {
@@ -23,7 +24,7 @@ describe('log cache', () => {
     logCache.push(1);
     logCache.push({ value: 123 });
     logCache.push('test');
-    logCache.push(function () {});
+    logCache.push(() => {});
     expect(logCache.viewCache()).toMatchInlineSnapshot(`
       [
         1,

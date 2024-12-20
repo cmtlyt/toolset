@@ -1,6 +1,5 @@
 // @vitest-environment happy-dom
-
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { createMonitor } from '../src';
 
 describe('monitor', () => {
@@ -13,7 +12,7 @@ describe('monitor', () => {
         system: { inherit: 'info', kind: 'system' },
       },
     },
-    reportLog: (info) => logs.push(info),
+    reportLog: info => logs.push(info),
   });
 
   it('custom logger', () => {

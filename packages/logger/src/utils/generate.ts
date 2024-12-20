@@ -7,7 +7,9 @@ import { LogThrow } from '../types';
 export function generateLoggerConfig(logConfig?: Partial<LoggerConfigObj>): LoggerConfigObj {
   const conf = { ...defaultConf };
   if (logConfig) {
-    Object.entries(logConfig).forEach(([key, item]) => {
+    const keys = Object.keys(logConfig).sort() as Kind[];
+    keys.forEach((key) => {
+      const item = logConfig[key] as LoggerConfig;
       const { inherit, ...userConf } = item;
       if (inherit) {
         const inheritConf = conf[inherit as Kind];

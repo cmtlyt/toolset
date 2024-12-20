@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { setStore, getStore, removeStore, clearStore } from '../src/store';
+import { clearStore, getStore, removeStore, setStore } from '../src/store';
 
 describe('store', () => {
   it('setStore and getStore', () => {
@@ -11,6 +11,7 @@ describe('store', () => {
       }
     `);
     expect(getStore('test1')).toBeUndefined();
+    // eslint-disable-next-line no-console
     setStore('test', () => console.log(1));
     expect(getStore('test')).toBeTypeOf('function');
     expect(getStore('test').toString()).toBe('() => console.log(1)');
