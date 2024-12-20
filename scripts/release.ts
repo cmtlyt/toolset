@@ -14,7 +14,7 @@ function execCommand(command: string) {
 
   for (const pkgPath of packages) {
     const packageName: string = pkgPath.split('/').pop()!;
-    console.log(chalk.green(`--- bumpp ${packageName} start ---`));
+    console.log(chalk.blue(`--- bumpp ${packageName} start ---`));
     process.chdir(pkgPath);
     execCommand('npx bumpp');
     console.log(chalk.green(`--- bumpp ${packageName} success ---`));
