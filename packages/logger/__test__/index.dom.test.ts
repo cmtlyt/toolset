@@ -1,7 +1,8 @@
+// @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
 import { createLogger } from '../src';
 
-describe('logger 包测试', () => {
+describe('logger 包测试 (dom)', () => {
   const logBeforeInfo: any[] = [];
   const outputMessage: any[] = [];
   const outputLoggerConfig = {
@@ -107,7 +108,7 @@ describe('logger 包测试', () => {
     `);
     expect(outputMessage).toMatchInlineSnapshot(`
       [
-        "["%cINFO%c\\n%cinfo 输出 %c\\n%cTRACE%c\\n%c    at D:\\\\code\\\\@cmtlyt\\\\toolset\\\\packages\\\\logger\\\\__test__\\\\index.test.ts:102:12","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem 0.4rem 0 0;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:0 0.4rem 0.4rem;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem 0.4rem 0 0;margin-top:0.2rem;border-radius:0.4rem 0.4rem 0 0;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:0 0.4rem 0.4rem;"]",
+        "["%cINFO%c\\n%cinfo 输出 %c\\n%cTRACE%c\\n%c    at D:\\\\code\\\\@cmtlyt\\\\toolset\\\\packages\\\\logger\\\\__test__\\\\index.dom.test.ts:103:12","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem 0.4rem 0 0;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:0 0.4rem 0.4rem;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem 0.4rem 0 0;margin-top:0.2rem;border-radius:0.4rem 0.4rem 0 0;","line-height:1.5;","line-height:1.5;padding:0.1rem 0.4rem;border:0.1rem solid #d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:0 0.4rem 0.4rem;"]",
       ]
     `);
     logBeforeInfo.length = 0;
