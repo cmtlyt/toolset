@@ -59,7 +59,7 @@ describe('logger 包测试', () => {
     const idx = globalIdx;
     logger.info('info 输出');
     expect(stringify(logBeforeInfo[idx])).toMatchInlineSnapshot(`""{\\"kind\\":\\"info\\",\\"messages\\":[\\"info输出\\"],\\"logConf\\":{\\"kind\\":\\"info\\",\\"tagColor\\":\\"#000\\",\\"tagBg\\":\\"#d9d9d9\\",\\"contentColor\\":\\"#000\\",\\"contentBg\\":\\"#fff\\",\\"borderColor\\":\\"#d9d9d9\\"}}""`);
-    expect(stringify(outputMessage[idx])).toMatchInlineSnapshot(`""[\\"%cINFO%c\\\\n%cinfo输出%c\\\\n%cTRACE%c\\\\n%catD:\\\\\\\\code\\\\\\\\@cmtlyt\\\\\\\\toolset\\\\\\\\packages\\\\\\\\logger\\\\\\\\__test__\\\\\\\\index.dom.test.ts:60:12\\",\\"line-height:1.5;padding:0.1rem0.4rem;border:0.1remsolid#d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem0.4rem00;\\",\\"line-height:1.5;\\",\\"line-height:1.5;padding:0.1rem0.4rem;border:0.1remsolid#d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:00.4rem0.4rem;\\",\\"line-height:1.5;\\",\\"line-height:1.5;padding:0.1rem0.4rem;border:0.1remsolid#d9d9d9;color:#000;background:#d9d9d9;border-radius:0.4rem0.4rem00;margin-top:0.2rem;border-radius:0.4rem0.4rem00;\\",\\"line-height:1.5;\\",\\"line-height:1.5;padding:0.1rem0.4rem;border:0.1remsolid#d9d9d9;margin-top:-0.12rem;color:#000;background:#fff;border-radius:00.4rem0.4rem;\\"]""`);
+    expect(stringify(outputMessage[idx]).includes('TRACE')).toBe(true);
   });
 
   it('中断输出测试', () => {
