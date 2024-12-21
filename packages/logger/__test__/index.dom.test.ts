@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { createLogger } from '../src';
+// eslint-disable-next-line antfu/no-import-dist
+import { createLogger } from '../dist';
 
 function stringify(obj: any) {
   try {

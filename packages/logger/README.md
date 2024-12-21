@@ -30,6 +30,14 @@ pnpm add @cmtlyt/logger
 
 ## 更新
 
+### v0.2.3
+
+通过对 logConfig 的 key 进行 sort 保证顺序的一致性
+
+### v0.2.2
+
+工程重构, 上层构建工具, 补充单测
+
 ### v0.2.1
 
 修复创建 logger 时的配置类型

@@ -33,7 +33,6 @@
     "stub": "unbuild --stub",
     "build": "unbuild",
     "test": "vitest run",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "pnpm test && pnpm run changelog && pnpm build"
+    "prepublishOnly": "pnpm build && pnpm test"
   }
 }

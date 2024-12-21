@@ -1,6 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { createMonitor } from '../src';
+// eslint-disable-next-line antfu/no-import-dist
+import { createMonitor } from '../dist';
 
 describe('monitor', () => {
   const logs: any[] = [];

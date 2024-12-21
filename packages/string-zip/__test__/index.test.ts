@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
-
 import { describe, expect, it } from 'vitest';
-import { gzip, unGzip } from '../src';
+// eslint-disable-next-line antfu/no-import-dist
+import { gzip, unGzip } from '../dist';
 
 describe('gzip check', () => {
   const str
