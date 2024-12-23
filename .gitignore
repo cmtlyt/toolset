@@ -11,3 +11,4 @@ node_modules
 coverage
 .eslintcache
 doc_build
+__screenshots__

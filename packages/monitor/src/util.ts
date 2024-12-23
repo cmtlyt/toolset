@@ -11,7 +11,7 @@ const EXCLUDE_PARAMS = ['loggerOptions', 'formatLogInfo', 'reportStrategy', 'rep
 
 export function createMonitorLogger<T extends string, E extends TObject<any>>(config: MonitorConfig<T, E>) {
   const extendsConfig = omit(EXCLUDE_PARAMS, config);
-  const { loggerOptions, reportStrategy, reportLog, formatLogInfo = v => v } = config;
+  const { loggerOptions, reportStrategy, reportLog, formatLogInfo = v => v, formatReportInfo = v => v } = config;
   return createLogger({
     ...loggerOptions,
     ...extendsConfig,
@@ -21,7 +21,8 @@ export function createMonitorLogger<T extends string, E extends TObject<any>>(co
       // @ts-expect-error nocheck config
       const logInfo = formatLogInfo.call(config, { config, logInfo: event });
       const needReport = (reportStrategy && reportStrategy.call(config, logInfo)) ?? true;
-      needReport && reportLog && reportLog.call(config, logInfo);
+      const reportInfo = formatReportInfo.call(config, logInfo);
+      needReport && reportLog && reportLog.call(config, reportInfo);
     },
   });
 }

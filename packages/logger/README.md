@@ -30,6 +30,10 @@ pnpm add @cmtlyt/logger
 
 ## 更新
 
+### v0.2.4
+
+格式化输出内容方法修订
+
 ### v0.2.3
 
 通过对 logConfig 的 key 进行 sort 保证顺序的一致性

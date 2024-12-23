@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { describe, expect, it } from 'vitest';
-import { decodeDataSchema, encodeDataSchema, jsonSchemaGenerator, mockFromSchema, verifyBySchema } from '../src/index';
+import { decodeDataSchema, encodeDataSchema, jsonSchemaGenerator, mockFromSchema, verifyBySchema, typeObjectToSchema } from '../src';
 
 function stringify(obj:any) {
   try{
@@ -138,4 +138,10 @@ describe('jsonSchema', () => {
       }
     });
   });
+
+  it('typeObjectToSchema', ()=>{
+    const schema = typeObjectToSchema({a:'string', b:'number', c:'boolean'})
+
+    expect(schema).toMatchInlineSnapshot(`"{"type":"object","description":"","properties":{"a":{"type":"string","description":""},"b":{"type":"number","description":""},"c":{"type":"boolean","description":""}},"required":["a","b","c"]}"`)
+  })
 });

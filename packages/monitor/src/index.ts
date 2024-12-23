@@ -20,7 +20,7 @@ export function createMonitor<ExtendLogType extends string = MonitorKind, Extend
   // 获取性能数据
   savePagePerformanceInfo();
   // 初始化事件监听
-  initEventListener(config.listenerEvents, config.needListenerCapture);
+  initEventListener(config.rootElement, config.listenerEvents, config.needListenerCapture);
   // 初始化日志输出对象
   const logger = createMonitorLogger(config);
   // 输出所有缓存的日志

@@ -19,21 +19,27 @@ export interface BaseMonitorConfig<
   UserExtendLogType extends string = MonitorKind,
   // @ts-expect-error 默认值
   ExtendConfig extends TObject<any> = unknown,
-  ReportInfo = unknown,
   ExtendLogType extends string = UserExtendLogType | MonitorKind,
   This = MonitorConfig<ExtendLogType, ExtendConfig>,
 > {
+  /**
+   * 事件监听的根元素
+   * @default window
+   */
+  rootElement?: HTMLElement | Window;
   /** 日志输出工具配置 */
   loggerOptions: LoggerOptions<ExtendLogType>;
   /** 监控的所有事件 */
   listenerEvents?: (keyof WindowEventMap)[];
   needListenerCapture?: boolean;
   /** 日志格式化 */
-  formatLogInfo?: (this: This, info: LogInfo<Kind | ExtendLogType, ExtendConfig>) => ReportInfo;
+  formatLogInfo?: (this: This, info: LogInfo<Kind | ExtendLogType, ExtendConfig>) => any;
   /** 日志上报策略 */
-  reportStrategy?: (this: This, info: ReportInfo) => boolean;
+  reportStrategy?: (this: This, info: any) => boolean;
+  /** 日志上报前处理 */
+  formatReportInfo?: (this: This, info: any) => any;
   /** 日志上报 */
-  reportLog?: (this: This, info: ReportInfo) => void;
+  reportLog?: (this: This, info: any) => void;
 }
 
 export type MonitorConfig<

@@ -56,6 +56,9 @@ jobs:
 
       - name: Build
         run: nr build
+      
+      - name: Install Supported Browsers
+        run: npx playwright install
 
       - name: Test
         run: nr test:ci

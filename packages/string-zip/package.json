@@ -46,11 +46,6 @@
     "test": "vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   },
-  "clPublish": {
-    "checkDir": [
-      "src/**/*.ts"
-    ]
-  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

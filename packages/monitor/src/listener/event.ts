@@ -1,26 +1,26 @@
 import type { TObject } from '@cmtlyt/base';
-import { logCache } from '../store';
+import { getStore, logCache } from '../store';
 import { getTargetSelector } from '../util';
 
 const eventMap: TObject<(event: Event) => void> = {};
 
 const defaultEventList: (keyof WindowEventMap)[] = ['click'];
 
-export function initEventListener(eventList?: (keyof WindowEventMap)[], needListenerCapture?: boolean) {
-  (eventList || defaultEventList).forEach((event) => {
+export function initEventListener(root: HTMLElement | Window = window, eventList?: (keyof WindowEventMap)[], needListenerCapture = false) {
+  (eventList || defaultEventList).forEach((eventName) => {
     const getCallback = (extendObj: TObject<any>) => {
-      return (eventMap[event] = (event: Event) => {
+      return (eventMap[eventName] = (event: Event) => {
         logCache.push({
           kind: 'event',
-          message: 'click',
-          extra: { timestamp: Date.now(), event, selector: getTargetSelector(event.target as HTMLElement) },
+          message: eventName,
+          extra: { timestamp: Date.now(), event, isCapture: needListenerCapture, selector: getTargetSelector(event.target as HTMLElement) },
           ...extendObj,
         });
       });
     };
 
-    needListenerCapture && window.addEventListener(event, getCallback({ capture: true }), { capture: true });
-    window.addEventListener(event, getCallback({ capture: false }));
+    needListenerCapture && root.addEventListener(eventName, getCallback({ capture: true }), { capture: true });
+    root.addEventListener(eventName, getCallback({ capture: false }));
   });
 }
 
@@ -28,9 +28,10 @@ export function initEventListener(eventList?: (keyof WindowEventMap)[], needList
 window.addEventListener(
   'unload',
   () => {
+    const { rootElement } = getStore('monitorConfig');
     for (const event in eventMap) {
-      window.removeEventListener(event, eventMap[event], { capture: true });
-      window.removeEventListener(event, eventMap[event]);
+      rootElement.removeEventListener(event, eventMap[event], { capture: true });
+      rootElement.removeEventListener(event, eventMap[event]);
     }
   },
   { once: true },

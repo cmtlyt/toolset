@@ -42,7 +42,7 @@ export function getTrace() {
 
 export function getContentInfo(args: unknown[]): ContentInfo[] {
   return args
-    .map(formatContent)
+    .map(item => formatContent(item, void 0, true))
     .join(' ')
     .split('\n')
     .map((text) => {
