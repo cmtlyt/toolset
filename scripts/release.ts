@@ -27,7 +27,7 @@ async function patchVersion(cwd: string) {
   for (const pkgInfo of dumpPackages) {
     const { cwd, name } = pkgInfo;
     console.log(chalk.blue(`--- bumpp ${name} start ---`));
-    patchVersion(cwd);
+    await patchVersion(cwd);
     console.log(chalk.green(`--- bumpp ${name} success ---`));
   }
 })();
