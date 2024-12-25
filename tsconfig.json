@@ -9,6 +9,7 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "allowJs": true,
     "checkJs": true,
     "strict": true,
