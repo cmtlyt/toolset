@@ -1,9 +1,12 @@
+import type { Kind } from '@cmtlyt/logger';
 import type { MonitorConfig, MonitorKind, MonitorLogger } from './type';
 import { initErrorListener, initEventListener } from './listener';
 import { setStore } from './store';
 import { batchReportLog, createMonitorLogger, listenerCacheChange, savePagePerformanceInfo } from './util';
 
-export { MonitorLogger };
+type TKind = MonitorKind | Kind;
+
+export { TKind as Kind, MonitorLogger };
 
 // 初始化错误监听
 initErrorListener();

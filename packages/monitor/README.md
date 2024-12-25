@@ -26,6 +26,13 @@ pnpm add @cmtlyt/monitor
 
 ## 更新日志
 
+### v0.1.3
+
+修复 getTargetSelector 方法中获取部分不到 className 时的报错
+修复 getPrintFunc 类型问题
+导出 Kind 类型 (系统中声明的所有 logger 方法)
+页面卸载事件触发后不再进行日志处理, 后续会对此类日志进行持久化处理
+
 ### v0.1.2
 
 新增自动埋点根元素配置

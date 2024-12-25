@@ -1,6 +1,14 @@
+import type { TObject } from '@cmtlyt/base';
+
 export { logCache } from './log-cache';
 
 const store: Record<string, any> = Object.create(null);
+
+export const eventMap: TObject<(event: Event) => void> = {};
+
+export function putEventMap(eventName: string, callback: (event: Event) => void) {
+  eventMap[eventName] = callback;
+}
 
 export function getStore(key?: string) {
   return key ? store[key] : store;

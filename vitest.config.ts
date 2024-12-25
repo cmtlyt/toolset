@@ -1,13 +1,6 @@
 import process from 'node:process';
 import { defineConfig } from 'vitest/config';
 
-declare module 'vitest' {
-  export interface ProvidedContext {
-    CI: boolean;
-    env: NodeJS.ProcessEnv;
-  }
-}
-
 export default defineConfig({
   test: {
     provide: {

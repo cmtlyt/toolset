@@ -15,6 +15,10 @@ export interface LogInfo<T extends string, E extends TObject<any>> {
   config: MonitorConfig<T, E>;
 }
 
+export interface ExtendLoggerOptions<T extends string, E extends TObject<any>> extends TExclude<LoggerOptions<T>, 'getPrintFunc'> {
+  getPrintFunc?: (this: MonitorConfig<T, E>, logInfo: T | Kind) => ((...args: unknown[]) => void) | null | undefined;
+}
+
 export interface BaseMonitorConfig<
   UserExtendLogType extends string = MonitorKind,
   // @ts-expect-error 默认值
@@ -28,7 +32,7 @@ export interface BaseMonitorConfig<
    */
   rootElement?: HTMLElement | Window;
   /** 日志输出工具配置 */
-  loggerOptions: LoggerOptions<ExtendLogType>;
+  loggerOptions: ExtendLoggerOptions<ExtendLogType, ExtendConfig>;
   /** 监控的所有事件 */
   listenerEvents?: (keyof WindowEventMap)[];
   needListenerCapture?: boolean;

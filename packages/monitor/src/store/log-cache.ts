@@ -1,6 +1,7 @@
 import type { TObject } from '@cmtlyt/base';
 import type { Kind } from '@cmtlyt/logger';
 import type { MonitorKind } from '../type';
+import { getStore } from '.';
 
 interface LogData {
   kind: Kind | MonitorKind;
@@ -22,6 +23,10 @@ class LogCache {
   private listenerSet: Set<(data: LogData) => void> = new Set();
 
   push(data: LogData) {
+    if (getStore('isUnload')) {
+      // TODO: 持久化未被处理的日志
+      return console.warn('页面已卸载, 无法继续记录日志, 后续会对此类日志进行持久化处理');
+    }
     const node: CacheItem = { data, next: null };
     this.listenerSet.forEach(listener => listener(data));
     // 如果有监听器, 不进行存储

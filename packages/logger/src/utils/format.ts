@@ -5,7 +5,7 @@ export function onelineFormat(content: string) {
 export const formatContent = (() => {
   const usingString = ['function', 'number', 'boolean', 'string', 'symbol', 'undefined'];
 
-  return (content: unknown, deepLevel = 1, isRoot = false): string => {
+  const format = (content: unknown, deepLevel = 1, isRoot = false): string => {
     if (usingString.includes(typeof content)) {
       if (!isRoot && typeof content === 'string')
         return JSON.stringify(content);
@@ -25,6 +25,10 @@ export const formatContent = (() => {
     catch {
       return String(content);
     }
+  };
+
+  return (content: unknown, deepLevel = 1, isRoot = false) => {
+    return format(content, deepLevel, isRoot).replace(/\s*?\n\s*?\n\s*/g, ' ');
   };
 })();
 
