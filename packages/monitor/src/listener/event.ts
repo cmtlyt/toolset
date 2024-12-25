@@ -11,7 +11,7 @@ export function initEventListener(root: HTMLElement | Window = window, eventList
         logCache.push({
           kind: 'event',
           message: eventName,
-          extra: { timestamp: Date.now(), event, isCapture: needListenerCapture, selector: getTargetSelector(event.target as HTMLElement) },
+          extra: { timestamp: Date.now(), isCapture: needListenerCapture, selector: getTargetSelector(event.target as HTMLElement) },
           ...extendObj,
         });
       };
