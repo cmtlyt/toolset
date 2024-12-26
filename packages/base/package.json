@@ -45,7 +45,7 @@
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
-    "test": "vitest run",
+    "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   },
   "dependencies": {

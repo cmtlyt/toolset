@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/logger",
   "type": "module",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "",
@@ -46,7 +46,7 @@
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
-    "test": "vitest run",
+    "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   }
 }

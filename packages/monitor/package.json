@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/monitor",
   "type": "module",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "cl项目监控",
@@ -43,7 +43,7 @@
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
-    "test": "vitest run",
+    "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   },
   "dependencies": {
