@@ -31,5 +31,5 @@ export function createMonitor<ExtendLogType extends string = MonitorKind, Extend
   // 监听日志缓存变化
   listenerCacheChange(logger);
   // 返回日志输出工具
-  return logger;
+  return logger as MonitorLogger<ExtendLogType>;
 }

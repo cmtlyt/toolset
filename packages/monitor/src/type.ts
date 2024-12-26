@@ -7,7 +7,7 @@ export type OriginalOnLogBeforeEvent<T extends string> = Parameters<OriginalOnLo
 
 export type LoggerOptions<T extends string> = TExclude<OrigianlLoggerOptions<T>, 'onLogBefore'>;
 
-export type MonitorKind = 'system' | 'event';
+export type MonitorKind = 'system' | 'systemError' | 'event';
 
 export interface LogInfo<T extends string, E extends TObject<any>> {
   /** 日志信息 */

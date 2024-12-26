@@ -39,7 +39,7 @@ export interface LogEvent<T extends string = Kind> {
 export type LoggerOptions<T extends string = Kind, E = unknown> = {
   needTrace?: boolean;
   noOutput?: boolean;
-  logConfig?: Partial<LoggerConfigObj> & { [K in T]: LoggerConfig<K> };
+  logConfig?: Partial<LoggerConfigObj> & { [K in T]: LoggerConfig<T> };
   /** 该配置会覆盖 getPrintFunc 配置, 推荐优先使用 getPrintFunc */
   printFunc?: ((...args: unknown[]) => void) | null;
   getPrintFunc?: (this: LoggerOptions<T, E>, kind: Kind | T) => ((...args: unknown[]) => void) | null;

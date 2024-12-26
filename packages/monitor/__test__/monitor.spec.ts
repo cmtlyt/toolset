@@ -54,7 +54,7 @@ describe.runIf(inject('CI'))('monitor', () => {
     const idx = currIdx;
     await userEvent.click(page.getByRole('button', { name: 'sync error test', exact: true }));
     const errorLog = logs[idx];
-    expect(stringify(errorLog.logConf)).toMatchInlineSnapshot(`"{"kind":"error","tagColor":"#fff","tagBg":"#f5222d","contentColor":"#000","contentBg":"#fff","borderColor":"#f5222d"}"`);
+    expect(stringify(errorLog.logConf)).toMatchInlineSnapshot(`"{"kind":"systemError","tagColor":"#000","tagBg":"#d9d9d9","contentColor":"#000","contentBg":"#fff","borderColor":"#d9d9d9"}"`);
     expect(errorLog.messages[0]).toBe('Uncaught Error: sync error test');
     const logInfo = errorLog.messages[1] as any;
     expect(logInfo.timestamp).toBeTypeOf('number');
@@ -74,8 +74,8 @@ describe.runIf(inject('CI'))('monitor', () => {
 
   it('异步错误测试', async () => {
     await userEvent.click(page.getByRole('button', { name: 'async error test', exact: true }));
-    const errorLog = logs.find(item => item.kind === 'error' && item.messages[0] === 'async error test');
-    expect(stringify(errorLog.logConf)).toMatchInlineSnapshot(`"{"kind":"error","tagColor":"#fff","tagBg":"#f5222d","contentColor":"#000","contentBg":"#fff","borderColor":"#f5222d"}"`);
+    const errorLog = logs.find(item => item.kind === 'systemError' && item.messages[0] === 'async error test');
+    expect(stringify(errorLog.logConf)).toMatchInlineSnapshot(`"{"kind":"systemError","tagColor":"#000","tagBg":"#d9d9d9","contentColor":"#000","contentBg":"#fff","borderColor":"#d9d9d9"}"`);
     expect(errorLog.messages[0]).toMatchInlineSnapshot(`"async error test"`);
     const logInfo = errorLog.messages[1] as any;
     expect(logInfo.timestamp).toBeTypeOf('number');

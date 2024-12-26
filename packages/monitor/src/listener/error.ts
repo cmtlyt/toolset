@@ -1,11 +1,11 @@
 import { logCache, putEventMap } from '../store';
 
 function errorHandler(event: ErrorEvent) {
-  logCache.push({ kind: 'error', message: event.message, extra: { timestamp: Date.now() } });
+  logCache.push({ kind: 'systemError', message: event.message, extra: { timestamp: Date.now() } });
 }
 
 function unhandledrejectionHandler(event: PromiseRejectionEvent) {
-  logCache.push({ kind: 'error', message: event.reason.toString(), extra: { timestamp: Date.now() } });
+  logCache.push({ kind: 'systemError', message: event.reason.toString(), extra: { timestamp: Date.now() } });
 }
 
 export function initErrorListener() {

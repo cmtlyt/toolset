@@ -28,7 +28,7 @@ class LogCache {
       return console.warn('页面已卸载, 无法继续记录日志, 后续会对此类日志进行持久化处理');
     }
     const node: CacheItem = { data, next: null };
-    this.listenerSet.forEach(listener => listener(data));
+    this.listenerSet.forEach(listener => listener({ ...data, extra: { ...data.extra, from: 'monitor' } }));
     // 如果有监听器, 不进行存储
     if (this.listenerSet.size)
       return;

@@ -26,6 +26,11 @@ pnpm add @cmtlyt/monitor
 
 ## 更新日志
 
+### v0.1.4
+
+调整游离错误捕获使用 systemError Kind 上报
+monitor 捕获的日志增加 `from: 'monitor'`
+
 ### v0.1.3
 
 修复 getTargetSelector 方法中获取部分不到 className 时的报错
