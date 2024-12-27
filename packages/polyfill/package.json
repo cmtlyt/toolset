@@ -1,0 +1,53 @@
+{
+  "name": "@cmtlyt/polyfill",
+  "type": "module",
+  "version": "0.1.3",
+  "private": false,
+  "packageManager": "pnpm@9.14.4",
+  "description": "cmtlyt 新特性尝鲜",
+  "author": {
+    "name": "cmtlyt",
+    "email": "cmtlyt@163.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/cmtlyt/toolset/tree/main/packages/polyfill/README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/polyfill"
+  },
+  "bugs": {
+    "url": "https://github.com/cmtlyt/toolset/issues"
+  },
+  "keywords": [
+    "cl",
+    "polyfill",
+    "cmtlyt",
+    "tc39",
+    "js新特性"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "stub": "unbuild --stub",
+    "build": "unbuild",
+    "test": "vitest run",
+    "prepublishOnly": "pnpm build && pnpm test"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {
+    "@cmtlyt/base": "workspace:^"
+  }
+}

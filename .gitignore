@@ -6,6 +6,7 @@ node_modules
 .vscode/*
 # 覆盖 prettier 和 eslint 配置
 !.vscode/settings.json
+!.vscode/launch.json
 .temp
 *.log
 coverage

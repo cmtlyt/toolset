@@ -138,6 +138,12 @@ importers:
         specifier: ^4.2.4
         version: 4.2.4
 
+  packages/polyfill:
+    dependencies:
+      '@cmtlyt/base':
+        specifier: workspace:^
+        version: link:../base
+
   packages/storage:
     dependencies:
       '@cmtlyt/base':

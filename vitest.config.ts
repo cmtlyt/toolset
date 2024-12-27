@@ -1,11 +1,10 @@
-import process from 'node:process';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     provide: {
-      CI: process.env.CI === 'true',
-      env: process.env,
+      // CI: process.env.CI === 'true',
+      // env: process.env,
     },
     coverage: {
       provider: 'istanbul',
