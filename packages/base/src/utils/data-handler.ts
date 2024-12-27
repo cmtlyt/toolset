@@ -1,5 +1,5 @@
 import type { TObject } from '../types/base';
-import { getType } from '../cirDep';
+import { getType } from '../cir-dep';
 import { STATIC_TYPE } from '../common/constant';
 import { warning } from '../common/warning';
 

@@ -1,5 +1,5 @@
-import { cacheByReturn } from './funcHandler';
-import { getUserAgent } from './getUserAgent';
+import { cacheByReturn } from './func-handler';
+import { getUserAgent } from './get-user-agent';
 import { isUndef } from './verify';
 
 // web 环境

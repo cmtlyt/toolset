@@ -1,4 +1,4 @@
-import { cacheByReturn } from './funcHandler';
+import { cacheByReturn } from './func-handler';
 
 export const getUserAgent = cacheByReturn((): string => {
   if (globalThis.navigator) {

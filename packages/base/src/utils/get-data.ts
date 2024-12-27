@@ -1,10 +1,8 @@
 import type { TMany, TObject, TObjKeyType } from '../types/base';
-
 import ms from 'ms';
-import { cacheByReturn, isByteDanceMicroApp, isMiniApp, isWeb, isWeChatMiniProgram, isWeex } from '../cirDep';
-import { curry } from '../cirDep/funcHandler';
-
-import { getArray } from './dataHandler';
+import { cacheByReturn, isByteDanceMicroApp, isMiniApp, isWeb, isWeChatMiniProgram, isWeex } from '../cir-dep';
+import { curry } from '../cir-dep/func-handler';
+import { getArray } from './data-handler';
 import { isEmpty } from './verify';
 
 export const safeGetGlobal = cacheByReturn((): any => {

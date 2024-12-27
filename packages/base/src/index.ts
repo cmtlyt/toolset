@@ -1,6 +1,6 @@
 import 'tslib';
 
-export * from './cirDep';
+export * from './cir-dep';
 export * from './common/constant';
 export * from './common/warning';
 export * from './tools';

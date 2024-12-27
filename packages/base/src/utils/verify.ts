@@ -1,4 +1,4 @@
-import { cacheByReturn, getType, isWeb } from '../cirDep';
+import { cacheByReturn, getType, isWeb } from '../cir-dep';
 import { EMPTY } from '../common/constant';
 import { warning } from '../common/warning';
 

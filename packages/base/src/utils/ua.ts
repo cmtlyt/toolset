@@ -11,7 +11,7 @@ import {
   isWeb,
   isWeChatMiniProgram,
   isWeex,
-} from '../cirDep';
+} from '../cir-dep';
 
 // chrome
 export const isChrome = cacheByReturn(() => {

@@ -1,4 +1,4 @@
-import { cacheByReturn } from '../../cirDep';
+import { cacheByReturn } from '../../cir-dep';
 import { warning } from '../../common/warning';
 import { isHttpsUrlString, safeGetGlobal } from '../../utils';
 

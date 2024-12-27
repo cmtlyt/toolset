@@ -1,7 +1,7 @@
 import type { TAllType } from '../types/base';
 
-import { cacheByReturn } from './funcHandler';
-import { getUserAgent } from './getUserAgent';
+import { cacheByReturn } from './func-handler';
+import { getUserAgent } from './get-user-agent';
 import {
   isAliMiniApp,
   isAndroid,

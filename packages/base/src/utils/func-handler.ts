@@ -9,10 +9,10 @@ import type {
   TLastTwoArg,
   TLastType,
 } from '../types/base';
-import { cacheByReturn, type TCurry } from '../cirDep';
+import { cacheByReturn, type TCurry } from '../cir-dep';
 
-import { getArray } from './dataHandler';
-import { getNow } from './getData';
+import { getArray } from './data-handler';
+import { getNow } from './get-data';
 
 class MemoizeMap {
   #_map = new Map();

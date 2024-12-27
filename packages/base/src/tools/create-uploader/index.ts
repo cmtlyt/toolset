@@ -1,11 +1,11 @@
 import type { TObject } from '../../types/base';
-import type { PoolType } from '../createPool';
-import type { WorkerFuncs } from '../createWorkerFunc';
-import { getType } from '../../cirDep';
+import type { PoolType } from '../create-pool';
+import type { WorkerFuncs } from '../create-worker-func';
+import { getType } from '../../cir-dep';
 import { warning } from '../../common/warning';
 import { createLinkByString, getArraySlice, getRandomString, isBlob, isFile, isUrl } from '../../utils';
-import { createPool } from '../createPool';
-import { createWorkerFunc } from '../createWorkerFunc';
+import { createPool } from '../create-pool';
+import { createWorkerFunc } from '../create-worker-func';
 
 // 允许的上传请求体格式
 const ALLOWED_DATA_TYPES = ['FormData', 'binary'];
