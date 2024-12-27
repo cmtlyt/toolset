@@ -44,6 +44,18 @@ pnpm add @cmtlyt/base
 
 - (F) completion
 
+下列方法用于函数式编程
+
+- (F) filter
+- (F) map
+- (F) reduce
+- (F) every
+- (F) some
+- (F) find
+- (F) findIndex
+- (F) includes
+- (F) join
+
 ### v0.9.2
 
 打包工具调整, 工程重构

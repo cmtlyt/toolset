@@ -1,8 +1,7 @@
 import type { TObject } from '../types/base';
-import { getType } from '../cir-dep';
+import { curry, getType } from '../cir-dep';
 import { STATIC_TYPE } from '../common/constant';
 import { warning } from '../common/warning';
-
 import { isNull } from './verify';
 
 type GetArray<T> = T extends any[] ? T : T[];
@@ -311,3 +310,39 @@ export async function blobToChunkBase64String(blob: Blob) {
   const arrayBuffer = await blob.arrayBuffer();
   return arrayBufferToChunkBase64String(arrayBuffer);
 }
+
+export const filter = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]) => {
+  return arr.filter((item, index) => handle(item, index));
+});
+
+export const map = curry(<T, R>(handle: (item: T, index: number) => R, arr: T[]): R[] => {
+  return arr.map((item, index) => handle(item, index));
+});
+
+export const reduce = curry(<T, R>(handle: (acc: R, item: T, index: number) => R, init: R, arr: T[]) => {
+  return arr.reduce((acc, item, index) => handle(acc, item, index), init);
+});
+
+export const every = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): boolean => {
+  return arr.every((item, index) => handle(item, index));
+});
+
+export const some = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): boolean => {
+  return arr.some((item, index) => handle(item, index));
+});
+
+export const find = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): T | undefined => {
+  return arr.find((item, index) => handle(item, index));
+});
+
+export const findIndex = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): number => {
+  return arr.findIndex((item, index) => handle(item, index));
+});
+
+export const includes = curry((item: any, arr: any[]) => {
+  return arr.includes(item);
+});
+
+export const join = curry((separator: string, arr: any[]) => {
+  return arr.join(separator);
+});

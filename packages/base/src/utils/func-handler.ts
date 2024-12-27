@@ -10,7 +10,6 @@ import type {
   TLastType,
 } from '../types/base';
 import { cacheByReturn, type TCurry } from '../cir-dep';
-
 import { getArray } from './data-handler';
 import { getNow } from './get-data';
 
@@ -292,4 +291,16 @@ export function onceFunc<T extends TAnyFunc>(func: T): T {
     called = true;
     return (result = func(...args));
   } as T;
+}
+
+/**
+ * 安全的执行函数, 如果函数内出现报错, 则返回错误对象而不是抛出错误
+ */
+export function completion<T, A extends any[]>(func: (...args: A) => T, ...args: A): T | Error {
+  try {
+    return func(...args);
+  }
+  catch (e: any) {
+    return e;
+  }
 }
