@@ -38,6 +38,13 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.10.0
+
+新增
+
+- (F) getConcurrentQueue
+- (F) noop
+
 ### v0.9.3
 
 新增

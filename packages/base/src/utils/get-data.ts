@@ -153,3 +153,5 @@ export const omit = curry((keys: TMany<TObjKeyType>, obj: TObject<any>): TObject
   });
   return result;
 });
+
+export const noop: (...args: any[]) => any = () => {};
