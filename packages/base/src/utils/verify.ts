@@ -15,6 +15,8 @@ export function isNumber(value: any): value is number {
   return typeof value === 'number';
 }
 
+export function isPromise(value: any): value is Promise<any>;
+export function isPromise<T>(value: Promise<T>): value is Promise<T>;
 export function isPromise(value: any): value is Promise<any> {
   return (value || false) && typeof value.then === 'function';
 }
@@ -152,6 +154,8 @@ export function isArrayLike(data: any): boolean {
   return false;
 }
 
+export function isArray(value: any): value is Array<any>;
+export function isArray<T>(value: T[]): value is T[];
 export function isArray(value: any): value is Array<any> {
   return Array.isArray(value);
 }

@@ -40,6 +40,20 @@ pnpm add @cmtlyt/base
 
 ### v0.10.0
 
+新增 fp 模块
+
+算子 (实现了最基本的能力例如 `map` `flatMap`, 其余更高级的方法暂时未实现)
+
+- functor.container
+- functor.either
+- functor.maybe
+- functor.task
+- functor.io
+
+工具方法
+
+- utils.trace
+
 新增
 
 - (F) getConcurrentQueue

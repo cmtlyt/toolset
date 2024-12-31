@@ -30,6 +30,21 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./fp": {
+      "types": "./dist/fp/index.d.ts",
+      "import": "./dist/fp/index.mjs",
+      "require": "./dist/fp/index.cjs"
+    },
+    "./fp/functor": {
+      "types": "./dist/fp/functor/index.d.ts",
+      "import": "./dist/fp/functor/index.mjs",
+      "require": "./dist/fp/functor/index.cjs"
+    },
+    "./fp/utils": {
+      "types": "./dist/fp/utils/index.d.ts",
+      "import": "./dist/fp/utils/index.mjs",
+      "require": "./dist/fp/utils/index.cjs"
     }
   },
   "main": "dist/index.cjs",
