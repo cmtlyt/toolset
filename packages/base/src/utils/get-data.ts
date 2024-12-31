@@ -29,13 +29,14 @@ export const getNow = cacheByReturn(() => {
 });
 
 export function getRandomString(len = 8): string {
-  const str = Math.random()
-    .toString(36)
-    .slice(2, len + 2);
-  if (str.length === len) {
-    return str;
+  let result = '';
+  for (let curLen = 0; curLen < len; curLen = result.length) {
+    const str = Math.random()
+      .toString(36)
+      .slice(2, len + 2);
+    result += str.slice(0, len - curLen);
   }
-  return str + getRandomString(len - str.length);
+  return result;
 }
 
 export function createLinkByString(resource: BlobPart) {

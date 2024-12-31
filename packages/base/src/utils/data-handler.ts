@@ -210,14 +210,21 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
 }
 
 export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
-  if (arrayBuffer.byteLength >= 65556)
-    warning('buffer size too large, use arrayBufferToChunkBase64String');
-  return btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+  const chars = new Uint8Array(arrayBuffer).reduce((result, cur) => {
+    return result + String.fromCharCode(cur);
+  }, '');
+  return btoa(chars);
 }
 
+/**
+ * 使用 arrayBufferToBase64String 代替, arrayBufferToBase64String 已兼容 chunk 方式
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
+export const arrayBufferToChunkBase64String = arrayBufferToBase64String;
+
 export function base64StringToUint8Array(base64String: string) {
-  if (base64String.length >= 65556)
-    warning('base64 size too large, use chunkBase64StringToArrayBuffer');
   const binaryString = atob(base64String);
   const len = binaryString.length;
   const bytes = new Uint8Array(len);
@@ -227,27 +234,35 @@ export function base64StringToUint8Array(base64String: string) {
   return bytes;
 }
 
-// TODO 不使用 chunk 方式转换
-export function arrayBufferToChunkBase64String(arrayBuffer: ArrayBuffer) {
-  const chunkSize = 1024 * 10;
-  const base64Chunks = [];
-  let currArrayBuffer = arrayBuffer.slice(base64Chunks.length * chunkSize, base64Chunks.length * chunkSize + chunkSize);
-  while (currArrayBuffer.byteLength > 0) {
-    base64Chunks.push(arrayBufferToBase64String(currArrayBuffer));
-    currArrayBuffer = arrayBuffer.slice(base64Chunks.length * chunkSize, base64Chunks.length * chunkSize + chunkSize);
-  }
-  return base64Chunks.join('|');
-}
-
-// TODO 不使用 chunk 方式转换
+/**
+ * 使用 base64StringToBlob 代替, base64StringToBlob 已兼容 chunk 方式
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
 export function chunkBase64StringToBlob(base64String: string) {
+  warning('当前字符串使用 chunk 方式生成, 请使用 base64StringToBlob 代替, 后续 chunkBase64StringToBlob 方法将会移除');
   const chunks = base64String.split('|');
   return new Blob(chunks.map(chunk => base64StringToUint8Array(chunk)));
 }
 
-// TODO 不使用 chunk 方式转换
-export async function chunkBase64StringToArrayBuffer(base64String: string) {
-  const blob = chunkBase64StringToBlob(base64String);
+export function base64StringToBlob(base64String: string) {
+  // TODO: 大版本升级将移除
+  if (base64String.includes('|'))
+    return chunkBase64StringToBlob(base64String);
+  return new Blob([base64StringToUint8Array(base64String)]);
+}
+
+/**
+ * 使用 base64StringToArrayBuffer 代替, base64StringToArrayBuffer 已兼容 chunk 方式
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
+export const chunkBase64StringToArrayBuffer = base64StringToArrayBuffer;
+
+export async function base64StringToArrayBuffer(base64String: string) {
+  const blob = base64StringToBlob(base64String);
   return blob.arrayBuffer();
 }
 
@@ -277,15 +292,22 @@ export async function streamToBase64String(stream: ReadableStream) {
   return arrayBufferToBase64String(arrayBuffer);
 }
 
-// TODO 不使用 chunk 方式转换
-export async function streamToChunkBase64String(stream: ReadableStream) {
-  const arrayBuffer = await streamToArrayBuffer(stream);
-  return arrayBufferToChunkBase64String(arrayBuffer);
-}
+/**
+ * 使用 streamToBase64String 代替
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
+export const streamToChunkBase64String = streamToBase64String;
 
-// TODO 不使用 chunk 方式转换
+/**
+ * 使用 chunkBase64StringToBlob 代替, chunkBase64StringToBlob 已兼容 chunk 方式
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
 export async function chunkBase64StringToStream(base64: string) {
-  const blob = chunkBase64StringToBlob(base64);
+  const blob = base64StringToBlob(base64);
   return blob.stream();
 }
 
@@ -305,37 +327,44 @@ export function base64StringToStream(source: string) {
   return stream;
 }
 
-// TODO 不使用 chunk 方式转换
-export async function blobToChunkBase64String(blob: Blob) {
+/**
+ * 使用 blobToBase64String 代替
+ *
+ * TODO: 后续大版本迭代会移除该方法
+ * @deprecated
+ */
+export const blobToChunkBase64String = blobToBase64String;
+
+export async function blobToBase64String(blob: Blob) {
   const arrayBuffer = await blob.arrayBuffer();
-  return arrayBufferToChunkBase64String(arrayBuffer);
+  return arrayBufferToBase64String(arrayBuffer);
 }
 
-export const filter = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]) => {
+export const filter = curry((handle: (item: any, index: number) => boolean, arr: any[]) => {
   return arr.filter((item, index) => handle(item, index));
 });
 
-export const map = curry(<T, R>(handle: (item: T, index: number) => R, arr: T[]): R[] => {
+export const map = curry((handle: (item: any, index: number) => any, arr: any[]): any[] => {
   return arr.map((item, index) => handle(item, index));
 });
 
-export const reduce = curry(<T, R>(handle: (acc: R, item: T, index: number) => R, init: R, arr: T[]) => {
+export const reduce = curry((handle: (acc: any, item: any, index: number) => any, init: any, arr: any[]) => {
   return arr.reduce((acc, item, index) => handle(acc, item, index), init);
 });
 
-export const every = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): boolean => {
+export const every = curry((handle: (item: any, index: number) => boolean, arr: any[]): boolean => {
   return arr.every((item, index) => handle(item, index));
 });
 
-export const some = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): boolean => {
+export const some = curry((handle: (item: any, index: number) => boolean, arr: any[]): boolean => {
   return arr.some((item, index) => handle(item, index));
 });
 
-export const find = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): T | undefined => {
+export const find = curry((handle: (item: any, index: number) => boolean, arr: any[]): any | undefined => {
   return arr.find((item, index) => handle(item, index));
 });
 
-export const findIndex = curry(<T>(handle: (item: T, index: number) => boolean, arr: T[]): number => {
+export const findIndex = curry((handle: (item: any, index: number) => boolean, arr: any[]): number => {
   return arr.findIndex((item, index) => handle(item, index));
 });
 

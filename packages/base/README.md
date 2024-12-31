@@ -45,6 +45,18 @@ pnpm add @cmtlyt/base
 - (F) getConcurrentQueue
 - (F) noop
 
+小版本迭代会逐次标记数据转换中所有 chunkString 相关方法弃用, 并在下一个大版本迭代中删除
+生成 chunkString 相关方法变为对应方法的别名, 从 base64 转换为其他类型的方法支持 chunkString, 但会抛出警告
+
+当前迭代涉及方法
+
+- arrayBufferToChunkBase64String
+- chunkBase64StringToBlob
+- chunkBase64StringToArrayBuffer
+- streamToChunkBase64String
+- chunkBase64StringToStream
+- blobToChunkBase64String
+
 ### v0.9.3
 
 新增
