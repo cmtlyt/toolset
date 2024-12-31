@@ -28,6 +28,16 @@ pnpm add @cmtlyt/string-zip
 
 ## 更新日志
 
+### v0.4.3
+
+zip unZip 方法不使用 chunk 相关方法
+
+建议对老数据进行转换, 因为 [@cmtlyt/base](https://www.npmjs.com/package/@cmtlyt/base) 包将会在下个大版本全面删除对 chunk 相关方法的支持
+
+### v0.4.2
+
+工程重构, 更换打包工具
+
 ### v0.4.1
 
 针对 umd 产物, 将所有依赖打包进产物, 防止 umd 产物找不到依赖, 但是这样会引入一个新的问题, 就是每次依赖包升级后需要重新打包并发布版本, 所以 umd 版本的产物更新是滞后的, 可能会存在 bug, 所以建议不要使用 umd 版本的产物

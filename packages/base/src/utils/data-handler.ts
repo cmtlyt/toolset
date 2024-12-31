@@ -301,13 +301,15 @@ export async function streamToBase64String(stream: ReadableStream) {
 export const streamToChunkBase64String = streamToBase64String;
 
 /**
- * 使用 chunkBase64StringToBlob 代替, chunkBase64StringToBlob 已兼容 chunk 方式
+ * 使用 base64StringToStream 代替, base64StringToStream 已兼容 chunk 方式
  *
  * TODO: 后续大版本迭代会移除该方法
  * @deprecated
  */
-export async function chunkBase64StringToStream(base64: string) {
-  const blob = base64StringToBlob(base64);
+export const chunkBase64StringToStream = base64StringToStream;
+
+export function base64StringToStream(source: string) {
+  const blob = base64StringToBlob(source);
   return blob.stream();
 }
 
@@ -318,12 +320,6 @@ export function arrayBufferToStream(source: AllowSharedBufferSource) {
       controller.close();
     },
   });
-  return stream;
-}
-
-export function base64StringToStream(source: string) {
-  const uint8Array = base64StringToUint8Array(source);
-  const stream = arrayBufferToStream(uint8Array);
   return stream;
 }
 

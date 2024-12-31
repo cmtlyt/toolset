@@ -1,8 +1,8 @@
 import {
+  base64StringToStream,
   cacheByReturn,
   caniuse,
-  chunkBase64StringToStream,
-  streamToChunkBase64String,
+  streamToBase64String,
   streamToString,
   stringToStream,
 } from '@cmtlyt/base';
@@ -28,8 +28,7 @@ export async function gzip(source: string, keyLength: number = 6) {
 
   const compressedStream = stringToStream(source).pipeThrough(new CompressionStream('gzip'));
 
-  // TODO 不使用分片方式存储 base64
-  return streamToChunkBase64String(compressedStream);
+  return streamToBase64String(compressedStream);
 }
 
 // TODO 提供对 node 环境的支持
@@ -37,7 +36,7 @@ export async function unGzip(zipSource: string) {
   if (!caniuse('DecompressionStream') || !caniuseGip())
     return unzipSync(zipSource);
 
-  const stream = await chunkBase64StringToStream(zipSource);
+  const stream = base64StringToStream(zipSource);
   const decompressedStream = stream.pipeThrough(new DecompressionStream('gzip'));
 
   return streamToString(decompressedStream);
