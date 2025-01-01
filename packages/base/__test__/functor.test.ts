@@ -243,4 +243,60 @@ describe('functor', () => {
       expect(v).toBe(3);
     });
   });
+
+  it('task catch', async () => {
+    await functor.task(async () => {
+      throw new Error('自定义错误');
+    }).map(() => {
+      throw new Error('自定义错误2');
+    }).then(() => {
+      throw new Error('自定义错误3');
+    }).catch((e) => {
+      expect(e.message).toBe('自定义错误');
+      return 1;
+    }).then((v) => {
+      expect(v).toBe(1);
+    });
+
+    await functor.task(async () => {
+      throw new Error('自定义错误');
+    }).map(() => {
+      throw new Error('不应该执行到');
+    }).then(() => {
+      throw new Error('不应该执行到');
+    }, (e) => {
+      expect(e.message).toBe('自定义错误');
+      return 1;
+    }).catch(() => {
+      throw new Error('不应该执行到');
+    }).then((v) => {
+      expect(v).toBe(1);
+    });
+
+    await functor.task(async () => {
+      throw new Error('自定义错误');
+    }).map(() => {
+      throw new Error('不应该执行到');
+    }).then(() => {
+      throw new Error('不应该执行到');
+    }, (e) => {
+      expect(e.message).toBe('自定义错误');
+      throw new Error('自定义错误2');
+    }).catch((e) => {
+      expect(e.message).toBe('自定义错误2');
+      return 2;
+    }).then((v) => {
+      expect(v).toBe(2);
+    });
+
+    await functor.task(async () => {
+      return 1;
+    }).then(async () => {
+      throw new Error('1');
+    }, () => {
+      throw new Error('2');
+    }).catch((e) => {
+      expect(e.message).toBe('1');
+    });
+  });
 });

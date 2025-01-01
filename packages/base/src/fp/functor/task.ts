@@ -1,4 +1,3 @@
-import type { TPromiseValue } from '$/types/base';
 import type { GetFunctorResult } from './utils';
 import { isPromise, withResolvers } from '$/utils';
 import { Functor, getState, setState } from './utils';
@@ -10,7 +9,7 @@ interface Resolver<T> {
 
 type TaskHandler<T> = ((resolver: Resolver<T>) => void) | (() => Promise<T>);
 
-type MapValue<T extends TaskHandler<any>> = T extends TaskHandler<infer R> ? TPromiseValue<R> : never;
+type MapValue<T extends TaskHandler<any>> = T extends TaskHandler<infer R> ? Awaited<R> : never;
 
 interface ListenOptions<T extends TaskHandler<any>> {
   onResolved?: (result: MapValue<T>) => any;
@@ -29,6 +28,8 @@ interface TaskState<T extends TaskHandler<any>> {
   error?: any;
   status?: 'running' | 'finished';
 }
+
+type ThenResult<T, D> = T extends (...args: any[]) => infer R ? R : D;
 
 class Task<T extends TaskHandler<any>> extends Functor<T> {
   name = 'Task';
@@ -64,25 +65,45 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
     });
   }
 
-  flatMap<C extends Functor<any>, R = GetFunctorResult<C>>(fn: (value: MapValue<T>) => C): Task<TaskHandler<R>> {
-    return this.map((v: any) => fn(v).valueOf()) as any;
+  flatMap<C extends Functor<any>, R = GetFunctorResult<C>>(
+    fn: (value: MapValue<T>) => C,
+  ): Task<TaskHandler<R>> {
+    return this.map((v: any) => fn(v).valueOf());
   }
 
-  then(onResolved?: ListenOptions<T>['onResolved'], onRejected?: ListenOptions<T>['onRejected']): Promise< MapValue<T>> {
-    const { promise, resolve, reject } = withResolvers<MapValue<T>>();
-    this.listen({ onResolved: (v) => {
-      onResolved ? resolve(onResolved(v)) : resolve(v);
+  then<F extends ListenOptions<T>['onResolved'], R = ThenResult<F, MapValue<T>>>(
+    onResolved?: F,
+    onRejected?: ListenOptions<T>['onRejected'],
+  ): Promise<R> {
+    const { promise, resolve, reject } = withResolvers<R>();
+
+    const resolver: ListenOptions<T> = { onResolved: (v) => {
+      try {
+        onResolved ? resolve(onResolved(v)) : resolve(v);
+      }
+      catch (err) {
+        reject(err);
+      }
     }, onRejected: (e) => {
-      onRejected ? resolve(onRejected(e)) : reject(e);
-    } }).run();
+      try {
+        onRejected ? resolve(onRejected(e)) : reject(e);
+      }
+      catch (err) {
+        reject(err);
+      }
+    } };
+
+    this.listen(resolver).run();
     return promise;
   }
 
-  catch(onRejected?: ListenOptions<T>['onRejected']) {
+  catch<F extends ListenOptions<T>['onRejected']>(
+    onRejected?: F,
+  ): Promise<ThenResult<F, void>> {
     return this.then(void 0, onRejected);
   }
 
-  #genResolver() {
+  #genetateResolver() {
     const resolve = (value: MapValue<T>) => {
       setState(this, { result: value, status: 'finished' });
       this.#success();
@@ -99,8 +120,12 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
     if (status)
       return this;
     setState(this, { status: 'running' });
-    const resolver = this.#genResolver();
-    this.valueOf()(resolver);
+    const resolver = this.#genetateResolver();
+    const result = this.valueOf()(resolver);
+    // 创建完之后直接执行 task
+    if (isPromise(result)) {
+      result.then(resolver.resolve, resolver.reject);
+    }
     return this;
   }
 
