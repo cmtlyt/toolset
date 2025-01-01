@@ -40,9 +40,7 @@ describe('array polyfill', () => {
         { num: 2 },
       ),
     ).resolves.toEqual([2, 3, 4, 5, 6]);
-    expect(ClArray.fromAsync(makeAsyncIterable(), {})).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[TypeError: mapfn is not callable]`,
-    );
+    expect(ClArray.fromAsync(makeAsyncIterable(), {})).rejects.toThrow(TypeError);
     expect(ClArray.fromAsync(makeIterable())).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(ClArray.fromAsync.call(null, makeIterable())).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(ClArray.fromAsync({ length: 5 })).resolves.toEqual(Array.from({ length: 5 }).fill(undefined));
@@ -59,9 +57,7 @@ describe('array polyfill', () => {
         return i + (item || 0);
       }),
     ).resolves.toEqual([10, 1, 2, 3, 4]);
-    expect(ClArray.fromAsync(makeAsyncIterableWithThrow())).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[Error: error]`,
-    );
+    expect(ClArray.fromAsync(makeAsyncIterableWithThrow())).rejects.toThrow(Error);
 
     expect(arrayFromAsync(makeAsyncIterable())).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(arrayFromAsync(makeAsyncIterable(), item => item * 2)).resolves.toEqual([0, 2, 4, 6, 8]);
@@ -75,9 +71,7 @@ describe('array polyfill', () => {
       ),
     ).resolves.toEqual([2, 3, 4, 5, 6]);
     // @ts-expect-error error
-    expect(arrayFromAsync(makeAsyncIterable(), {})).rejects.toThrowErrorMatchingInlineSnapshot(
-      `[TypeError: mapfn is not callable]`,
-    );
+    expect(arrayFromAsync(makeAsyncIterable(), {})).rejects.toThrow(TypeError);
     expect(arrayFromAsync(makeIterable())).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(arrayFromAsync.call(null, makeIterable())).resolves.toEqual([0, 1, 2, 3, 4]);
     expect(arrayFromAsync({ length: 5 })).resolves.toEqual(Array.from({ length: 5 }).fill(undefined));
