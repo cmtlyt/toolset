@@ -1,7 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
-
-import { createLogger } from '../src';
+import { describe, expect, inject, it } from 'vitest';
 
 function stringify(obj: any) {
   try {
@@ -12,7 +10,11 @@ function stringify(obj: any) {
   }
 }
 
-describe('logger 包测试', () => {
+describe('logger 包测试', async () => {
+  const { createLogger } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   const logBeforeInfo: any[] = [];
   const outputMessage: any[] = [];
   let globalIdx = 0;

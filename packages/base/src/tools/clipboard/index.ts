@@ -1,6 +1,5 @@
-import { cacheByReturn } from '../../cir-dep';
 import { warning } from '../../common/warning';
-import { isHttpsUrlString, safeGetGlobal } from '../../utils';
+import { cacheByReturn, isHttpsUrlString, safeGetGlobal } from '../../utils';
 
 const hasExecCommand = cacheByReturn(() => {
   return typeof safeGetGlobal().document?.execCommand === 'function';

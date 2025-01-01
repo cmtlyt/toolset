@@ -1,10 +1,12 @@
 /* eslint-disable no-useless-call */
 /* eslint-disable no-console */
-import { describe, it } from 'vitest';
+import { describe, inject, it } from 'vitest';
 
-import { arrayFromAsync, ClArray } from '../../src';
+describe('array polyfill', async () => {
+  const { arrayFromAsync, ClArray } = await (() => {
+    return inject('CI') ? import('../../dist') : import('../../src');
+  })() as typeof import('../../src');
 
-describe('array polyfill', () => {
   async function* makeAsyncIterable() {
     for (let i = 0; i < 5; i++) {
       await new Promise(resolve => setTimeout(resolve, 100));

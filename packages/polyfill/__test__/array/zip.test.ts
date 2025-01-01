@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { arrayZip, ClArray } from '../../src';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('arrayZip', () => {
+describe('arrayZip', async () => {
+  const { arrayZip } = await (() => {
+    return inject('CI') ? import('../../dist') : import('../../src');
+  })() as typeof import('../../src');
+
   it('默认情况下应使用最短模式压缩数组', () => {
     const result = arrayZip([[1, 2, 3], ['a', 'b', 'c']]);
     expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);
@@ -124,7 +127,11 @@ describe('arrayZip', () => {
   });
 });
 
-describe('use ClArray.zip', () => {
+describe('use ClArray.zip', async () => {
+  const { ClArray } = await (() => {
+    return inject('CI') ? import('../../dist') : import('../../src');
+  })() as typeof import('../../src');
+
   it('默认情况下应使用最短模式压缩数组', () => {
     const result = ClArray.zip([[1, 2, 3], ['a', 'b', 'c']]);
     expect(result).toEqual([[1, 'a'], [2, 'b'], [3, 'c']]);

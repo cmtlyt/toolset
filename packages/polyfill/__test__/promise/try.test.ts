@@ -1,8 +1,11 @@
 /* eslint-disable no-useless-call */
-import { describe, it } from 'vitest';
-import { ClPromise, promiseTry } from '../../src';
+import { describe, inject, it } from 'vitest';
 
-describe('promise polyfill', () => {
+describe('promise polyfill', async () => {
+  const { ClPromise, promiseTry } = await (() => {
+    return inject('CI') ? import('../../dist') : import('../../src');
+  })() as typeof import('../../src');
+
   it('promiseTry', ({ expect }) => {
     expect(ClPromise.try(() => {})).toBeInstanceOf(Promise);
     expect(ClPromise.try((a: number) => a, 1)).resolves.toBe(1);

@@ -1,9 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
-import * as utils from '../src/utils/data-handler';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('data-handler', () => {
+describe('data-handler', async () => {
+  const { ...utils } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src/utils/data-handler');
+  })() as typeof import('../src/utils/data-handler');
+
   const longString = readFileSync(resolve(import.meta.dirname, './long-str.txt'), 'utf-8');
 
   it('原文和 base64 相互转换', async () => {
@@ -143,22 +146,6 @@ describe('data-handler', () => {
     const stream = await utils.chunkBase64StringToStream(chunkBase64);
     const resultString = await utils.streamToString(stream);
     expect(resultString).toEqual('test string');
-  });
-
-  it('curry functions', () => {
-    const arr = [1, 2, 3, 4];
-    const isEven = (n: number) => n % 2 === 0;
-    const add = (a: number, b: number) => a + b;
-
-    expect(utils.filter(isEven, arr)).toEqual([2, 4]);
-    expect(utils.map((n: number) => n * 2, arr)).toEqual([2, 4, 6, 8]);
-    expect(utils.reduce(add, 0, arr)).toEqual(10);
-    expect(utils.every(isEven, arr)).toEqual(false);
-    expect(utils.some(isEven, arr)).toEqual(true);
-    expect(utils.find(isEven, arr)).toEqual(2);
-    expect(utils.findIndex(isEven, arr)).toEqual(1);
-    expect(utils.includes(3, arr)).toEqual(true);
-    expect(utils.join('-', arr)).toEqual('1-2-3-4');
   });
 
   it('手动补充 asyncFilter 函数测试', async () => {

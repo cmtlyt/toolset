@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { createPool, getPool } from '../src/tools/create-pool';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('pool', () => {
+describe('pool', async () => {
+  const { createPool, getPool } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   it('should create a pool with the specified size', () => {
     const pool = createPool(() => ({}), 3);
     expect(pool.usableCount).toBe(3);

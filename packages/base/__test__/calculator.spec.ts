@@ -1,9 +1,12 @@
 /* eslint-disable ts/ban-ts-comment */
 // @ts-nocheck
-import { describe, expect, it } from 'vitest';
-import { Calculator } from '../src/tools/calculator';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('calculator', () => {
+describe('calculator', async () => {
+  const { Calculator } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src/tools/calculator');
+  })();
+
   const calc = new Calculator();
 
   it('add', () => {

@@ -1,8 +1,14 @@
-import { describe, expect, it } from 'vitest';
-import { withResolvers } from '../src';
-import { functor } from '../src/fp';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('functor', () => {
+describe('functor', async () => {
+  const { utils, functor } = await (() => {
+    return inject('CI') ? import('../../dist/fp') : import('../../src/fp');
+  })() as typeof import('../../src/fp');
+
+  const { withResolvers } = await (() => {
+    return inject('CI') ? import('../../dist') : import('../../src');
+  })() as typeof import('../../src');
+
   it('container', () => {
     const con1 = functor.container(1)
       .map((v) => {
@@ -130,6 +136,10 @@ describe('functor', () => {
         expect(v).toBe(1);
         return v.toString();
       })
+      .map(utils.trace((v) => {
+        expect(v).toBe('1');
+        return '10';
+      }))
       .map((v) => {
         expect(v).toBe('1');
         return Boolean(v);
@@ -292,6 +302,16 @@ describe('functor', () => {
     await functor.task(async () => {
       return 1;
     }).then(async () => {
+      throw new Error('1');
+    }, () => {
+      throw new Error('2');
+    }).catch((e) => {
+      expect(e.message).toBe('1');
+    });
+
+    await functor.task(async () => {
+      return 1;
+    }).then(() => {
       throw new Error('1');
     }, () => {
       throw new Error('2');

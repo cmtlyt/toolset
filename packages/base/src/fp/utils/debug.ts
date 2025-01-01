@@ -1,4 +1,4 @@
-import { curry } from '$/cir-dep';
+import { curry } from './function';
 
 /**
  * 获取组合函数中间的执行结果

@@ -1,9 +1,8 @@
 import type { TObject } from '../../types/base';
 import type { PoolType } from '../create-pool';
 import type { WorkerFuncs } from '../create-worker-func';
-import { getType } from '../../cir-dep';
 import { warning } from '../../common/warning';
-import { createLinkByString, getArraySlice, getRandomString, isBlob, isFile, isUrl } from '../../utils';
+import { createLinkByString, getArraySlice, getRandomString, getType, isBlob, isFile, isUrl } from '../../utils';
 import { createPool } from '../create-pool';
 import { createWorkerFunc } from '../create-worker-func';
 

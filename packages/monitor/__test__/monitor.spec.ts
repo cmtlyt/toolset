@@ -1,6 +1,5 @@
 import { page, userEvent } from '@vitest/browser/context';
 import { describe, expect, inject, it } from 'vitest';
-import { createMonitor } from '../src';
 import { render } from './render-dom';
 
 function stringify(obj: any, ignoreKey: string[] = []) {
@@ -12,7 +11,11 @@ function stringify(obj: any, ignoreKey: string[] = []) {
   }
 }
 
-describe.runIf(inject('CI'))('monitor', () => {
+describe.runIf(inject('CI'))('monitor', async () => {
+  const { createMonitor } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   const logs: any[] = [];
   let currIdx = 0;
   render();

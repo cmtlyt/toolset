@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { clearStore, getStore, removeStore, setStore } from '../src/store';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('store', () => {
+describe('store', async () => {
+  const { clearStore, getStore, removeStore, setStore } = await (() => {
+    return inject('CI') ? import('../src/store') : import('../src/store');
+  })() as typeof import('../src/store');
+
   it('setStore and getStore', () => {
     setStore('test', 'test');
     expect(getStore('test')).toBe('test');

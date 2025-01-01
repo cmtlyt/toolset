@@ -1,9 +1,11 @@
 // @vitest-environment happy-dom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, inject, it } from 'vitest';
 
-import { gzip, unGzip, unzip, unzipSync, zip, zipSync } from '../src';
+describe('gzip check', async () => {
+  const { gzip, unGzip, unzip, unzipSync, zip, zipSync } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
 
-describe('gzip check', () => {
   const str
     = 'hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world';
 

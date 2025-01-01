@@ -2,10 +2,13 @@
  * @vitest-environment node
  */
 
-import { describe, expect, expectTypeOf, it } from 'vitest';
-import { getDeviceInfo, getNow, getOsType, safeGetGlobal } from '../src';
+import { describe, expect, expectTypeOf, inject, it } from 'vitest';
 
-describe('utils/node', () => {
+describe('utils/node', async () => {
+  const { getDeviceInfo, getNow, getOsType, safeGetGlobal } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   it('getOsType', () => {
     expectTypeOf(getOsType()).toMatchTypeOf<string>();
   });

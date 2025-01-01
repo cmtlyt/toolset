@@ -1,6 +1,4 @@
-/* eslint-disable */
-import { describe, expect, it } from 'vitest';
-import { decodeDataSchema, encodeDataSchema, jsonSchemaGenerator, mockFromSchema, typeObjectToSchema, verifyBySchema } from '../src';
+import { describe, expect, inject, it } from 'vitest';
 
 function stringify(obj: any) {
   try {
@@ -11,7 +9,11 @@ function stringify(obj: any) {
   }
 }
 
-describe('jsonSchema', () => {
+describe('jsonSchema', async () => {
+  const { decodeDataSchema, encodeDataSchema, jsonSchemaGenerator, mockFromSchema, typeObjectToSchema, verifyBySchema } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   const data = {
     name: 'test',
     age: 12,
@@ -101,6 +103,7 @@ describe('jsonSchema', () => {
     func1() {
       return [1, this.name];
     },
+    // eslint-disable-next-line object-shorthand
     func2: function () {
       return [2, this.name];
     },
@@ -126,6 +129,7 @@ describe('jsonSchema', () => {
       ['data', data],
       [data, data],
     ]),
+    // eslint-disable-next-line regexp/no-useless-character-class, regexp/no-super-linear-backtracking, regexp/no-useless-non-capturing-group, regexp/prefer-d, regexp/prefer-plus-quantifier
     reg: /^12[3](123)?.*?1+[^123](?=123)(?:123)(?!123)\d\w\s\D\W\S[0-9](1|2){2}1{1,}2{1,3}$/gms,
     date: new Date('Sat, 13 Jul 2024 05:14:09 GMT'),
   };

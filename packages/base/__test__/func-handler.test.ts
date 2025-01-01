@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { compose, pipe } from '../src';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('func-handler', () => {
+describe('func-handler', async () => {
+  const { compose, pipe } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   it('compose', () => {
     const add = (a: number) => a + 1;
     const double = (a: number) => a * 2;

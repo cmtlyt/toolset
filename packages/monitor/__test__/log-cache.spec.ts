@@ -1,9 +1,12 @@
 /* eslint-disable */
 // @ts-nocheck
-import { describe, expect, it } from 'vitest';
-import { logCache } from '../src/store';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('log cache', () => {
+describe('log cache', async () => {
+  const { logCache } = await (() => {
+    return inject('CI') ? import('../src/store') : import('../src/store');
+  })() as typeof import('../src/store');
+
   it('push and pop', () => {
     logCache.push('test');
     expect(logCache.pop()).toBe('test');

@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest';
-import { getAllQueueIds, getConcurrentQueue } from '../src';
+import { describe, expect, inject, it } from 'vitest';
 
-describe('concurrent-queue', () => {
+describe('concurrent-queue', async () => {
+  const { getAllQueueIds, getConcurrentQueue } = await (() => {
+    return inject('CI') ? import('../dist') : import('../src');
+  })() as typeof import('../src');
+
   const sleep = async (t: number): Promise<number> => new Promise(r => setTimeout(() => r(t), t));
 
   it('应该符合单例逻辑', () => {
