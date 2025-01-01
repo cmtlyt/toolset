@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/string-zip",
   "type": "module",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "cl字符串数据压缩",
