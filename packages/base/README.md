@@ -54,6 +54,8 @@ pnpm add @cmtlyt/base
 
 - utils.trace
 
+修复 compose 和 pipe 无法正确处理数组返回值的问题
+
 新增
 
 - (F) getConcurrentQueue

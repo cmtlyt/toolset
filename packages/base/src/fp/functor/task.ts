@@ -1,6 +1,6 @@
-import type { PromiseValue } from '$/types/base';
+import type { TPromiseValue } from '$/types/base';
 import type { GetFunctorResult } from './utils';
-import { compose, isPromise } from '$/utils';
+import { isPromise, withResolvers } from '$/utils';
 import { Functor, getState, setState } from './utils';
 
 interface Resolver<T> {
@@ -10,16 +10,24 @@ interface Resolver<T> {
 
 type TaskHandler<T> = ((resolver: Resolver<T>) => void) | (() => Promise<T>);
 
-type MapValue<T extends TaskHandler<any>> = T extends TaskHandler<infer R> ? PromiseValue<R> : never;
+type MapValue<T extends TaskHandler<any>> = T extends TaskHandler<infer R> ? TPromiseValue<R> : never;
 
 interface ListenOptions<T extends TaskHandler<any>> {
-  onResolved?: (result: MapValue<T>) => void;
-  onRejected?: (reason?: any) => void;
+  onResolved?: (result: MapValue<T>) => any;
+  onRejected?: (reason?: any) => any;
 }
 
 interface ListenState<T extends TaskHandler<any>> {
   onResolveds: Required<ListenOptions<T>>['onResolved'][];
   onRejecteds: Required<ListenOptions<T>>['onRejected'][];
+}
+
+interface TaskState<T extends TaskHandler<any>> {
+  value: T;
+  listen?: ListenState<T>;
+  result?: MapValue<T>;
+  error?: any;
+  status?: 'running' | 'finished';
 }
 
 class Task<T extends TaskHandler<any>> extends Functor<T> {
@@ -31,59 +39,107 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
   }
 
   map<R>(fn: (value: MapValue<T>) => R): Task<TaskHandler<R>> {
-    const newTask = task<R>((resolver) => {
+    return task<R>((resolver) => {
       const handler = this.valueOf();
-      handler({
+      const newResolver = {
         reject: resolver.reject,
-        resolve: compose(resolver.resolve, fn),
-      });
+        resolve: async (value: MapValue<T>) => {
+          try {
+            // 处理 map 方法传入的异步函数
+            let result = fn(value);
+            if (isPromise(result))
+              result = await result;
+            resolver.resolve(result);
+          }
+          catch (e) {
+            resolver.reject(e);
+          }
+        },
+      };
+      // 处理 task 方法传入的异步函数
+      const result = handler(newResolver);
+      if (isPromise(result)) {
+        result.then(newResolver.resolve, newResolver.reject);
+      }
     });
-    // 同步当前 task 的 state 到新 task
-    const state = getState(this);
-    setState(newTask, { ...state, value: newTask.valueOf() });
-    return newTask;
   }
 
   flatMap<C extends Functor<any>, R = GetFunctorResult<C>>(fn: (value: MapValue<T>) => C): Task<TaskHandler<R>> {
-    return this.map((v: any) => fn(v).join()) as any;
+    return this.map((v: any) => fn(v).valueOf()) as any;
   }
 
-  then(onResolved: ListenOptions<T>['onResolved'], onRejected?: ListenOptions<T>['onRejected']) {
-    return this.listen({ onResolved, onRejected }).run();
+  then(onResolved?: ListenOptions<T>['onResolved'], onRejected?: ListenOptions<T>['onRejected']): Promise< MapValue<T>> {
+    const { promise, resolve, reject } = withResolvers<MapValue<T>>();
+    this.listen({ onResolved: (v) => {
+      onResolved ? resolve(onResolved(v)) : resolve(v);
+    }, onRejected: (e) => {
+      onRejected ? resolve(onRejected(e)) : reject(e);
+    } }).run();
+    return promise;
+  }
+
+  catch(onRejected?: ListenOptions<T>['onRejected']) {
+    return this.then(void 0, onRejected);
+  }
+
+  #genResolver() {
+    const resolve = (value: MapValue<T>) => {
+      setState(this, { result: value, status: 'finished' });
+      this.#success();
+    };
+    const reject = (reason?: any) => {
+      setState(this, { error: reason, status: 'finished' });
+      this.#fail();
+    };
+    return { resolve, reject };
   }
 
   run() {
-    const state = getState<{ listen?: ListenState<T> }>(this);
-    const { listen } = state;
-    const resolve = (value: MapValue<T>) => {
-      setState(this, { ...state, result: value });
-      // 防止传入异步函数后重复调用
-      if (!listen || typeof value === 'undefined')
-        return;
-      listen.onResolveds.forEach(cb => cb(value));
-    };
-    const reject = (reason?: any) => {
-      setState(this, { ...state, error: reason });
-      // 防止传入异步函数后重复调用
-      if (!listen || typeof reason === 'undefined')
-        return;
-      listen.onRejecteds.forEach(cb => cb(reason));
-    };
-    const result = this.valueOf()({ resolve, reject });
-    const promiseResult = isPromise(result);
-    if (promiseResult)
-      result.then(resolve, reject);
+    const { status } = getState<TaskState<T>>(this);
+    if (status)
+      return this;
+    setState(this, { status: 'running' });
+    const resolver = this.#genResolver();
+    this.valueOf()(resolver);
     return this;
   }
 
+  #fail() {
+    const { listen, error } = getState<TaskState<T>>(this);
+
+    // 防止传入异步函数后重复调用
+    if (!listen)
+      return;
+
+    error && listen.onRejecteds.forEach(cb => cb(error));
+    setState(this, { listen: void 0, error: void 0 });
+  }
+
+  #success() {
+    const { listen, result } = getState<TaskState<T>>(this);
+
+    // 防止传入异步函数后重复调用
+    if (!listen)
+      return;
+
+    result && listen.onResolveds.forEach(cb => cb(result));
+    setState(this, { listen: void 0 });
+  }
+
   listen(options: ListenOptions<T>) {
-    const state = getState<{ listen?: ListenState<T>; result?: MapValue<T>; error?: any }>(this);
-    let { listen, result, error } = state;
+    const state = getState<TaskState<T>>(this);
+    let { listen, result, error, status } = state;
     const { onRejected, onResolved } = options;
 
-    if (result !== undefined || error !== undefined) {
-      onResolved && result && onResolved(result);
-      onRejected && error && onRejected(error);
+    // 如果任务已经完成，直接执行回调
+    if (status === 'finished') {
+      if (error) {
+        if (!onRejected)
+          throw error;
+        onRejected(error);
+        setState(this, { error: void 0 });
+      }
+      result && onResolved && onResolved(result);
       return this;
     }
 
@@ -94,7 +150,7 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
     onResolved && listen.onResolveds.push(onResolved);
     onRejected && listen.onRejecteds.push(onRejected);
 
-    setState(this, { value: this.valueOf(), listen });
+    setState(this, { listen });
 
     return this;
   }

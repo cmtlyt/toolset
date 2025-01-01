@@ -97,4 +97,4 @@ export type TMany<T> = T | T[];
 
 export type TObjKeyType = string | number | symbol;
 
-export type PromiseValue<T> = T extends Promise<infer R> ? PromiseValue<R> : T;
+export type TPromiseValue<T> = T extends Promise<infer R> ? TPromiseValue<R> : T;

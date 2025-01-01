@@ -62,12 +62,12 @@ export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (
 
 type TCurryFuncReturnType<F> = F extends TCurry<any, infer R> ? R : F extends TAnyFunc ? ReturnType<F> : any;
 
-function _generateRunFunc(funcs: TAnyFunc[], callback: (funcs: TAnyFunc[], args: any[]) => any) {
+function _generateRunFunc(funcs: TAnyFunc[], callback: (funcs: TAnyFunc[], ...args: any[]) => any) {
   if (funcs.length === 0)
     return (arg: any) => arg;
   if (funcs.length === 1)
     return funcs[0];
-  const runFunc = (...args: any[]) => callback(funcs, args);
+  const runFunc = (...args: any[]) => callback(funcs, ...args)[0];
   return runFunc;
 }
 
@@ -81,8 +81,8 @@ type TComposeFunc = <F extends TCompose<F>>(
  * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
  */
 export const compose: TComposeFunc = function compose(...funcs) {
-  const func = _generateRunFunc(funcs, (funcs: TAnyFunc[], args: any) =>
-    funcs.reduceRight((data, func) => func(...getArray(data)), args));
+  const func = _generateRunFunc(funcs, (funcs, ...args) =>
+    funcs.reduceRight((data, func) => [func(...getArray(data))], args));
   const firstFunc = funcs[funcs.length - 1];
   // @ts-expect-error 自定义属性
   func.clength = firstFunc?.clength || firstFunc?.length;
@@ -99,8 +99,8 @@ type TPipeFunc = <F extends TPipe<F>>(
  * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
  */
 export const pipe: TPipeFunc = function pipe(...funcs) {
-  const func = _generateRunFunc(funcs, (funcs, args) =>
-    funcs.reduce((data, func) => func(...getArray(data)), args));
+  const func = _generateRunFunc(funcs, (funcs, ...args) =>
+    funcs.reduce((data, func) => [func(...getArray(data))], args));
   const firstFunc = funcs[0];
   // @ts-expect-error 自定义属性
   func.clength = firstFunc?.clength || firstFunc?.length;

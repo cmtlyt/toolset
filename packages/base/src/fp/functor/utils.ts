@@ -7,11 +7,8 @@ export function getState<R = any>(instance: object): R {
 }
 
 export function setState(instance: object, state: any) {
-  stateMap.set(instance, state);
-}
-
-export function getMap() {
-  return stateMap;
+  const oldState = getState(instance);
+  stateMap.set(instance, { ...oldState, ...state });
 }
 
 export abstract class Functor<T> {
@@ -30,7 +27,7 @@ export abstract class Functor<T> {
   }
 
   inspect() {
-    return `${this.name}{ ${this.valueOf()} }`;
+    return `${this.name} { ${this.valueOf()} }`;
   }
 
   join = this.valueOf;
