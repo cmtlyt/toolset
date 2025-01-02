@@ -38,6 +38,22 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.10.3
+
+新增 fp 相关内容
+
+- (F) makeBy
+- (F) replicate
+- (F) partition
+- (F) adjust
+- (F) toUpperCase
+- (F) toLowerCase
+- (F) toCamelCase
+- (F) toUnderlineCase
+- (F) toMiddleLineCase
+- (F) placeholderFunc
+- (CV) \_\_
+
 ### v0.10.2
 
 部分函数不再由 `@cmtlyt/base` 透出, 迁移到 `import { utils } from '@cmtlyt/base/fs';` 或 `import { xxx } from '@cmtlyt/base/fp/utils';`
