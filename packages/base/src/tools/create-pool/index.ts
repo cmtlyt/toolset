@@ -1,5 +1,5 @@
 import type { TObject } from '../../types/base';
-import { EMPTY } from '../../common/constant';
+import { INTERNAL_EMPTY } from '../../common/constant';
 import { getRandomString } from '../../utils';
 
 interface PoolItem<T> {
@@ -31,7 +31,7 @@ const poolMap: TObject<Pool<any>> = {};
 
 class Pool<T> {
   static getPool<T>(poolId: string | symbol = '', size = 5, initFunction?: (idx: number) => T) {
-    const initFunc = initFunction || (() => EMPTY);
+    const initFunc = initFunction || (() => INTERNAL_EMPTY);
     if (!poolId)
       return new Pool<T>(size, initFunc, poolId);
     return (poolMap[poolId] ??= new Pool<T>(size, initFunc, poolId));
@@ -45,12 +45,12 @@ class Pool<T> {
   usableCount: number;
   isClose: boolean;
 
-  constructor(size = 5, initFunction: (idx: number) => any = () => EMPTY, poolId: string | symbol = Symbol('')) {
+  constructor(size = 5, initFunction: (idx: number) => any = () => INTERNAL_EMPTY, poolId: string | symbol = Symbol('')) {
     this.#_poolId = poolId;
     this.#_pool = Array.from({ length: size }, (_, i) => this.#_genItem(initFunction(i)));
     this.#_waiting = [];
     this.usableCount = this.#_pool.reduce((prev, cur) => {
-      if (cur.data !== EMPTY)
+      if (cur.data !== INTERNAL_EMPTY)
         prev++;
       return prev;
     }, 0);
@@ -75,7 +75,7 @@ class Pool<T> {
     }
     else {
       // 添加
-      const index = this.#_pool.findIndex(item => item.data === EMPTY);
+      const index = this.#_pool.findIndex(item => item.data === INTERNAL_EMPTY);
       if (!~index)
         throw new Error('池子已满');
       this.#_pool[index] = this.#_genItem(data);
@@ -88,7 +88,7 @@ class Pool<T> {
       throw new Error('池子已关闭');
     const item = this.#_pool[index];
     // 如果不存在，则等待
-    if (!item || item.data === EMPTY) {
+    if (!item || item.data === INTERNAL_EMPTY) {
       return new Promise((resolve, reject) => {
         this.#_waiting.push({ resolve, reject });
       });
@@ -149,7 +149,7 @@ class Pool<T> {
   }
 
   async get() {
-    const index = this.#_pool.findIndex(item => item.data !== EMPTY);
+    const index = this.#_pool.findIndex(item => item.data !== INTERNAL_EMPTY);
     return this.#_genReturn(index);
   }
 

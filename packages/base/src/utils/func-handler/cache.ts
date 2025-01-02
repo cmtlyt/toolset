@@ -1,5 +1,5 @@
 import type { GetArgs, GetReturnType, TAnyFunc } from '$/types/base';
-import { EMPTY } from '$/common/constant';
+import { INTERNAL_EMPTY } from '$/common/constant';
 
 export function onceFunc<T extends TAnyFunc>(func: T): T {
   let called = false;
@@ -64,9 +64,9 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
 ) => (...args: GetArgs<R>) => GetReturnType<R> = (() => {
   if (Reflect?.apply) {
     return (cacheLoad) => {
-      let cache: any = EMPTY;
+      let cache: any = INTERNAL_EMPTY;
       return (...args) => {
-        if (cache === EMPTY)
+        if (cache === INTERNAL_EMPTY)
           cache = cacheLoad();
         if (typeof cache !== 'function')
           return cache;
@@ -75,9 +75,9 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
     };
   }
   return (cacheLoad) => {
-    let cache: any = EMPTY;
+    let cache: any = INTERNAL_EMPTY;
     return (...args) => {
-      if (cache === EMPTY)
+      if (cache === INTERNAL_EMPTY)
         cache = cacheLoad();
       if (typeof cache !== 'function')
         return cache;

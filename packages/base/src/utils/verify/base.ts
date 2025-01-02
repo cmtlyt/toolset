@@ -1,4 +1,4 @@
-import { EMPTY } from '$/common/constant';
+import { INTERNAL_EMPTY } from '$/common/constant';
 import { warning } from '$/common/warning';
 import { getType } from '../get-data';
 import { isInIframe } from '../ua';
@@ -55,7 +55,7 @@ export function isFalse(value: any): value is false {
 }
 
 export function isEmpty(value: any): boolean {
-  if (value === EMPTY)
+  if (value === INTERNAL_EMPTY)
     return true;
   if (typeof value === 'boolean')
     return false;

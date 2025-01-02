@@ -1,6 +1,6 @@
 import { Functor, type GetFunctorResult } from './utils';
 
-export class MayBe<T> extends Functor<T> {
+class MayBe<T> extends Functor<T> {
   name = 'Maybe';
 
   isNothing(): boolean {

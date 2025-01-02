@@ -15,7 +15,7 @@ describe('utils', async () => {
     curry,
     debounce,
     deepClone,
-    EMPTY,
+    INTERNAL_EMPTY: EMPTY,
     gc,
     generateClassName,
     generateCookieInfo,

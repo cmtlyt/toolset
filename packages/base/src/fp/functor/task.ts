@@ -1,4 +1,5 @@
 import type { GetFunctorResult } from './utils';
+import { INTERNAL_EMPTY } from '$/common/constant';
 import { isPromise, withResolvers } from '$/utils';
 import { Functor, getState, setState } from './utils';
 
@@ -39,29 +40,44 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
     setState(this, { value });
   }
 
+  async #runCallback<R>(
+    callback: ((value: MapValue<T>) => R) | TaskHandler<R>,
+    resolver: Resolver<R>,
+    // 使用 EMPTY 是为了安全考虑, 否则如果 value 是 undefined 的话 value 会被意外的赋值
+    value: MapValue<T> | typeof INTERNAL_EMPTY,
+  ): Promise<void> {
+    // 如果传入的是 EMPTY 则说明是 task 的执行体, 应该由用户控制是否完成
+    const _value: any = value === INTERNAL_EMPTY ? resolver : value;
+    try {
+      // 包裹 callback 是为了捕获 callback 同步错误
+      const result = callback(_value);
+      if (isPromise(result))
+        // 如果是 promise 则交由 then 处理错误
+        result.then(resolver.resolve, resolver.reject);
+      else if (value !== INTERNAL_EMPTY)
+        // map 方法传入的值需要系统主动 resolve
+        resolver.resolve(result as any);
+    }
+    catch (e) {
+      resolver.reject(e);
+    }
+  }
+
   map<R>(fn: (value: MapValue<T>) => R): Task<TaskHandler<R>> {
     return task<R>((resolver) => {
       const handler = this.valueOf();
       const newResolver = {
         reject: resolver.reject,
-        resolve: async (value: MapValue<T>) => {
-          try {
-            // 处理 map 方法传入的异步函数
-            let result = fn(value);
-            if (isPromise(result))
-              result = await result;
-            resolver.resolve(result);
-          }
-          catch (e) {
-            resolver.reject(e);
-          }
+        resolve: (value: MapValue<T>) => {
+          this.#runCallback(fn, resolver, value);
         },
       };
       // 处理 task 方法传入的异步函数
-      const result = handler(newResolver);
-      if (isPromise(result)) {
-        result.then(newResolver.resolve, newResolver.reject);
-      }
+      this.#runCallback(handler, newResolver, INTERNAL_EMPTY);
+      // const result = handler(newResolver);
+      // if (isPromise(result)) {
+      //   result.then(newResolver.resolve, newResolver.reject);
+      // }
     });
   }
 
@@ -121,11 +137,12 @@ class Task<T extends TaskHandler<any>> extends Functor<T> {
       return this;
     setState(this, { status: 'running' });
     const resolver = this.#genetateResolver();
-    const result = this.valueOf()(resolver);
-    // 创建完之后直接执行 task
-    if (isPromise(result)) {
-      result.then(resolver.resolve, resolver.reject);
-    }
+    this.#runCallback(this.valueOf(), resolver, INTERNAL_EMPTY);
+    // const result = this.valueOf()(resolver);
+    // // 创建完之后直接执行 task
+    // if (isPromise(result)) {
+    //   result.then(resolver.resolve, resolver.reject);
+    // }
     return this;
   }
 

@@ -38,6 +38,25 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.10.2
+
+部分函数不再由 `@cmtlyt/base` 透出, 迁移到 `import { utils } from '@cmtlyt/base/fs';` 或 `import { xxx } from '@cmtlyt/base/fp/utils';`
+
+本次改动涉及到的方法:
+
+- filter
+- map
+- reduce
+- every
+- some
+- find
+- findIndex
+- includes
+- join
+- trace
+
+不再导出内部使用的 STATIC_TYPE 常量
+
 ### v0.10.1
 
 源码目录重构, 不影响使用
