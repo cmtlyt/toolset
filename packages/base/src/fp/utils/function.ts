@@ -8,6 +8,9 @@ export type TCurry<P extends any[], R> = <T extends any[]>(
 
 type TCurryFunc = <P extends any[], R>(fn: (...args: P) => R) => TCurry<P, R>;
 
+/**
+ * 函数柯里化
+ */
 export const curry: TCurryFunc = function (func) {
   // @ts-expect-error 自定义属性, 确保获取到参数列表长度
   const length = func?.clength || func?.length || 0;
@@ -46,6 +49,8 @@ type TComposeFunc = <F extends TCompose<F>>(
 ) => (...args: Required<TArgsType<TLastType<F>>>) => TCurryFuncReturnType<THeadType<F>>;
 
 /**
+ * 函数组合
+ *
  * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
  */
 export const compose: TComposeFunc = function compose(...funcs) {
@@ -64,6 +69,8 @@ type TPipeFunc = <F extends TPipe<F>>(
 ) => (...args: Required<TArgsType<THeadType<F>>>) => TCurryFuncReturnType<TLastType<F>>;
 
 /**
+ * 函数管道
+ *
  * todo: 类型存在缺陷，只能判断最后输入的函数是否满足条件，不能判断中间的函数
  */
 export const pipe: TPipeFunc = function pipe(...funcs) {
@@ -90,6 +97,8 @@ type PlaceholderArgs<T extends any[], R extends any[] = []> =
   T extends [infer A, ...any] ? PlaceholderArgs<TDropHead<1, T>, TAppend<A | PlaceholderSymbol, R>> : R;
 
 /**
+ * 函数支持占位符
+ *
  * 包装并返回一个新函数, 新函数允许使用占位符替代传参, 占位符的位置后续传递即可
  *
  * 可选参数会被强制要求填写
@@ -97,9 +106,11 @@ type PlaceholderArgs<T extends any[], R extends any[] = []> =
  * @warning 占位符只能用于函数参数位置, 函数返回值位置无法使用占位符
  * @warning 无法与 curry 函数一起使用 (无法正确推导类型)! 具体看下方示例
  * @warning 当前包导出的 fp 相关方法为了更好的类型推导大部分都强制指定了多态类型, 所以无法正确推导形参列表
+ * 如需要可以使用原始版本 (函数名后加一个下划线 `_`, 例如 `curry 版本[adjust] 原始版本[adjust_]`)
  *
  * @example
- * import { __ } from '@cmtlyt/base/fp/utils';
+ * import { __, placeholderFunc } from '@cmtlyt/base/fp/utils';
+ * // const { __ } = placeholderFunc; // 也可以使用 placeholderFunc.__
  * const add = (a: number, b: string, c: number, d: boolean) => a + b + c + d;
  * // const func = curry(placeholderFunc(add)); // 这么使用无法正确推导类型
  * // const func = placeholderFunc(curry(add)); // 这个不影响使用
@@ -123,3 +134,7 @@ export function placeholderFunc<O extends any[], R>(func: TFunc<O, R>) {
     }) as TFunc<PlaceholderFuncArgs<A, Required<O>>, TCurryFuncReturnType<R>>;
   };
 }
+/**
+ * 占位符
+ */
+placeholderFunc.__ = __;

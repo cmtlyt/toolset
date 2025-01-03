@@ -53,6 +53,21 @@ pnpm add @cmtlyt/base
 - (F) toMiddleLineCase
 - (F) placeholderFunc
 - (CV) \_\_
+- (F) always
+- (F) id
+- (F) defaultValue
+- (CV) placeholderFunc.\_\_
+
+这些方法均导出了非 curry 版本, 即函数后添加 `_`
+
+例如:
+
+```js
+// curry 版本
+makeBy;
+// 非 curry 版本
+makeBy_;
+```
 
 ### v0.10.2
 

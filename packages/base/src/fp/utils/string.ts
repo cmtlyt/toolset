@@ -4,6 +4,7 @@
  * @summary toUpperCase :: string -> string
  */
 export const toUpperCase = (source: string) => source.toLocaleUpperCase();
+export const toUpperCase_ = toUpperCase;
 
 /**
  * 字符串转小写
@@ -11,6 +12,7 @@ export const toUpperCase = (source: string) => source.toLocaleUpperCase();
  * @summary toLowerCase :: string -> string
  */
 export const toLowerCase = (source: string) => source.toLocaleLowerCase();
+export const toLowerCase_ = toLowerCase;
 
 /**
  * 字符串转驼峰
@@ -18,6 +20,7 @@ export const toLowerCase = (source: string) => source.toLocaleLowerCase();
  * @summary toCamelCase :: string -> string
  */
 export const toCamelCase = (source: string) => source.replace(/[-\s](\w)/g, (_, $1) => $1.toLocaleUpperCase());
+export const toCamelCase_ = toCamelCase;
 
 /**
  * 字符串转下划线
@@ -25,6 +28,7 @@ export const toCamelCase = (source: string) => source.replace(/[-\s](\w)/g, (_, 
  * @summary toUnderlineCase :: string -> string
  */
 export const toUnderlineCase = (source: string) => source.replace(/\s*([A-Z])/g, (_, $1) => `_${$1.toLocaleLowerCase()}`);
+export const toUnderlineCase_ = toUnderlineCase;
 
 /**
  * 字符串转中划线
@@ -32,3 +36,4 @@ export const toUnderlineCase = (source: string) => source.replace(/\s*([A-Z])/g,
  * @summary toMiddleLineCase :: string -> string
  */
 export const toMiddleLineCase = (source: string) => source.replace(/\s*([A-Z])/g, (_, $1) => `-${$1.toLocaleLowerCase()}`);
+export const toMiddleLineCase_ = toMiddleLineCase;
