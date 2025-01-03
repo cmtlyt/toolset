@@ -1,17 +1,31 @@
+import type { ListenEventConfig } from '$/type';
 import type { TObject } from '@cmtlyt/base';
 import { eventMap, getStore, logCache, putEventMap, setStore } from '../store';
 import { getTargetSelector } from '../util';
 
 const defaultEventList: (keyof WindowEventMap)[] = ['click'];
 
-export function initEventListener(root: HTMLElement | Window = window, eventList?: (keyof WindowEventMap)[], needListenerCapture = false) {
-  (eventList || defaultEventList).forEach((eventName) => {
+export function initEventListener(root: HTMLElement | Window = window, options: ListenEventConfig<any>) {
+  const config = getStore('monitorConfig');
+  const { events = defaultEventList, needListenCapture = false, generateExtra } = options;
+
+  (events || defaultEventList).forEach((eventName) => {
     const getCallback = (extendObj: TObject<any>) => {
       const callback = (event: Event) => {
+        const systemExtra = {
+          timestamp: Date.now(),
+          isCapture: needListenCapture,
+          selector: getTargetSelector(event.target as HTMLElement),
+        };
+        const userExtra = typeof generateExtra === 'function' ? generateExtra.call(config, { event, systemExtra }) : {};
+
         logCache.push({
           kind: 'event',
           message: eventName,
-          extra: { timestamp: Date.now(), isCapture: needListenerCapture, selector: getTargetSelector(event.target as HTMLElement) },
+          extra: {
+            ...systemExtra,
+            ...userExtra,
+          },
           ...extendObj,
         });
       };
@@ -19,7 +33,7 @@ export function initEventListener(root: HTMLElement | Window = window, eventList
       return callback;
     };
 
-    needListenerCapture && root.addEventListener(eventName, getCallback({ capture: true }), { capture: true });
+    needListenCapture && root.addEventListener(eventName, getCallback({ capture: true }), { capture: true });
     root.addEventListener(eventName, getCallback({ capture: false }));
   });
 }

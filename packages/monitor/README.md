@@ -26,6 +26,10 @@ pnpm add @cmtlyt/monitor
 
 ## 更新日志
 
+### v0.2.0
+
+配置参数调整, 收敛事件监听相关配置 (`listenerEvents`, `needListenCapture`) 到 `listenEventConfig` 中, 同时对外提供 `generateExtra` 方法用于自定义额外的日志扩展信息, 该方法会参与日志数据格式化, 避免出现循环引用的情况
+
 ### v0.1.4
 
 调整游离错误捕获使用 systemError Kind 上报

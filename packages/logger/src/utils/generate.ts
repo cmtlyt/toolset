@@ -39,8 +39,8 @@ export function generateContentStyles(contentInfo: ContentInfo[], baseContentSty
         .flat();
 }
 
-export function generateMessage(userConfig: LoggerOptions, logConf: LoggerConfig, ...messages: unknown[]): string[] {
-  const { needTrace: globalNeedTrace, noOutput: globalNoOutput, onLogBefore } = userConfig;
+export function generateMessage(userConfig: LoggerOptions, logConf: LoggerConfig, messages: unknown[]): string[] {
+  const { needTrace: globalNeedTrace, noOutput: globalNoOutput } = userConfig;
   const {
     kind,
     tagColor,
@@ -52,15 +52,6 @@ export function generateMessage(userConfig: LoggerOptions, logConf: LoggerConfig
     noOutput = globalNoOutput,
     needTrace = globalNeedTrace,
   } = logConf;
-
-  if (onLogBefore) {
-    let preventDefault = false;
-    const event = { kind, messages, logConf, preventDefault: () => (preventDefault = true) };
-    onLogBefore?.call(userConfig, event);
-    if (preventDefault)
-      throw LogThrow.PREVENT_DEFAULT;
-  }
-
   if (noOutput)
     throw LogThrow.NO_OUTPUT;
 

@@ -30,6 +30,10 @@ pnpm add @cmtlyt/logger
 
 ## 更新
 
+### v0.2.8
+
+onLogBefore 方法的 event 中提供 changeMessages 方法用于修改控制台输出的内容
+
 ### v0.2.7
 
 logConfig 配置项类型修复

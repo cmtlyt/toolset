@@ -20,7 +20,7 @@ describe.runIf(inject('CI'))('monitor', async () => {
   let currIdx = 0;
   render();
   const logger = createMonitor({
-    listenerEvents: ['click', 'dblclick'],
+    listenEventConfig: { events: ['click', 'dblclick'] },
     loggerOptions: {
       noOutput: true,
       logConfig: {

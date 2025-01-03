@@ -22,7 +22,7 @@ const handler: ProxyHandler<Logger> = {
       throw new Error('illegal call');
 
     // eslint-disable-next-line no-console
-    const { getPrintFunc = () => console.log, printFunc } = userOption || {};
+    const { getPrintFunc = () => console.log, printFunc, onLogBefore } = userOption || {};
 
     const finishedPrintFunc = printFunc || getPrintFunc.call(target as LoggerOptions, key);
 
@@ -30,9 +30,26 @@ const handler: ProxyHandler<Logger> = {
       console.warn(`not found [${key}] logConfig, please add logConfig, currently using log replacement`);
     }
     const logConf = curConf[key] || { ...curConf.info, kind: key };
+
     return (...args: unknown[]) => {
+      let messages = args;
+
       try {
-        const message = generateMessage(target as LoggerOptions, logConf, ...args);
+        if (onLogBefore) {
+          let preventDefault = false;
+          const { kind } = logConf;
+          const event = {
+            kind,
+            messages,
+            logConf,
+            preventDefault: () => (preventDefault = true),
+            changeMessages: <M extends any[]>(newMessages: M) => (messages = newMessages),
+          };
+          onLogBefore.call(target as LoggerOptions, event);
+          if (preventDefault)
+            throw LogThrow.PREVENT_DEFAULT;
+        }
+        const message = generateMessage(target as LoggerOptions, logConf, messages);
         finishedPrintFunc?.(...message);
       }
       catch (e) {

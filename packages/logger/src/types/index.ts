@@ -34,6 +34,7 @@ export interface LogEvent<T extends string = Kind> {
   messages: unknown[];
   logConf: LoggerConfig<T>;
   preventDefault: () => void;
+  changeMessages: <M extends any[]>(newMessages: M) => void;
 }
 
 export type LoggerOptions<T extends string = Kind, E = unknown> = {

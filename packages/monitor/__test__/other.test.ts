@@ -22,8 +22,7 @@ describe.runIf(inject('CI'))('其他测试', async () => {
   const performanceInfos: any[] = [];
   createMonitor({
     rootElement: container,
-    listenerEvents: ['click', 'dblclick'],
-    needListenerCapture: true,
+    listenEventConfig: { events: ['click', 'dblclick'], needListenCapture: true },
     loggerOptions: {
       noOutput: true,
       logConfig: {

@@ -19,6 +19,24 @@ export interface ExtendLoggerOptions<T extends string, E extends TObject<any>> e
   getPrintFunc?: (this: MonitorConfig<T, E>, logInfo: T | Kind) => ((...args: unknown[]) => void) | null | undefined;
 }
 
+export interface GenerateExtraInfo {
+  event: Event;
+  systemExtra: {
+    timestamp: number;
+    isCapture: boolean;
+    selector: string;
+  };
+}
+
+export interface ListenEventConfig<This> {
+  events?: (keyof WindowEventMap)[];
+  needListenCapture?: boolean;
+  /**
+   * 生成额外信息, 该格外信息会参与日志的格式化, 所以不允许出现循环引用
+   */
+  generateExtra?: (this: This, info: GenerateExtraInfo) => TObject<any>;
+}
+
 export interface BaseMonitorConfig<
   UserExtendLogType extends string = MonitorKind,
   // @ts-expect-error 默认值
@@ -33,9 +51,8 @@ export interface BaseMonitorConfig<
   rootElement?: HTMLElement | Window;
   /** 日志输出工具配置 */
   loggerOptions: ExtendLoggerOptions<ExtendLogType, ExtendConfig>;
-  /** 监控的所有事件 */
-  listenerEvents?: (keyof WindowEventMap)[];
-  needListenerCapture?: boolean;
+  /** 监控事件配置 */
+  listenEventConfig?: ListenEventConfig<This>;
   /** 日志格式化 */
   formatLogInfo?: (this: This, info: LogInfo<Kind | ExtendLogType, ExtendConfig>) => any;
   /** 日志上报策略 */
