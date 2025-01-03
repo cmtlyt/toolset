@@ -50,7 +50,7 @@ pnpm add @cmtlyt/base
 - (F) toLowerCase
 - (F) toCamelCase
 - (F) toUnderlineCase
-- (F) toMiddleLineCase
+- (F) toKebabCase
 - (F) placeholderFunc
 - (CV) \_\_
 - (F) always

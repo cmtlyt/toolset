@@ -33,7 +33,7 @@ export const toUnderlineCase_ = toUnderlineCase;
 /**
  * 字符串转中划线
  *
- * @summary toMiddleLineCase :: string -> string
+ * @summary toKebabCase :: string -> string
  */
-export const toMiddleLineCase = (source: string) => source.replace(/\s*([A-Z])/g, (_, $1) => `-${$1.toLocaleLowerCase()}`);
-export const toMiddleLineCase_ = toMiddleLineCase;
+export const toKebabCase = (source: string) => source.replace(/\s*([A-Z])/g, (_, $1) => `-${$1.toLocaleLowerCase()}`);
+export const toKebabCase_ = toKebabCase;
