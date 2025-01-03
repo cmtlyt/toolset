@@ -1,5 +1,5 @@
 import type { TFunc } from '$/types/base';
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface DefaultValueCurry {
   <T, A>(value: T, input: A): T | A;

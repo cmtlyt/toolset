@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 export function join_(separator: string, arr: any[]) {
   return arr.join(separator);

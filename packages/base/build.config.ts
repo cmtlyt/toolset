@@ -24,4 +24,7 @@ export default defineBuildConfig({
     },
   },
   failOnWarn: false,
+  replace: {
+    'import.meta.vitest': 'undefined',
+  },
 });

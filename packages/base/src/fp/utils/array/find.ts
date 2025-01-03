@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface FindCurry {
   <T>(handle: (item: T, index: number) => boolean, arr: T[]): T | undefined;

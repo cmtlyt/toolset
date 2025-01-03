@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface AdjustCurry {
   <T>(index: number, handle: (item: T, index: number) => T, arr: T[]): T[];

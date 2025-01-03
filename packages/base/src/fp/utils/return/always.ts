@@ -1,5 +1,5 @@
 import type { TFunc } from '$/types/base';
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 export const always_ = <T>(value: T, _: any) => value;
 

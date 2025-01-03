@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface MapCurry {
   <T, R = any>(handle: (item: T, index: number) => R, arr: T[]): R[];

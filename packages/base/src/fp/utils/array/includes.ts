@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface IncludesCurry {
   <T>(item: T, arr: T[]): boolean;

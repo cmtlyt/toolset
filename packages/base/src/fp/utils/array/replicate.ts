@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 import { makeBy } from './make-by';
 
 interface ReplicateCurry {

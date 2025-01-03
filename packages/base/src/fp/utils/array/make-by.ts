@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface MakeByCurry {
   <R>(handle: (index: number) => R, count: number): R[];

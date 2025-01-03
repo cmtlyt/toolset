@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 export function eq_<T>(target: T, value: T): boolean {
   return target === value;

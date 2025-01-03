@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface ReduceCurry {
   <T, R = any>(handle: (acc: R, item: T, index: number) => R, init: R, arr: T[]): R;

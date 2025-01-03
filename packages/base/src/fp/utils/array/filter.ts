@@ -1,4 +1,4 @@
-import { curry } from '../function';
+import { curry } from '../function/curry';
 
 interface FilterCurry {
   <T>(handle: (item: T, index: number) => boolean, arr: T[]): T[];
