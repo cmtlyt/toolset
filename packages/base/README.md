@@ -42,21 +42,24 @@ pnpm add @cmtlyt/base
 
 新增 fp 相关内容
 
-- (F) makeBy
-- (F) replicate
-- (F) partition
 - (F) adjust
-- (F) toUpperCase
-- (F) toLowerCase
-- (F) toCamelCase
-- (F) toUnderlineCase
-- (F) toKebabCase
+- (F) makeBy
+- (F) partition
+- (F) replicate
+- (F) eq
 - (F) placeholderFunc
-- (CV) \_\_
-- (F) always
-- (F) id
-- (F) defaultValue
 - (CV) placeholderFunc.\_\_
+- (F) prop
+- (F) addThen
+- (F) always
+- (F) defaultValue
+- (F) id
+- (F) toCamelCase
+- (F) toKebabCase
+- (F) toLowerCase
+- (F) toUnderlineCase
+- (F) toUpperCase
+- (CV) \_\_
 
 这些方法均导出了非 curry 版本, 即函数后添加 `_`
 

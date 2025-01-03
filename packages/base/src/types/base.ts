@@ -98,3 +98,9 @@ export type TMany<T> = T | T[];
 export type TObjKeyType = string | number | symbol;
 
 export type TPromiseValue<T> = Awaited<T>;
+
+export type TDeepGetPropType<K extends string[], T extends TObject<any>, I = T[K[0]]> =
+  I extends undefined
+    ? undefined : K extends [any]
+      ? I : I extends TObject<any>
+        ? TDeepGetPropType<TTailTypes<K>, I> : never;

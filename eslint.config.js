@@ -6,7 +6,6 @@ export default antfu({
   ignores: [
     'patches',
     'playgrounds',
-    '**/types',
     '**/cache',
     '**/dist',
     '**/.temp',
