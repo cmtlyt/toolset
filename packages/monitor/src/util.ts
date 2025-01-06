@@ -1,6 +1,6 @@
 import type { TObject } from '@cmtlyt/base';
 import type { MonitorConfig, OriginalOnLogBeforeEvent } from './type';
-import { pick } from '@cmtlyt/base';
+import { pick_ } from '@cmtlyt/base/fp/utils';
 import { createLogger, type Logger } from '@cmtlyt/logger';
 
 import { type Metric, onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
@@ -38,7 +38,7 @@ function saveInfo(info: Metric) {
   logCache.push({
     kind: 'system',
     message: 'performanceInfo',
-    extra: { timestamp: Date.now(), ...pick(['name', 'value', 'rating', 'delta', 'navigationType'], info) },
+    extra: { timestamp: Date.now(), ...pick_(['name', 'value', 'rating', 'delta', 'navigationType'], info) },
   });
 }
 

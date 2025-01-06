@@ -38,17 +38,28 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
-### v0.10.3
+### v0.10.2
 
 新增 fp 相关内容
 
 - (F) adjust
+- (F) every
+- (F) filter
+- (F) findIndex
+- (F) find
+- (F) includes
+- (F) join
 - (F) makeBy
+- (F) map
 - (F) partition
+- (F) reduce
 - (F) replicate
+- (F) some
 - (F) eq
 - (F) placeholderFunc
 - (CV) placeholderFunc.\_\_
+- (F) omit
+- (F) pick
 - (F) prop
 - (F) addThen
 - (F) always
@@ -60,6 +71,7 @@ pnpm add @cmtlyt/base
 - (F) toUnderlineCase
 - (F) toUpperCase
 - (CV) \_\_
+- (F) trace
 
 这些方法均导出了非 curry 版本, 即函数后添加 `_`
 
@@ -71,8 +83,6 @@ makeBy;
 // 非 curry 版本
 makeBy_;
 ```
-
-### v0.10.2
 
 部分函数不再由 `@cmtlyt/base` 透出, 迁移到 `import { utils } from '@cmtlyt/base/fs';` 或 `import { xxx } from '@cmtlyt/base/fp/utils';`
 
@@ -88,6 +98,8 @@ makeBy_;
 - includes
 - join
 - trace
+- pick
+- omit
 
 不再导出内部使用的 STATIC_TYPE 常量
 

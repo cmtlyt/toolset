@@ -1,7 +1,4 @@
-import type { TMany, TObject, TObjKeyType } from '$/types/base';
-import { curry } from '$/fp/utils/function/curry';
 import ms from 'ms';
-import { getArray } from '../data-handler';
 import { cacheByReturn } from '../func-handler';
 import { isAliMiniApp, isByteDanceMicroApp, isMiniApp, isNode, isWeb, isWeChatMiniProgram, isWeex } from '../ua';
 import { isEmpty, isString } from '../verify';
@@ -65,25 +62,6 @@ export function generateCookieInfo(options: CookieOptions = {}) {
   }
   return infoString;
 }
-
-export const pick = curry((keys: TMany<TObjKeyType>, obj: TObject<any>): TObject<any> => {
-  const result = {};
-  const keyList = getArray(keys);
-  // @ts-expect-error any
-  keyList.forEach((key: any) => (result[key] = obj[key]));
-  return result;
-});
-
-export const omit = curry((keys: TMany<TObjKeyType>, obj: TObject<any>): TObject<any> => {
-  const result = {};
-  const keyList = getArray(keys) as any[];
-  Object.keys(obj).forEach((key) => {
-    if (!keyList.includes(key))
-      // @ts-expect-error any
-      result[key] = obj[key];
-  });
-  return result;
-});
 
 export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (reason?: any) => void) => any) {
   let resolve: (value: T) => void = () => {};

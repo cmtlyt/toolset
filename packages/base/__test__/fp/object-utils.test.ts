@@ -13,4 +13,20 @@ describe('object utils', async () => {
     // @ts-expect-error 测试用例
     expect(prop('c', { a: 1, b: 2 })).toBe(undefined);
   });
+  it('omit', () => {
+    const { omit } = utils;
+    expect(omit(['a'], { a: 1, b: 2 })).toEqual({ b: 2 });
+    expect(omit(['a', 'b'], { a: 1, b: 2 })).toEqual({});
+    // @ts-expect-error 测试用例
+    expect(omit(['a', 'c'], { a: 1, b: 2 })).toEqual({ b: 2 });
+    expect(omit([])({ a: 1, b: 2 })).toEqual({ a: 1, b: 2 });
+  });
+  it('pick', () => {
+    const { pick } = utils;
+    expect(pick(['a'], { a: 1, b: 2 })).toEqual({ a: 1 });
+    expect(pick(['a', 'b'], { a: 1, b: 2 })).toEqual({ a: 1, b: 2 });
+    // @ts-expect-error 测试用例
+    expect(pick(['a', 'c'], { a: 1, b: 2 })).toEqual({ a: 1 });
+    expect(pick([])({ a: 1, b: 2 })).toEqual({});
+  });
 });
