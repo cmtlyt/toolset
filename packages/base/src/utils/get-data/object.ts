@@ -4,6 +4,9 @@ import { isAliMiniApp, isByteDanceMicroApp, isMiniApp, isNode, isWeb, isWeChatMi
 import { isEmpty, isString } from '../verify';
 import { getOsType, getUserAgent } from './string';
 
+/**
+ * 安全的获取全局对象
+ */
 export const safeGetGlobal = cacheByReturn((): any => {
   if (isWeb())
     return window;
@@ -28,6 +31,9 @@ export interface CookieOptions {
   path?: string;
 }
 
+/**
+ * 生成 cookie 字符串
+ */
 export function generateCookieInfo(options: CookieOptions = {}) {
   const { duration, expires, domain, maxAge, path } = options;
   let infoString = '';
@@ -63,6 +69,9 @@ export function generateCookieInfo(options: CookieOptions = {}) {
   return infoString;
 }
 
+/**
+ * 获取 promise 的 resolve 和 reject 函数和 promise 本身
+ */
 export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (reason?: any) => void) => any) {
   let resolve: (value: T) => void = () => {};
   let reject: (reason?: any) => void = () => {};
@@ -74,6 +83,9 @@ export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (r
   return { resolve, reject, promise };
 }
 
+/**
+ * 获取 AliApp 版本和名称
+ */
 export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: string } => {
   let appNameI = '';
   let appVersionI = '';
@@ -95,6 +107,9 @@ export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: str
   return { appName: appNameI, appVersion: appVersionI };
 });
 
+/**
+ * 获取设备信息
+ */
 export const getDeviceInfo = cacheByReturn(
   (): {
     appName: string;

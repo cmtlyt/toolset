@@ -1,6 +1,9 @@
 import type { GetArgs, GetReturnType, TAnyFunc } from '$/types/base';
 import { INTERNAL_EMPTY } from '$/common/constant';
 
+/**
+ * 将函数转为只执行一次的函数, 后续调用将返回第一次调用的结果
+ */
 export function onceFunc<T extends TAnyFunc>(func: T): T {
   let called = false;
   let result: ReturnType<T> | null = null;
@@ -44,6 +47,11 @@ class MemoizeMap {
   }
 }
 
+/**
+ * 将函数专为带缓存的函数
+ *
+ * @warning 缓存的 key 默认为第一个参数, 如果需要自定义缓存参数, 请传入 resolver 函数
+ */
 export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (...args: GetArgs<F>) => any) {
   const memoized = function (...args: GetArgs<F>): GetReturnType<F> {
     const key = resolver ? resolver(...args) : args[0];
@@ -59,6 +67,9 @@ export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (
   return memoized;
 }
 
+/**
+ * 缓存函数执行结果
+ */
 export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   cacheLoad: T,
 ) => (...args: GetArgs<R>) => GetReturnType<R> = (() => {

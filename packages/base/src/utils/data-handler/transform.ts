@@ -1,5 +1,8 @@
 import { warning } from '$/common/warning';
 
+/**
+ * stream 转 string
+ */
 export async function streamToString(stream: ReadableStream) {
   const reader = stream.getReader();
   const chunks = [];
@@ -22,6 +25,9 @@ export async function streamToString(stream: ReadableStream) {
   return result;
 }
 
+/**
+ * stream 转 arrayBuffer
+ */
 export async function streamToArrayBuffer(stream: ReadableStream) {
   const reader = stream.getReader();
   const chunks = [];
@@ -48,6 +54,9 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
   return arrayBuffer;
 }
 
+/**
+ * arrayBuffer 转 base64
+ */
 export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
   const chars = new Uint8Array(arrayBuffer).reduce((result, cur) => {
     return result + String.fromCharCode(cur);
@@ -56,6 +65,8 @@ export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
 }
 
 /**
+ * arrayBuffer 转 base64
+ *
  * 使用 arrayBufferToBase64String 代替, arrayBufferToBase64String 已兼容 chunk 方式
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -63,6 +74,9 @@ export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
  */
 export const arrayBufferToChunkBase64String = arrayBufferToBase64String;
 
+/**
+ * base64 转 Uint8Array
+ */
 export function base64StringToUint8Array(base64String: string) {
   const binaryString = atob(base64String);
   const len = binaryString.length;
@@ -74,6 +88,8 @@ export function base64StringToUint8Array(base64String: string) {
 }
 
 /**
+ * base64 转 blob
+ *
  * 使用 base64StringToBlob 代替, base64StringToBlob 已兼容 chunk 方式
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -85,6 +101,9 @@ export function chunkBase64StringToBlob(base64String: string) {
   return new Blob(chunks.map(chunk => base64StringToUint8Array(chunk)));
 }
 
+/**
+ * base64 转 blob
+ */
 export function base64StringToBlob(base64String: string) {
   // TODO: 大版本升级将移除
   if (base64String.includes('|'))
@@ -93,6 +112,8 @@ export function base64StringToBlob(base64String: string) {
 }
 
 /**
+ * base64 转 arrayBuffer
+ *
  * 使用 base64StringToArrayBuffer 代替, base64StringToArrayBuffer 已兼容 chunk 方式
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -100,11 +121,17 @@ export function base64StringToBlob(base64String: string) {
  */
 export const chunkBase64StringToArrayBuffer = base64StringToArrayBuffer;
 
+/**
+ * base64 转 arrayBuffer
+ */
 export async function base64StringToArrayBuffer(base64String: string) {
   const blob = base64StringToBlob(base64String);
   return blob.arrayBuffer();
 }
 
+/**
+ * string 转只读 stream
+ */
 export function stringToStream(source: string) {
   const encoder = new TextEncoder();
   const stringStream = new ReadableStream({
@@ -116,22 +143,33 @@ export function stringToStream(source: string) {
   return stringStream;
 }
 
+/**
+ * string 转 Uint8Array
+ */
 export function stringToBinary(source: string) {
   const encoder = new TextEncoder();
   return encoder.encode(source);
 }
 
+/**
+ * arrayBuffer 转 string
+ */
 export function binaryToString(binary: AllowSharedBufferSource) {
   const decoder = new TextDecoder();
   return decoder.decode(binary);
 }
 
+/**
+ * stream 转 base64
+ */
 export async function streamToBase64String(stream: ReadableStream) {
   const arrayBuffer = await streamToArrayBuffer(stream);
   return arrayBufferToBase64String(arrayBuffer);
 }
 
 /**
+ * stream 转 base64
+ *
  * 使用 streamToBase64String 代替
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -140,6 +178,8 @@ export async function streamToBase64String(stream: ReadableStream) {
 export const streamToChunkBase64String = streamToBase64String;
 
 /**
+ * base64 转 stream
+ *
  * 使用 base64StringToStream 代替, base64StringToStream 已兼容 chunk 方式
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -147,11 +187,17 @@ export const streamToChunkBase64String = streamToBase64String;
  */
 export const chunkBase64StringToStream = base64StringToStream;
 
+/**
+ * base64 转 stream
+ */
 export function base64StringToStream(source: string) {
   const blob = base64StringToBlob(source);
   return blob.stream();
 }
 
+/**
+ * arrayBuffer 转 stream
+ */
 export function arrayBufferToStream(source: AllowSharedBufferSource) {
   const stream = new ReadableStream({
     start(controller) {
@@ -163,6 +209,8 @@ export function arrayBufferToStream(source: AllowSharedBufferSource) {
 }
 
 /**
+ * blob 转 base64
+ *
  * 使用 blobToBase64String 代替
  *
  * TODO: 后续大版本迭代会移除该方法
@@ -170,6 +218,9 @@ export function arrayBufferToStream(source: AllowSharedBufferSource) {
  */
 export const blobToChunkBase64String = blobToBase64String;
 
+/**
+ * blob 转 base64
+ */
 export async function blobToBase64String(blob: Blob) {
   const arrayBuffer = await blob.arrayBuffer();
   return arrayBufferToBase64String(arrayBuffer);

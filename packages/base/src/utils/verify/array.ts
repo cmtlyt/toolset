@@ -1,5 +1,8 @@
+/**
+ * 判断是否为数组或类数组
+ */
 export function isArrayLike(data: any): boolean {
-  if (Array.isArray(data))
+  if (isArray(data))
     return true;
   if (data instanceof String)
     return true;
@@ -8,6 +11,9 @@ export function isArrayLike(data: any): boolean {
   return false;
 }
 
+/**
+ * 判断是否为数组
+ */
 export function isArray(value: any): value is Array<any>;
 export function isArray<T>(value: T[]): value is T[];
 export function isArray(value: any): value is Array<any> {

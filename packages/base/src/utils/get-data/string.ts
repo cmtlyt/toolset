@@ -2,6 +2,9 @@ import type { TAllType } from '$/types/base';
 import { cacheByReturn } from '../func-handler';
 import { isAndroid, isIOS, isNode, isOpenHarmony } from '../ua';
 
+/**
+ * 生成随机字符串
+ */
 export function getRandomString(len = 8): string {
   let result = '';
   for (let curLen = 0; curLen < len; curLen = result.length) {
@@ -13,6 +16,9 @@ export function getRandomString(len = 8): string {
   return result;
 }
 
+/**
+ * 生成 blob 链接
+ */
 export function createLinkByString(resource: BlobPart) {
   const blob = new Blob([resource]);
   const url = URL.createObjectURL(blob);
@@ -26,6 +32,9 @@ type GCArgs =
   | undefined
   | null;
 
+/**
+ * 生成 class 字符串
+ */
 export function generateClassName(...args: GCArgs[]) {
   if (!args.length)
     return '';
@@ -52,10 +61,15 @@ export function generateClassName(...args: GCArgs[]) {
 }
 
 /**
+ * 生成 class 字符串
+ *
  * @alias generateClassName
  */
 export const gc = generateClassName;
 
+/**
+ * 获取操作系统类型
+ */
 export const getOsType = cacheByReturn(() => {
   if (isIOS())
     return 'ios';
@@ -77,6 +91,9 @@ export const getOsType = cacheByReturn(() => {
   return 'other';
 });
 
+/**
+ * 获取真实类型
+ */
 export function getType(value: any): TAllType {
   const baseType = typeof value;
   if (baseType !== 'object' && baseType !== 'function')
@@ -84,6 +101,9 @@ export function getType(value: any): TAllType {
   return Object.prototype.toString.call(value).slice(8, -1).toLowerCase() as TAllType;
 }
 
+/**
+ * 获取 userAgent
+ */
 export const getUserAgent = cacheByReturn((): string => {
   if (globalThis.navigator) {
     // @ts-expect-error env

@@ -1,7 +1,14 @@
 import type { ReverseArray, TAnyFunc, TArgsType, TFunc } from '$/types/base';
 import { getNow } from '../get-data';
 import { cacheByReturn } from './cache';
+import { tryCall } from './call';
 
+/**
+ * 防抖函数
+ * @param func 需要防抖的函数
+ * @param time 延迟时间 (ms)
+ * @param immediately 是否立即执行
+ */
 export function debounce<F extends TAnyFunc>(
   func: F,
   time = 1000,
@@ -32,6 +39,12 @@ export function debounce<F extends TAnyFunc>(
   });
 }
 
+/**
+ * 节流函数
+ * @param func 需要节流的函数
+ * @param time 延迟时间 (ms)
+ * @param immediately 是否立即执行
+ */
 export function throttle<F extends TAnyFunc>(func: F, time = 100, immediately = true): (...args: TArgsType<F>) => void {
   if (time <= 0)
     return func;
@@ -114,6 +127,10 @@ const _runTask = cacheByReturn(
   },
 );
 
+/**
+ * 分片执行任务
+ * @param task 需要执行的函数
+ */
 export function chunkTask<F extends TAnyFunc>(task: F) {
   return (datas: Parameters<F>[] | number): Promise<ReturnType<F>[]> => {
     const results: any[] = [];
@@ -139,22 +156,23 @@ export function chunkTask<F extends TAnyFunc>(task: F) {
   };
 }
 
+/**
+ * 反转函数参数, 返回新函数
+ * @param callback 需要转换的函数
+ */
 export function reverseArgs<F extends TAnyFunc>(callback: F) {
   return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback(...args.reverse());
 }
 
+/**
+ * 返回一个支持传参的使用 try catch 包裹的函数
+ * @see tryCall
+ * @param runner
+ * @param catcher
+ */
 export function tryCallFunc<F extends TAnyFunc>(
   runner: F,
   catcher?: (e: any) => void,
 ): TFunc<Parameters<F>, ReturnType<F>> {
-  return (...args: Parameters<F>) => {
-    try {
-      return runner(...args);
-    }
-    catch (e) {
-      if (catcher)
-        catcher(e);
-      throw e;
-    }
-  };
+  return (...args: Parameters<F>) => tryCall(() => runner(...args), catcher);
 }

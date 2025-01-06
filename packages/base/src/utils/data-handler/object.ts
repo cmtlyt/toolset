@@ -3,6 +3,9 @@ import { STATIC_TYPE } from '$/common/constant';
 import { warning } from '$/common/warning';
 import { getType } from '../get-data';
 
+/**
+ * 深度克隆对象
+ */
 export function deepClone<T extends TObject<any>>(obj: T, hash = new WeakMap()): T {
   if (obj === null || typeof obj !== 'object' || STATIC_TYPE.includes(getType(obj)))
     return obj;
@@ -47,10 +50,18 @@ function _merge(target: any, source: any) {
   return target || source;
 }
 
+/**
+ * 合并对象, 会直接修改 target
+ *
+ * 如不希望修改 target 对象, 请使用 cloneMerge
+ */
 export function merge(target: any, ...source: any[]) {
   return source.reduce((acc, cur) => _merge(acc, cur), target);
 }
 
+/**
+ * 合并对象, 返回新对象, 不影响原数据
+ */
 export function cloneMerge(target: any, ...source: any) {
   target = deepClone(target);
   return merge(target, ...source);

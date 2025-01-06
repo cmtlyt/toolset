@@ -18,6 +18,12 @@ function _replaceOne(str: string, pattern: string | RegExp, replacer: (...args: 
   });
 }
 
+/**
+ * 异步替换字符串
+ * @param str 原字符串
+ * @param pattern 匹配正则或字符串
+ * @param replacer 替换函数
+ */
 export async function asyncReplace(
   str: string,
   pattern: string | RegExp,
