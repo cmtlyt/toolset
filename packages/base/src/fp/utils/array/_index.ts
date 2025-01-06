@@ -1,4 +1,6 @@
 export * from './adjust';
+export * from './aperture';
+export * from './append';
 export * from './every';
 export * from './filter';
 export * from './find';

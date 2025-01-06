@@ -1,10 +1,29 @@
 import { describe, expect, inject, it } from 'vitest';
 
-describe('utils array', async () => {
+describe('array utils', async () => {
   const utils = await (async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils/array');
   })() as typeof import('../../src/fp/utils/array');
 
+  it('aperture', () => {
+    const { aperture } = utils;
+    expect(aperture(2, [1, 2, 3, 4, 5])).toEqual([[1, 2], [3, 4], [5]]);
+    expect(aperture(2)([1, 2, 3, 4, 5])).toEqual([[1, 2], [3, 4], [5]]);
+    expect(aperture(2)([])).toEqual([]);
+    expect(aperture(2)([1])).toEqual([[1]]);
+    expect(aperture(0)([1, 2])).toEqual([[1, 2]]);
+    expect(aperture(2.123)([1, 2])).toEqual([[1, 2]]);
+    expect(aperture(2.9)([1, 2])).toEqual([[1, 2]]);
+    expect(aperture(1.9)([1, 2])).toEqual([[1], [2]]);
+  });
+  it('append', () => {
+    const { append } = utils;
+    expect(append(1, [1, 2, 3])).toEqual([1, 2, 3, 1]);
+    expect(append(1)([1, 2, 3])).toEqual([1, 2, 3, 1]);
+    expect(append(1)([])).toEqual([1]);
+    // @ts-expect-error 测试用例
+    expect(append([2], [1, 2, 3])).toEqual([1, 2, 3, [2]]);
+  });
   it('adjust', () => {
     expect(utils.adjust(1, (item, index) => item + index, [1, 2, 3])).toEqual([1, 3, 3]);
     expect(utils.adjust<number>(5, (item, index) => item + index)([1, 2, 3])).toEqual([1, 2, 3, undefined, undefined, Number.NaN]);

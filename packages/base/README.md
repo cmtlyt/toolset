@@ -38,11 +38,13 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
-### v0.10.2
+### v0.11.0
 
 新增 fp 相关内容
 
 - (F) adjust
+- (F) aperture
+- (F) append
 - (F) every
 - (F) filter
 - (F) findIndex
@@ -56,6 +58,9 @@ pnpm add @cmtlyt/base
 - (F) replicate
 - (F) some
 - (F) eq
+- (F) apply-spec
+- (F) apply-to
+- (F) apply
 - (F) placeholderFunc
 - (CV) placeholderFunc.\_\_
 - (F) omit
@@ -65,6 +70,7 @@ pnpm add @cmtlyt/base
 - (F) always
 - (F) defaultValue
 - (F) id
+- (F) identity
 - (F) toCamelCase
 - (F) toKebabCase
 - (F) toLowerCase
