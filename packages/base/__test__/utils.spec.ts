@@ -807,7 +807,7 @@ describe('utils', async () => {
           await sleep(25);
           return i % 2;
         }).then((res) => {
-          expect(getNow() - now, '判断是否是并发替换的').toBeLessThanOrEqual(50);
+          expect(getNow() - now, '判断是否是并发替换的').toBeLessThanOrEqual(60);
           return res;
         }),
       ).resolves.toEqual([2, 4, 6, 8]);

@@ -15,3 +15,12 @@ interface EqCurry {
  * @sig eq :: any -> any -> boolean
  */
 export const eq = curry(eq_) as any as EqCurry;
+
+if (import.meta.vitest) {
+  const { it, expect } = import.meta.vitest;
+  it('eq', () => {
+    expect(eq(1, 1)).toBe(true);
+    expect(eq(1)(1)).toBe(true);
+    expect(eq(1)(2)).toBe(false);
+  });
+}

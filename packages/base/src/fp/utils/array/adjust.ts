@@ -19,3 +19,12 @@ export function adjust_<T>(index: number, handle: (item: T, index: number) => T,
  * @sig adjust :: number -> ((a, number) -> a) -> [a] -> [a]
  */
 export const adjust = curry(adjust_) as any as AdjustCurry;
+
+if (import.meta.vitest) {
+  const { it, expect } = import.meta.vitest;
+
+  it('adjust', () => {
+    expect(adjust(1, (item, index) => item + index, [1, 2, 3])).toEqual([1, 3, 3]);
+    expect(adjust<number>(5, (item, index) => item + index)([1, 2, 3])).toEqual([1, 2, 3, undefined, undefined, Number.NaN]);
+  });
+}

@@ -15,3 +15,11 @@ export function makeBy_<R>(handle: (index: number) => R, count: number): R[] {
  * @sig makeBy :: ((number -> a) -> number -> [a])
  */
 export const makeBy = curry(makeBy_) as any as MakeByCurry;
+
+if (import.meta.vitest) {
+  const { test, expect } = import.meta.vitest;
+  test('makeBy', () => {
+    expect(makeBy(i => i, 3)).toEqual([0, 1, 2]);
+    expect(makeBy(i => i.toString(), 3)).toEqual(['0', '1', '2']);
+  });
+}
