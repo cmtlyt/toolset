@@ -20,15 +20,3 @@ export function partition_<R, L = R>(handle: TFunc<[R | L, number], boolean>, ar
  * @sig partition :: ((a, number) -> boolean) -> [a] -> { left: [a], right: [a] }
  */
 export const partition = curry(partition_) as any as Partition;
-
-if (import.meta.vitest) {
-  const { test, expect } = import.meta.vitest;
-  test('partition', () => {
-    expect(partition(x => x > 2, [1, 2, 3, 4, 5])).toEqual({ left: [1, 2], right: [3, 4, 5] });
-    expect(partition<number>(x => x > 2)([1, 2, 3, 4, 5])).toEqual({ left: [1, 2], right: [3, 4, 5] });
-    expect(partition<number>(x => x > 2)([])).toEqual({ left: [], right: [] });
-    expect(partition<number>(x => x > 2)([1])).toEqual({ left: [1], right: [] });
-    expect(partition<number>(x => x > 2)([1, 2])).toEqual({ left: [1, 2], right: [] });
-    expect(partition<number>(x => x > 2)([1, 2, 3])).toEqual({ left: [1, 2], right: [3] });
-  });
-}

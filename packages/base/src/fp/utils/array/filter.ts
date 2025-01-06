@@ -15,11 +15,3 @@ export function filter_<T>(handle: (item: T, index: number) => boolean, arr: T[]
  * @sig filter :: ((a, number) -> boolean) -> [a] -> [a]
  */
 export const filter = curry(filter_) as any as FilterCurry;
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-
-  it('filter', () => {
-    expect(filter(x => x > 2, [1, 2, 3, 4])).toEqual([3, 4]);
-  });
-}

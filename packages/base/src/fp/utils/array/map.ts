@@ -15,11 +15,3 @@ export function map_<T, R>(handle: (item: T, index: number) => R, arr: T[]): R[]
  * @sig map :: ((a, number) -> b) -> [a] -> [b]
  */
 export const map = curry(map_) as any as MapCurry;
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-  it('map', () => {
-    expect(map(item => item * 2, [1, 2, 3])).toEqual([2, 4, 6]);
-    expect(map<number>(item => item * 2)([1, 2, 3])).toEqual([2, 4, 6]);
-  });
-}

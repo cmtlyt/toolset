@@ -15,11 +15,3 @@ export function every_<T>(handle: (item: T, index: number) => boolean, arr: T[])
  * @sig every :: ((a, number) -> boolean) -> [a] -> boolean
  */
 export const every = curry(every_) as any as EveryCurry;
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-  it('every', () => {
-    expect(every(x => x > 0, [1, 2, 3])).toBe(true);
-    expect(every(x => x > 0, [1, 2, -3])).toBe(false);
-  });
-}

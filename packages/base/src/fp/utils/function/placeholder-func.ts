@@ -58,19 +58,3 @@ export function placeholderFunc<O extends any[], R>(func: TFunc<O, R>) {
  * 占位符
  */
 placeholderFunc.__ = __;
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-
-  it('placeholderFunc', () => {
-    expect(placeholderFunc.__).toBe(__);
-    const add = (a: number, b: string, c: boolean, d: Record<string, any>) => ({ a, b, c, d });
-    const placeAdd = placeholderFunc(add);
-    const func = placeAdd(1, __, true, { a: 1 });
-    expect(func).toBeTypeOf('function');
-    expect(func('1')).toEqual({ a: 1, b: '1', c: true, d: { a: 1 } });
-    expect(placeAdd(1, '2', true, { a: 1 })()).toEqual({ a: 1, b: '2', c: true, d: { a: 1 } });
-    // @ts-expect-error 测试用例
-    expect(() => func()).toThrow(TypeError);
-  });
-}

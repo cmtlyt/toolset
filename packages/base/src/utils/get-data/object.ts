@@ -1,5 +1,5 @@
 import type { TMany, TObject, TObjKeyType } from '$/types/base';
-import { curry } from '$/fp/utils';
+import { curry } from '$/fp/utils/function/curry';
 import ms from 'ms';
 import { getArray } from '../data-handler';
 import { cacheByReturn } from '../func-handler';

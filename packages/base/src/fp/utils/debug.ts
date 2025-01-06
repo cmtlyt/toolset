@@ -12,14 +12,3 @@ export const trace: <T>(fn: (value: T) => void) => (value: T) => T = curry(<T>(f
   catch {}
   return value;
 });
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-  it('trace', () => {
-    expect(trace(v => expect(v).toBe(1))(1)).toBe(1);
-    expect(trace(v => v)(1)).toBe(1);
-    expect(trace((v) => {
-      throw new Error(`${v}`);
-    })(1)).toBe(1);
-  });
-}

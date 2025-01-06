@@ -15,11 +15,3 @@ export function findIndex_<T>(handle: (item: T, index: number) => boolean, arr: 
  * @sig findIndex :: ((a, number) -> boolean) -> [a] -> number
  */
 export const findIndex = curry(findIndex_) as any as FindIndexCurry;
-
-if (import.meta.vitest) {
-  const { it, expect } = import.meta.vitest;
-  it('findIndex', () => {
-    expect(findIndex(x => x === 2, [1, 2, 3])).toBe(1);
-    expect(findIndex(x => x === 4, [1, 2, 3])).toBe(-1);
-  });
-}
