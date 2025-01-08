@@ -1,6 +1,7 @@
 import type { TObject } from '$/types/base';
 import { STATIC_TYPE } from '$/common/constant';
 import { warning } from '$/common/warning';
+import { cacheByReturn, tryCall, tryCallFunc } from '../func-handler';
 import { getType } from '../get-data';
 
 /**
@@ -66,3 +67,32 @@ export function cloneMerge(target: any, ...source: any) {
   target = deepClone(target);
   return merge(target, ...source);
 }
+
+export const fromEntries = cacheByReturn(() => {
+  if (typeof Object.fromEntries === 'function')
+    return (entires: Iterable<readonly [PropertyKey, any]>) => Object.fromEntries(entires);
+  if (typeof Array.from === 'function' && typeof Object.assign === 'function') {
+    return (entires: Iterable<readonly [PropertyKey, any]>) => {
+      const obj: TObject<any> = {};
+      Array.from(entires, ([key, val]) => obj[key] = val);
+      return obj;
+    };
+  }
+  return (entires: Iterable<readonly [PropertyKey, any]>) => {
+    const obj: any = {};
+    tryCall(() => {
+      for (const [key, val] of entires) {
+        obj[key] = val;
+      }
+    }, tryCallFunc(() => {
+      const iterable = entires[Symbol.iterator]();
+      let curr = iterable.next();
+      while (!curr.done) {
+        const [key, val] = curr.value;
+        obj[key] = val;
+        curr = iterable.next();
+      }
+    }));
+    return obj;
+  };
+});

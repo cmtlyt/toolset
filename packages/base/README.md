@@ -40,6 +40,13 @@ pnpm add @cmtlyt/base
 
 ### v0.11.0
 
+新增
+
+- (F) parseUrl
+- (F) parseSearch
+- (F) parseSearchObject
+- (F) fromEntries
+
 新增 fp 相关内容
 
 - (F) adjust

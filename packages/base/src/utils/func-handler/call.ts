@@ -9,8 +9,7 @@ export function tryCall<F extends TAnyFunc>(runner: F, catcher?: (e: any) => voi
   }
   catch (e) {
     if (catcher) {
-      catcher(e);
-      return;
+      return catcher(e);
     }
     throw e;
   }

@@ -1,4 +1,9 @@
 import { warning } from '$/common/warning';
+import { tryCall, tryCallFunc } from '../func-handler';
+import { safeGetGlobal } from '../get-data';
+import { isNode, isWeb } from '../ua';
+import { caniuse, isHttpsUrlString, isHttpUrlString } from '../verify';
+import { fromEntries } from './object';
 
 /**
  * stream 转 string
@@ -224,4 +229,50 @@ export const blobToChunkBase64String = blobToBase64String;
 export async function blobToBase64String(blob: Blob) {
   const arrayBuffer = await blob.arrayBuffer();
   return arrayBufferToBase64String(arrayBuffer);
+}
+
+interface ParseUrlOptions {
+  hashQueryToSearchParams?: boolean;
+}
+
+/**
+ * 解析 url
+ */
+export function parseUrl(path?: string, options?: ParseUrlOptions) {
+  if (!path && !safeGetGlobal().location) {
+    throw new TypeError('当前环境不存在 location, 无法使用默认值, 请传递 path 参数');
+  }
+  if ((isWeb() && !caniuse('URL')) || (isNode() && !safeGetGlobal().URL)) {
+    throw new TypeError('当前环境不支持 URL, 无法使用 parseUrl 方法');
+  }
+  const { hashQueryToSearchParams } = options || {};
+  let _path = path ||= safeGetGlobal().location.href;
+  if (hashQueryToSearchParams && (isHttpUrlString(_path) || isHttpsUrlString(_path))) {
+    const [tempPath, tempHash] = _path.split('#');
+    const [hash, hashQuery] = (tempHash || '').split('?');
+    const [basePath, search] = tempPath.split('?');
+    const finishedSearch = `${search || ''}${search
+      ? hashQuery ? `&${hashQuery}` : ''
+      : hashQuery || ''}`;
+    _path = `${basePath}${finishedSearch ? `?${finishedSearch}` : ''}${hash ? `#${hash}` : ''}`;
+  }
+  return new URL(_path);
+}
+
+export function parseSearch(search: string) {
+  if ((isWeb() && !caniuse('URLSearchParams')) || (isNode() && !safeGetGlobal().URLSearchParams)) {
+    throw new TypeError('当前环境不支持 URL, 无法使用 parseSearch 方法');
+  }
+  return new URLSearchParams(search);
+}
+
+export function parseSearchObject(search: string | URLSearchParams) {
+  if (typeof search === 'string') {
+    return tryCall(() => {
+      return fromEntries(parseSearch(search).entries());
+    }, tryCallFunc(() => {
+      return fromEntries(search.replace(/^\?/, '').split('&').map(item => item.split('=')) as any);
+    }));
+  }
+  return fromEntries(search.entries());
 }
