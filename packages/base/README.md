@@ -46,6 +46,7 @@ pnpm add @cmtlyt/base
 - (F) parseSearch
 - (F) parseSearchObject
 - (F) fromEntries
+- (F) debounceAsync
 
 新增 fp 相关内容
 

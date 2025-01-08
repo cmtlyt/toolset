@@ -1,7 +1,71 @@
-import type { ReverseArray, TAnyFunc, TArgsType, TFunc } from '$/types/base';
-import { getNow } from '../get-data';
+import type { GetReturnType, ReverseArray, TAnyFunc, TArgsType, TFlatPromise, TFunc } from '$/types/base';
+import { getNow, withResolvers } from '../get-data';
+import { isPromise } from '../verify';
 import { cacheByReturn } from './cache';
 import { tryCall } from './call';
+
+/**
+ * 防抖函数 (返回 Promise)
+ * @param func 需要防抖的函数
+ * @param time 延迟时间 (ms)
+ * @param immediately 是否立即执行
+ */
+export function debounceAsync<F extends TAnyFunc>(
+  func: F,
+  time = 1000,
+  immediately = false,
+): (...args: TArgsType<F>) => TFlatPromise<ReturnType<F>> {
+  if (time <= 0)
+    return func;
+  let timer: NodeJS.Timeout | null = null;
+  let resolvers: GetReturnType<typeof withResolvers> | null = null;
+  // @ts-expect-error return func
+  return cacheByReturn(() => {
+    if (immediately) {
+      return (...args: any) => {
+        resolvers ||= withResolvers();
+        if (timer) {
+          clearTimeout(timer);
+        }
+        else {
+          tryCall(() => {
+            const result = func(...args);
+            if (isPromise(result))
+              result.then(resolvers!.resolve, resolvers!.reject);
+            else
+              resolvers!.resolve(result);
+          }, resolvers.reject);
+          return resolvers.promise;
+        }
+        timer = setTimeout(() => {
+          timer = null;
+          resolvers = null;
+        }, time);
+        return resolvers.promise;
+      };
+    }
+    return (...args: any) => {
+      resolvers ||= withResolvers();
+      if (timer)
+        clearTimeout(timer);
+      timer = setTimeout(() => {
+        tryCall(() => {
+          const result = func(...args);
+          if (isPromise(result)) {
+            result.then((res) => {
+              resolvers!.resolve(res);
+              resolvers = null;
+            }, resolvers!.reject);
+          }
+          else {
+            resolvers!.resolve(result);
+          }
+        }, resolvers!.reject);
+      }, time);
+      return resolvers.promise;
+    };
+  });
+}
 
 /**
  * 防抖函数
