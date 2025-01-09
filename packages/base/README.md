@@ -71,6 +71,8 @@ pnpm add @cmtlyt/base
 - (F) apply
 - (F) placeholderFunc
 - (CV) placeholderFunc.\_\_
+- (F) assoc
+- (F) deepProp
 - (F) omit
 - (F) pick
 - (F) prop

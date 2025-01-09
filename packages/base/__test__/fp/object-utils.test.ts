@@ -29,4 +29,16 @@ describe('object utils', async () => {
     expect(pick(['a', 'c'], { a: 1, b: 2 })).toEqual({ a: 1 });
     expect(pick([])({ a: 1, b: 2 })).toEqual({});
   });
+  it('assoc', () => {
+    const { assoc } = utils;
+    expect(assoc('a', 1, { b: 2 })).toEqual({ a: 1, b: 2 });
+    expect(assoc('a', 1)({ b: 2 })).toEqual({ a: 1, b: 2 });
+    expect(assoc('a')(1)({ b: 2 })).toEqual({ a: 1, b: 2 });
+    expect(assoc('a.b.c', 1, { b: 2 })).toEqual({ b: 2, a: { b: { c: 1 } } });
+    expect(assoc(['a', 'b', 'c'], 1, { b: 2 })).toEqual({ b: 2, a: { b: { c: 1 } } });
+    expect(assoc(0, 1, [2, 3])).toEqual([1, 3]);
+    expect(assoc([0, 1, 1], 1, [2, 3])).toEqual([[undefined, [undefined, 1]], 3]);
+    expect(assoc('0.1.1', 1, [2, 3])).toEqual([[undefined, [undefined, 1]], 3]);
+    expect(() => assoc(0, 1, 2)).toThrow(TypeError);
+  });
 });
