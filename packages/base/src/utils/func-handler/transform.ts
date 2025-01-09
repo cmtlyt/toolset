@@ -35,7 +35,6 @@ export function debounceAsync<F extends TAnyFunc>(
             else
               resolvers!.resolve(result);
           }, resolvers.reject);
-          return resolvers.promise;
         }
         timer = setTimeout(() => {
           timer = null;
@@ -80,27 +79,10 @@ export function debounce<F extends TAnyFunc>(
 ): (...args: TArgsType<F>) => void {
   if (time <= 0)
     return func;
-  let timer: NodeJS.Timeout | null = null;
-  // @ts-expect-error return func
-  return cacheByReturn(() => {
-    if (immediately) {
-      return (...args: any) => {
-        if (timer)
-          clearTimeout(timer);
-        else func(...args);
-        timer = setTimeout(() => {
-          timer = null;
-        }, time);
-      };
-    }
-    return (...args: any) => {
-      if (timer)
-        clearTimeout(timer);
-      timer = setTimeout(() => {
-        func(...args);
-      }, time);
-    };
-  });
+  const debounceFunc = debounceAsync(func, time, immediately);
+  return (...args: TArgsType<F>) => {
+    debounceFunc(...args);
+  };
 }
 
 /**
