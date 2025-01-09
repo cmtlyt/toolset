@@ -45,13 +45,16 @@ type PlaceholderArgs<T extends any[], R extends any[] = []> =
  */
 export function placeholderFunc<O extends any[], R>(func: TFunc<O, R>) {
   return <A extends PlaceholderArgs<Required<O>>>(...placeArgs: A) => {
-    return ((...callArgs) => {
+    const runFunc = ((...callArgs) => {
       let index = 0;
       const args = placeArgs.map(arg => arg === __ ? callArgs[index++] : arg);
       if (callArgs.length !== index)
         throw new TypeError('非法调用, 参数数量不匹配');
       return func(...args as any);
     }) as TFunc<PlaceholderFuncArgs<A, Required<O>>, TCurryFuncReturnType<R>>;
+    // @ts-expect-error 自定义属性用于正确获取函数参数数量
+    runFunc.clength = placeArgs.reduce((acc, cur) => acc + (cur === __ ? 1 : 0), 0);
+    return runFunc;
   };
 }
 /**

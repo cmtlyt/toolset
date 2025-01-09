@@ -19,6 +19,10 @@ export function debounceAsync<F extends TAnyFunc>(
     return func;
   let timer: NodeJS.Timeout | null = null;
   let resolvers: GetReturnType<typeof withResolvers> | null = null;
+  const resetState = () => {
+    timer = null;
+    resolvers = null;
+  };
   // @ts-expect-error return func
   return cacheByReturn(() => {
     if (immediately) {
@@ -36,15 +40,14 @@ export function debounceAsync<F extends TAnyFunc>(
               resolvers!.resolve(result);
           }, resolvers.reject);
         }
-        timer = setTimeout(() => {
-          timer = null;
-          resolvers = null;
-        }, time);
+        timer = setTimeout(resetState, time);
         return resolvers.promise;
       };
     }
     return (...args: any) => {
       resolvers ||= withResolvers();
+      // 由于 tryCall 为延迟调用, 所以需要缓存 resolvers, 否则调用时 resolvers 可能为 null
+      const _resolver = resolvers;
       if (timer)
         clearTimeout(timer);
       timer = setTimeout(() => {
@@ -52,14 +55,15 @@ export function debounceAsync<F extends TAnyFunc>(
           const result = func(...args);
           if (isPromise(result)) {
             result.then((res) => {
-              resolvers!.resolve(res);
-              resolvers = null;
-            }, resolvers!.reject);
+              _resolver.resolve(res);
+              resetState();
+            }, _resolver.reject);
           }
           else {
-            resolvers!.resolve(result);
+            _resolver.resolve(result);
+            resetState();
           }
-        }, resolvers!.reject);
+        }, _resolver.reject);
       }, time);
       return resolvers.promise;
     };
