@@ -53,4 +53,18 @@ describe('object utils', async () => {
     expect(deepProp('toString', 0)).toBeTypeOf('function');
     expect(deepProp('prototype.toString', Object)).toBeTypeOf('function');
   });
+  it('applySpec', () => {
+    const { applySpec } = utils;
+    expect(applySpec({ a: (x: number) => x + 1, b: (x: number) => x * 2 })([1])).toEqual({ a: 2, b: 2 });
+    expect(applySpec({
+      sum: (x: number, y: number) => x + y,
+      nested: {
+        mut: (x: number, y: number) => x * y,
+      },
+    }, [1, 2])).toEqual({ sum: 3, nested: { mut: 2 } });
+    expect(applySpec({}, [])).toEqual({});
+    // @ts-expect-error 测试用例
+    expect(() => applySpec(123, [])).toThrow(TypeError);
+    expect(applySpec([(a: number) => a + 1, (b: number) => b * 2], [2])).toEqual({ 0: 3, 1: 4 });
+  });
 });

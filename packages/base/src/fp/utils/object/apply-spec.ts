@@ -1,5 +1,5 @@
 import type { TAnyFunc, TFunc } from '$/types/base';
-import { curry } from './curry';
+import { curry } from '../function/curry';
 
 type Spec = Record<string, TAnyFunc>;
 type DeepSpec = Record<string, Spec | TAnyFunc>;

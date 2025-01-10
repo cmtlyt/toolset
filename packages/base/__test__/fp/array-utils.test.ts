@@ -5,6 +5,19 @@ describe('array utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils/array');
   })() as typeof import('../../src/fp/utils/array');
 
+  it('groupBy', () => {
+    const { groupBy } = utils;
+    expect(groupBy(x => x % 2, [1, 2, 3, 4, 5])).toEqual({ 0: [2, 4], 1: [1, 3, 5] });
+    expect(groupBy(x => x % 2)([1, 2, 3, 4, 5])).toEqual({ 0: [2, 4], 1: [1, 3, 5] });
+    expect(groupBy(x => x % 2)([])).toEqual({ });
+  });
+  it('groupWith', () => {
+    const { groupWith } = utils;
+    expect(groupWith((a, b) => a === b, [1, 1, 1, 2, 3, 4, 5])).toEqual([[1, 1, 1], [2], [3], [4], [5]]);
+    expect(groupWith((a, b) => a % 2 === b % 2, [0, 1, 1, 2, 3, 5, 8, 13, 21])).toEqual([[0], [1, 1], [2], [3, 5], [8], [13, 21]]);
+    expect(groupWith((a, b) => a === b, [])).toEqual([]);
+    expect(groupWith((a, b) => /^[aeiou]$/.test(a) === /^[aeiou]$/.test(b))('aestiou')).toEqual(['ae', 'st', 'iou']);
+  });
   it('aperture', () => {
     const { aperture } = utils;
     expect(aperture(2, [1, 2, 3, 4, 5])).toEqual([[1, 2], [3, 4], [5]]);

@@ -5,6 +5,8 @@ export * from './every';
 export * from './filter';
 export * from './find';
 export * from './find-index';
+export * from './group-by';
+export * from './group-with';
 export * from './includes';
 export * from './join';
 export * from './make-by';

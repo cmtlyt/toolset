@@ -85,7 +85,9 @@ export function isFalse(value: any): value is false {
 }
 
 /**
- * 判断是否为空值
+ * 判断是否为空值 (通常用于 io 数据的判断)
+ *
+ * @warning 对于对象来说, 调用的是 Object.keys 获取长度, 所以只判断可枚举属性
  */
 export function isEmpty(value: any): boolean {
   if (value === INTERNAL_EMPTY)

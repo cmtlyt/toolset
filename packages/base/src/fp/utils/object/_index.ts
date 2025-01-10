@@ -1,3 +1,4 @@
+export * from './apply-spec';
 export * from './assoc';
 export * from './deep-prop';
 export * from './omit';

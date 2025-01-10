@@ -4,6 +4,19 @@ describe('function utils', async () => {
   const utils = await (async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils');
   })() as typeof import('../../src/fp/utils');
+
+  it('argNumLimit', () => {
+    const { argNumLimit } = utils;
+    expect(argNumLimit(Math.max, 2)(1, 2, 3, -99, 42, 6, 7)).toBe(2);
+    expect(argNumLimit(Math.max, 3)(1, 2, 3, -99, 42, 6, 7)).toBe(3);
+    expect(argNumLimit((a: number, b: string, c: boolean) => `${a}${b}${c}`, 2)(2, 3, -99, 42, 6, 7)).toBe('23undefined');
+    // @ts-expect-error 测试用例
+    expect(argNumLimit(Math.max, '')(1, 2, 3)).toBe(-Infinity);
+    // @ts-expect-error 测试用例
+    expect(argNumLimit(Math.max, '2')(1, 2, 3)).toBe(2);
+    // @ts-expect-error 测试用例
+    expect(() => argNumLimit(Math.max, '2a')(1, 2, 3)).toThrow(TypeError);
+  });
   it('applyTo', () => {
     const { applyTo } = utils;
     expect(applyTo(1, (a: number) => a + 1)).toBe(2);
@@ -13,20 +26,6 @@ describe('function utils', async () => {
     const { apply } = utils;
     expect(apply((a: number) => a + 1, [2])).toBe(3);
     expect(apply(Math.max)([1, 2, 3, -99, 42, 6, 7])).toBe(42);
-  });
-  it('applySpec', () => {
-    const { applySpec } = utils;
-    expect(applySpec({ a: (x: number) => x + 1, b: (x: number) => x * 2 })([1])).toEqual({ a: 2, b: 2 });
-    expect(applySpec({
-      sum: (x: number, y: number) => x + y,
-      nested: {
-        mut: (x: number, y: number) => x * y,
-      },
-    }, [1, 2])).toEqual({ sum: 3, nested: { mut: 2 } });
-    expect(applySpec({}, [])).toEqual({});
-    // @ts-expect-error 测试用例
-    expect(() => applySpec(123, [])).toThrow(TypeError);
-    expect(applySpec([(a: number) => a + 1, (b: number) => b * 2], [2])).toEqual({ 0: 3, 1: 4 });
   });
   it('placeholderFunc', () => {
     const __ = utils.__;

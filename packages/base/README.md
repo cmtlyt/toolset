@@ -57,6 +57,8 @@ pnpm add @cmtlyt/base
 - (F) filter
 - (F) findIndex
 - (F) find
+- (F) groupBy
+- (F) groupWith
 - (F) includes
 - (F) join
 - (F) makeBy
@@ -65,10 +67,14 @@ pnpm add @cmtlyt/base
 - (F) reduce
 - (F) replicate
 - (F) some
+- (F) both
 - (F) eq
-- (F) apply-spec
-- (F) apply-to
+- (F) gt
+- (F) lt
+- (F) applySpec
+- (F) applyTo
 - (F) apply
+- (F) argNumLimit
 - (F) placeholderFunc
 - (CV) placeholderFunc.\_\_
 - (F) assoc

@@ -1,4 +1,4 @@
-import type { GetReturnType, ReverseArray, TAnyFunc, TArgsType, TFlatPromise, TFunc } from '$/types/base';
+import type { TAnyFunc, TArgsType, TFlatPromise, TFunc, TGetReturnType, TReverseArray } from '$/types/base';
 import { getNow, withResolvers } from '../get-data';
 import { isPromise } from '../verify';
 import { cacheByReturn } from './cache';
@@ -18,7 +18,7 @@ export function debounceAsync<F extends TAnyFunc>(
   if (time <= 0)
     return func;
   let timer: NodeJS.Timeout | null = null;
-  let resolvers: GetReturnType<typeof withResolvers> | null = null;
+  let resolvers: TGetReturnType<typeof withResolvers> | null = null;
   const resetState = () => {
     timer = null;
     resolvers = null;
@@ -211,7 +211,7 @@ export function chunkTask<F extends TAnyFunc>(task: F) {
  * @param callback 需要转换的函数
  */
 export function reverseArgs<F extends TAnyFunc>(callback: F) {
-  return (...args: ReverseArray<Parameters<F>>): ReturnType<F> => callback(...args.reverse());
+  return (...args: TReverseArray<Parameters<F>>): ReturnType<F> => callback(...args.reverse());
 }
 
 /**
