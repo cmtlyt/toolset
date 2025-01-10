@@ -41,4 +41,16 @@ describe('object utils', async () => {
     expect(assoc('0.1.1', 1, [2, 3])).toEqual([[undefined, [undefined, 1]], 3]);
     expect(() => assoc(0, 1, 2)).toThrow(TypeError);
   });
+  it('deepProp', () => {
+    const { deepProp } = utils;
+    expect(deepProp('a.b.c', { a: { b: { c: 1 } } })).toBe(1);
+    expect(deepProp(['a', 'b', 'c'], { a: { b: { c: 1 } } })).toBe(1);
+    expect(deepProp('0.1.1', [2, 3])).toBe(undefined);
+    expect(deepProp([0, 1, 1], [2, 3])).toBe(undefined);
+    expect(deepProp(0, 2)).toBe(undefined);
+    expect(deepProp('0.1', 0)).toBe(undefined);
+    expect(deepProp(0, [2, 3])).toBe(2);
+    expect(deepProp('toString', 0)).toBeTypeOf('function');
+    expect(deepProp('prototype.toString', Object)).toBeTypeOf('function');
+  });
 });

@@ -1,5 +1,5 @@
 import type { TMany, TObject } from '$/types/base';
-import { isArray } from '$/utils';
+import { isArray, isNull } from '$/utils';
 import { curry, placeholderFunc } from '../function';
 
 /**
@@ -14,9 +14,9 @@ export function deepProp_<R>(keyPath: TMany<string>, obj: TObject<any>, separato
   if (!separator)
     return obj;
 
-  const keyPaths = isArray(keyPath) ? keyPath : keyPath.split(separator);
+  const keyPaths = isArray(keyPath) ? keyPath : String(keyPath).split(separator);
 
-  return keyPaths.reduce((prev, curr) => prev && prev[curr], obj);
+  return keyPaths.reduce((prev, curr) => isNull(prev) ? prev : prev[curr], obj);
 }
 
 const __ = placeholderFunc.__;
