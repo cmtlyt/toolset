@@ -5,6 +5,41 @@ describe('array utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils/array');
   })() as typeof import('../../src/fp/utils/array');
 
+  it('nth', () => {
+    const { nth } = utils;
+    expect(nth(1, [1, 2, 3])).toBe(2);
+    expect(nth(1)([1, 2, 3])).toBe(2);
+    expect(nth(-1, [1, 2, 3])).toBe(3);
+    expect(nth(-2, [1, 2, 3])).toBe(2);
+    expect(nth(-3, [1, 2, 3])).toBe(1);
+    expect(nth(-4, [1, 2, 3])).toBe(undefined);
+    expect(nth(3, [1, 2, 3])).toBe(undefined);
+    expect(nth(3, 'abc')).toBe(undefined);
+    expect(nth(1, 'abc')).toBe('b');
+    expect(nth(-1, 'abc')).toBe('c');
+  });
+  it('collectBy', () => {
+    const { collectBy } = utils;
+    expect(collectBy(x => x % 2, [1, 2, 3, 4, 5])).toEqual([[1, 3, 5], [2, 4]]);
+    expect(collectBy(x => x % 2)([1, 2, 3, 4, 5])).toEqual([[1, 3, 5], [2, 4]]);
+    expect(collectBy(x => x % 2, [])).toEqual([]);
+    expect(collectBy(x => typeof x, ['string', 1, [], 2, {}, '3'])).toEqual([['string', '3'], [1, 2], [[], {}]]);
+    expect(collectBy(x => x.type, [
+      { type: 'breakfast', item: '☕️' },
+      { type: 'lunch', item: '🌯' },
+      { type: 'dinner', item: '🍝' },
+      { type: 'breakfast', item: '🥐' },
+      { type: 'lunch', item: '🍕' },
+    ])).toEqual([
+      [{ type: 'breakfast', item: '☕️' }, { type: 'breakfast', item: '🥐' }],
+      [{ type: 'lunch', item: '🌯' }, { type: 'lunch', item: '🍕' }],
+      [{ type: 'dinner', item: '🍝' }],
+    ]);
+    // @ts-expect-error 测试用例
+    expect(() => collectBy(x => x, {})).toThrow(TypeError);
+    // @ts-expect-error 测试用例
+    expect(() => collectBy(x => x, 1)).toThrow(TypeError);
+  });
   it('groupBy', () => {
     const { groupBy } = utils;
     expect(groupBy(x => x % 2, [1, 2, 3, 4, 5])).toEqual({ 0: [2, 4], 1: [1, 3, 5] });

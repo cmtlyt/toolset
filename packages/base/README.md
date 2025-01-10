@@ -50,6 +50,10 @@ pnpm add @cmtlyt/base
 
 新增 fp 相关内容
 
+- (F) collectBy
+- (F) deepExec
+- (F) deepExecWith
+- (F) nth
 - (F) adjust
 - (F) aperture
 - (F) append

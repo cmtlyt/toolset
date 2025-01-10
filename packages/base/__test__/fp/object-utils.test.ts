@@ -4,6 +4,29 @@ describe('object utils', async () => {
   const utils = await (() => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils');
   })() as typeof import('../../src/fp/utils');
+
+  it('deepExecWith', () => {
+    const { deepExecWith } = utils;
+    expect(deepExecWith((x: number) => x + 1, (x: number) => x % 2 === 0, { a: 1, b: 2 })).toEqual({ a: 1, b: 3 });
+    expect(deepExecWith((x: number) => x + 1, (x: number) => x % 2 === 0, [1, 2])).toEqual({ 0: 1, 1: 3 });
+    expect(deepExecWith((v, k) => `${k}${String(v)}`, Boolean)({ a: 1, b: { c: { d: 2, f: { g: [4] } }, e: 3 } })).toEqual({
+      a: 'a1',
+      b: { c: { d: 'd2', f: { g: 'g4' } }, e: 'e3' },
+    });
+    expect(deepExecWith((v, k) => `${k}${String(v)}`, v => typeof v === 'number')({ a: 1, b: { c: { d: 2, f: { g: [4] } }, e: 3 } })).toEqual({
+      a: 'a1',
+      b: { c: { d: 'd2', f: { g: [4] } }, e: 'e3' },
+    });
+  });
+  it('deepExec', () => {
+    const { deepExec } = utils;
+    expect(deepExec((x: number) => x + 1, { a: 1, b: 2 })).toEqual({ a: 2, b: 3 });
+    expect(deepExec((x: number) => x + 1, [1, 2])).toEqual({ 0: 2, 1: 3 });
+    expect(deepExec((v, k) => `${k}${String(v)}`)({ a: 1, b: { c: { d: 2, f: { g: [4] } }, e: 3 } })).toEqual({
+      a: 'a1',
+      b: { c: { d: 'd2', f: { g: 'g4' } }, e: 'e3' },
+    });
+  });
   it('prop', () => {
     const { prop } = utils;
 

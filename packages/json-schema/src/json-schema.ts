@@ -1,3 +1,4 @@
+import type { TObject } from '@cmtlyt/base';
 import { cacheByReturn, getType, isFalse } from '@cmtlyt/base';
 
 import { baseTypeDefaultValue } from './utils';
@@ -12,8 +13,6 @@ export interface Schema {
   maxItems?: number;
   uniqueItems?: boolean;
 }
-
-export type TObject<T> = Record<string | number | symbol, T>;
 
 function _encodeJsonSchema(data: TObject<any>): Schema {
   const schemaType = getType(data);
