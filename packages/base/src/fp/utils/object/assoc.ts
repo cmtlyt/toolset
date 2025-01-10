@@ -34,4 +34,9 @@ interface AssocCurry {
 
 const { __ } = placeholderFunc;
 
+/**
+ * 设置对象属性 (支持点分递归 key)
+ *
+ * @sig assoc :: String b -> a -> {k: v} -> {b: a}
+ */
 export const assoc = curry(placeholderFunc(assoc_)(__, __, __, '.')) as any as AssocCurry;

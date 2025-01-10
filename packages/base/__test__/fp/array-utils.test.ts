@@ -5,6 +5,15 @@ describe('array utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils/array');
   })() as typeof import('../../src/fp/utils/array');
 
+  it('take', () => {
+    const { take } = utils;
+    expect(take(2, [1, 2, 3])).toEqual([1, 2]);
+    expect(take(2)([1, 2, 3])).toEqual([1, 2]);
+    expect(take(2, [])).toEqual([]);
+    expect(take(2, 'abc')).toEqual('ab');
+    // @ts-expect-error 测试用例
+    expect(() => take(1, 0)).toThrow(TypeError);
+  });
   it('nth', () => {
     const { nth } = utils;
     expect(nth(1, [1, 2, 3])).toBe(2);
@@ -17,6 +26,8 @@ describe('array utils', async () => {
     expect(nth(3, 'abc')).toBe(undefined);
     expect(nth(1, 'abc')).toBe('b');
     expect(nth(-1, 'abc')).toBe('c');
+    // @ts-expect-error 测试用例
+    expect(() => nth(-1, 0)).toThrow(TypeError);
   });
   it('collectBy', () => {
     const { collectBy } = utils;
@@ -68,9 +79,9 @@ describe('array utils', async () => {
     const { append } = utils;
     expect(append(1, [1, 2, 3])).toEqual([1, 2, 3, 1]);
     expect(append(1)([1, 2, 3])).toEqual([1, 2, 3, 1]);
-    expect(append(1)([])).toEqual([1]);
-    // @ts-expect-error 测试用例
     expect(append([2], [1, 2, 3])).toEqual([1, 2, 3, [2]]);
+    expect(append('1')('2')).toEqual(['2', '1']);
+    expect(append('1')([2])).toEqual([2, '1']);
   });
   it('adjust', () => {
     expect(utils.adjust(1, (item, index) => item + index, [1, 2, 3])).toEqual([1, 3, 3]);

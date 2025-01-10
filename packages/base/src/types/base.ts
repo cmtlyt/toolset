@@ -45,7 +45,10 @@ export type THeadTwoArg<T extends any[]> = T extends [any, infer I, ...any] ? I 
 export type TObject<T, K extends TObjKeyType = TObjKeyType> = Record<K, T>;
 
 /** 获取数组的元素类型 */
-export type TArrayItem<T> = T extends [...infer R] ? R : T;
+export type TArrayItem<T> = T extends [...infer R] ? R : any;
+
+/** 获取数组的类型 */
+export type TArrayType<T> = T extends any[] ? T[number] : never;
 
 /** Promise 返回值的类型 */
 export type TUnwrapPromise<T> = T extends Promise<infer R> ? R : T;
@@ -154,4 +157,5 @@ export type TGetArgsWithCount<F extends TAnyFunc, C extends number, A extends an
 export type TGetType<T> = T extends string ? string :
   T extends number ? number :
     T extends boolean ? boolean :
-      any;
+      T extends [...infer R] ? R :
+        any;

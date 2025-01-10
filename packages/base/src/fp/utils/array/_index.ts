@@ -17,3 +17,4 @@ export * from './partition';
 export * from './reduce';
 export * from './replicate';
 export * from './some';
+export * from './take';

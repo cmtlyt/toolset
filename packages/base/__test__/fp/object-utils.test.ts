@@ -5,6 +5,16 @@ describe('object utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils');
   })() as typeof import('../../src/fp/utils');
 
+  it('props', () => {
+    const { props } = utils;
+    expect(props(['a', 'b'], { a: 1, b: 2 })).toEqual({ a: 1, b: 2 });
+    expect(props(['a', 'b', 'c'], { a: 1, b: 2 })).toEqual({ a: 1, b: 2, c: undefined });
+    expect(props(['a.b.c', 'd'])({ a: { b: { c: 1, e: 3 } }, d: 2 })).toEqual({ a: { b: { c: 1 } }, d: 2 });
+    const b = { c: 1, e: 3 };
+    const result = props(['a.b', 'd'])({ a: { b }, d: 2 });
+    expect(result).toEqual({ a: { b }, d: 2 });
+    expect(result.a.b).toBe(b);
+  });
   it('deepExecWith', () => {
     const { deepExecWith } = utils;
     expect(deepExecWith((x: number) => x + 1, (x: number) => x % 2 === 0, { a: 1, b: 2 })).toEqual({ a: 1, b: 3 });
@@ -65,7 +75,8 @@ describe('object utils', async () => {
     expect(() => assoc(0, 1, 2)).toThrow(TypeError);
   });
   it('deepProp', () => {
-    const { deepProp } = utils;
+    const { deepProp, deepProp_ } = utils;
+    expect(deepProp_('a.b.c', { a: { b: { c: 1 } } }, '')).toBe(undefined);
     expect(deepProp('a.b.c', { a: { b: { c: 1 } } })).toBe(1);
     expect(deepProp(['a', 'b', 'c'], { a: { b: { c: 1 } } })).toBe(1);
     expect(deepProp('0.1.1', [2, 3])).toBe(undefined);

@@ -3,6 +3,7 @@ export * from './compare';
 export * from './constant';
 export * from './debug';
 export * from './function';
+export * from './logic';
 export * from './object';
 export * from './promise';
 export * from './return';

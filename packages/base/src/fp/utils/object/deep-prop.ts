@@ -11,8 +11,8 @@ import { curry, placeholderFunc } from '../function';
  * @param separator 分隔符 (default: '.')
  */
 export function deepProp_<R>(keyPath: TMany<string>, obj: TObject<any>, separator: string | RegExp = '.'): R {
-  if (!separator)
-    return obj;
+  if (!separator && typeof keyPath === 'string')
+    return obj[keyPath];
 
   const keyPaths = isArray(keyPath) ? keyPath : String(keyPath).split(separator);
 

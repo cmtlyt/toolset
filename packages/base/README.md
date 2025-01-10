@@ -50,6 +50,8 @@ pnpm add @cmtlyt/base
 
 新增 fp 相关内容
 
+- (F) when
+- (F) props
 - (F) collectBy
 - (F) deepExec
 - (F) deepExecWith
