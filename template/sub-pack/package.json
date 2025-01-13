@@ -2,6 +2,7 @@
   "name": "sub-package",
   "type": "module",
   "version": "0.1.0",
+  "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "",
   "author": {
@@ -29,6 +30,10 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": ["dist"],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
