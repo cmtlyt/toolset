@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/logger",
   "type": "module",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "",

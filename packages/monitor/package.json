@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/monitor",
   "type": "module",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "cl项目监控",
