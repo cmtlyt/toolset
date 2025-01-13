@@ -1,22 +1,27 @@
 import type { Callback, GitDownOption, GitUrlInfo } from './types';
 import { exec as execWithCallback } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { extname } from 'node:path';
+
 import { promisify } from 'node:util';
 
-export { existsSync } from 'node:fs';
 export { rename as mv, writeFile } from 'node:fs/promises';
 export { resolve } from 'node:path';
 export { chdir, cwd } from 'node:process';
-export { promisify };
+export { existsSync };
 
 export const exec = promisify(execWithCallback);
 
 export function createOutput(path: string) {
+  if (existsSync(path))
+    return;
   return mkdir(path, { recursive: true });
 }
 
 export function rmdir(path: string) {
+  if (!existsSync(path))
+    return;
   return rm(path, { recursive: true, force: true });
 }
 
