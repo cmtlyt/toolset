@@ -13,7 +13,7 @@ afterEach(async () => {
   await rmdir(tempFolder);
 });
 
-describe.skipIf(inject('GIT_PRE_COMMIT'))('git down test', async () => {
+describe.skipIf(inject('GIT_PRE_COMMIT') || inject('RELEASE'))('git down test', async () => {
   const utils = await (async () => {
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');

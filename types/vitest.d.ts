@@ -5,5 +5,6 @@ declare module 'vitest' {
     CI: boolean;
     env: NodeJS.ProcessEnv;
     GIT_PRE_COMMIT: boolean;
+    RELEASE: boolean;
   }
 }
