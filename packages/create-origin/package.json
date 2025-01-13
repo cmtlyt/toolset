@@ -1,8 +1,7 @@
 {
-  "name": "@cmtlyt/sub-package",
+  "name": "@cmtlyt/create-origin",
   "type": "module",
   "version": "0.1.0",
-  "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "",
   "author": {
@@ -10,7 +9,7 @@
     "email": "cmtlyt@163.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/cmtlyt/toolset/packages/sub-package#readme",
+  "homepage": "https://github.com/cmtlyt/toolset/packages/create-origin#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cmtlyt/toolset.git"
@@ -29,15 +28,24 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/",
-    "access": "public"
-  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
     "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
+  },
+  "dependencies": {
+    "colorize-template": "^1.0.0",
+    "commander": "^13.0.0",
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "yocto-spinner": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.9"
   }
 }

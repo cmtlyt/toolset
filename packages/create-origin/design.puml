@@ -1,0 +1,88 @@
+@startuml
+!theme plain
+!pragma teoz true
+
+participant 用户 as user
+participant 命令行 as cli
+control 起源 as origin
+queue 异步任务 as aq
+database 存储 as store
+database 模板文件系统 as tfs
+participant 用户文件系统 as ufs
+
+' 执行命令行脚本
+user -> cli : 执行命令
+&cli -> store : 存储命令行配置
+
+' 唤起起源脚本
+cli -> origin : 调用起源脚本
+&origin -> aq ++: 创建任务\n获取模板
+
+' 用户前置交互
+||20||
+
+' 获取项目名
+origin -> store : 获取命令行配置
+store --> origin : 返回命令行配置
+alt 不存在对项目名的配置
+activate origin
+origin --> cli ++: 输入项目名
+user -> cli : 输入项目名
+&cli -> origin --: 更新配置
+deactivate origin
+end
+
+' 打包工具选择
+alt 不存在对打包工具的配置
+activate origin
+origin --> cli ++: 选择打包工具
+user -> cli : 选择打包工具
+&cli -> origin --: 提交用户选择
+deactivate origin
+end
+origin -> aq ++: 创建任务\n获取配置模板
+&aq -> tfs ++: 获取模板
+return 模板文件
+aq -> store --: 写入临时存储
+
+' 系统框架选择
+alt 不存在对框架的配置
+activate origin
+origin --> cli ++: 框架选择
+user -> cli : 选择框架
+&cli -> origin --: 提交框架
+deactivate origin
+end
+origin -> aq ++: 创建任务\n获取框架模板
+&aq -> tfs ++: 获取模板
+return 模板文件
+aq -> store --: 写入临时存储
+
+' 更多配置交互
+note across : 更多配置交互
+
+' 模板获取完成
+aq --> origin --: 模板获取完成
+
+' 存储配置信息
+origin -> store : 存储配置信息
+
+' 实际文件生成
+origin -> aq ++: 创建任务\n根据配置生成项目
+&aq -> store : 获取配置信息
+store --> aq : 返回配置信息
+aq -> aq : 生成文件
+aq -> store : 提交文件到临时存储
+aq --> origin --: 生成结束
+
+' 提交文件到用户文件系统
+origin -> aq ++: 创建任务\n提交文件
+&aq -> store : 获取生成的文件
+store -> aq : 返回文件
+aq -> ufs **: 提交文件到用户文件系统
+aq --> aq : 提交成功
+return 结束任务
+
+' 生成完成提示用户
+&origin --> cli : 生成完成
+@enduml
