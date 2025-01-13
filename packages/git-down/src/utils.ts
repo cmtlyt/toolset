@@ -22,7 +22,7 @@ export async function createOutput(path: string) {
 export async function rmdir(path: string) {
   if (!existsSync(path))
     return;
-  return rm(path, { recursive: true, force: true });
+  return rm(path, { recursive: true, force: true }).catch(() => {});
 }
 
 export function buildOption(option?: GitDownOption): Required<GitDownOption> {

@@ -32,7 +32,7 @@
   "scripts": {
     "stub": "unbuild --stub",
     "build": "unbuild",
-    "test": "cross-env CI=true RELEASE=true vitest run",
+    "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   }
 }
