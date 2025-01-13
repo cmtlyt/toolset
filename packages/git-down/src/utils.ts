@@ -13,13 +13,13 @@ export { existsSync };
 
 export const exec = promisify(execWithCallback);
 
-export function createOutput(path: string) {
+export async function createOutput(path: string) {
   if (existsSync(path))
     return;
   return mkdir(path, { recursive: true });
 }
 
-export function rmdir(path: string) {
+export async function rmdir(path: string) {
   if (!existsSync(path))
     return;
   return rm(path, { recursive: true, force: true });
