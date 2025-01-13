@@ -6,6 +6,7 @@ export default defineConfig({
     provide: {
       CI: process.env.CI === 'true',
       env: process.env,
+      GIT_PRE_COMMIT: process.env.GIT_PRE_COMMIT === 'true',
     },
     coverage: {
       provider: 'istanbul',
