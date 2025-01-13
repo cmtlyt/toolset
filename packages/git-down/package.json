@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "packageManager": "pnpm@9.14.4",
-  "description": "",
+  "description": "下载 git 仓库或文件",
   "author": {
     "name": "cmtlyt",
     "email": "cmtlyt@163.com"
@@ -17,7 +17,7 @@
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues"
   },
-  "keywords": [],
+  "keywords": ["git", "download", "clone", "git-clone", "git-down", "cmtlyt"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
