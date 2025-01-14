@@ -1,0 +1,3 @@
+{
+  "default": "import antfu from '@antfu/eslint-config';\n\nexport default antfu({\n  formatters: <%= enablePrettier ? false : true %>,\n  <% if (frame === 'react' || frame === 'preact') { %>\n  react: true,\n  <% } else if (frame === 'vue') { %>\n  vue: true,\n  <% } else if (frame === 'svelte') { %>\n  svelte: true,\n  <% } else if (frame === 'solid') { %>\n  solid: true,\n  <% } %>\n  ignores: [\n    'patches',\n    'playgrounds',\n    '**/cache',\n    '**/dist',\n    '**/.temp',\n    '**/*.svg',\n  ],\n  <% if (!enablePrettier) { %>\n  stylistic: {\n    indent: 2,\n    quotes: 'single',\n    semi: true,\n  },\n  <% } %>\n});"
+}

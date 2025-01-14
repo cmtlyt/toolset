@@ -32,8 +32,9 @@
     "dist"
   ],
   "scripts": {
-    "stub": "unbuild --stub",
-    "build": "unbuild",
+    "buildTemplate": "esno ./template/build-template.ts",
+    "stub": "pnpm run buildTemplate && unbuild --stub",
+    "build": "pnpm run buildTemplate && unbuild",
     "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   },
