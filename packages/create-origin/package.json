@@ -38,8 +38,10 @@
     "prepublishOnly": "pnpm build && pnpm test"
   },
   "dependencies": {
+    "@cmtlyt/git-down": "workspace:^",
     "colorize-template": "^1.0.0",
     "commander": "^13.0.0",
+    "ejs": "^3.1.10",
     "fs-extra": "^11.2.0",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2",
