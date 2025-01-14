@@ -2,7 +2,7 @@ import type { ProjectConfig } from './types';
 import fs from 'node:fs/promises';
 import { Frame } from './types';
 
-const sourceOriginPath = '';
+const sourceOriginPath = '.';
 
 type FilePath = string;
 type SourceUrl = string;
@@ -48,17 +48,22 @@ export function getSourceTemplateList(config: ProjectConfig) {
     throw new TypeError('必须选择一个框架');
   }
   const sourceList: SourceTemplateList = [];
+  // 框架源码配置
   sourceList.push(getFrameTemplate(config.frameId));
+
+  // 基本配置
+  sourceList.push({ 'package.json': getTemplateUrl('/other-config/package') });
+  sourceList.push({ 'readme.json': getTemplateUrl('/other-config/readme') });
 
   const isTs = config.enableTypeScript;
   if (config.enableEslint) {
-    sourceList.push({ [`eslint.config.${isTs ? 'ts' : 'js'}`]: getTemplateUrl(`/other-config/eslint.config.ts`) });
+    sourceList.push({ [`eslint.config.${isTs ? 'ts' : 'js'}`]: getTemplateUrl(`/other-config/eslint.config`) });
   }
   if (config.enableTypeScript) {
     sourceList.push(...[
-      { 'tsconfig.json': getTemplateUrl('/other-config/tsconfig.json') },
-      { 'tsconfig.app.json': getTemplateUrl('/other-config/tsconfig.app.json') },
-      { 'tsconfig.node.json': getTemplateUrl('/other-config/tsconfig.node.json') },
+      { 'tsconfig.json': getTemplateUrl('/other-config/tsconfig') },
+      { 'tsconfig.app.json': getTemplateUrl('/other-config/tsconfig.app') },
+      { 'tsconfig.node.json': getTemplateUrl('/other-config/tsconfig.node') },
     ]);
   }
   return sourceList;
