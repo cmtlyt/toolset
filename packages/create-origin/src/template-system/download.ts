@@ -1,6 +1,7 @@
 import type { TemplateInfo } from './types';
+import { BASE_FILES } from '$/constant';
 import { getItem, setItem } from '$/store';
-import { baseFiles, getBuilderTemplate, getExtendTemplate, getFrameTemplate } from './template-map';
+import { getBuilderTemplate, getExtendTemplate, getFrameTemplate } from './template-map';
 import { getDownloadTemplateFunc } from './utils';
 
 /** 获取模板信息列表 */
@@ -21,7 +22,7 @@ function getTemplateInfoList() {
   sourceList.push(getBuilderTemplate(config.builderId));
 
   // 基本模板信息
-  sourceList.push(...baseFiles);
+  sourceList.push(...BASE_FILES);
 
   // 工程化模板信息
   sourceList.push(...getExtendTemplate());

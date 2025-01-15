@@ -5,17 +5,11 @@ import { getTemplateUrl } from '$/template-system/utils';
 import { Builder, Frame } from '$/types';
 
 /** 资源加载方法 */
-const loader: TemplateInfo['loader'] = async function (this: TemplateInfoBase, download: DownloadTempalteFunc) {
+export async function loader(this: TemplateInfoBase, download: DownloadTempalteFunc) {
   const localPath = await download(getTemplateUrl(this.path));
   this.localPath = localPath;
   return localPath;
 };
-
-/** 静态配置文件 */
-export const baseFiles = [
-  { filePath: 'package.json', loader, path: '/other-config/package' },
-  { filePath: 'README.md', loader, path: '/other/readme' },
-];
 
 /** 获取打包工具配置模板 */
 export function getBuilderTemplate(builderId: Builder): TemplateInfoWithSource {

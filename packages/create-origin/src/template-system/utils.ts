@@ -2,7 +2,7 @@ import type { DepItem, ProjectConfig, Scripts, TemplateState } from '$/types';
 import type { FinishedTemplateInfo, TemplateInfo, TemplateInfoWithParse, TemplateInfoWithSource } from './types';
 import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
-import { TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
+import { BASE_DEPS, BASE_SCRIPTS, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
 import { Builder } from '$/types';
 import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from './dependencie-map';
@@ -66,7 +66,7 @@ export function getTemplate(content: any, config: TemplateState) {
 
 /** 获取开发生产依赖 */
 export function getDepMap(config: ProjectConfig) {
-  const list: DepItem[] = [];
+  const list: DepItem[] = [...BASE_DEPS];
   const { enableEslint, enablePrettier, enableTypeScript } = config;
   list.push(...getBuilderDeps(config));
   list.push(...getFrameDeps(config));
@@ -89,23 +89,23 @@ export function getScripts(config: ProjectConfig): Scripts {
 
   const scirptMap = {
     [Builder.vite]: {
-      builderDev: 'vite',
-      builderBuild: `${enableTypeScript ? 'vue-tsc -b && ' : ''}vite build`,
-      builderPreview: 'vite preview',
+      dev: 'vite',
+      build: `${enableTypeScript ? 'vue-tsc -b && ' : ''}vite build`,
+      preview: 'vite preview',
     },
     [Builder.webpack]: {
-      builderDev: '',
-      builderBuild: '',
+      dev: '',
+      build: '',
     },
     [Builder.rolldown]: {
-      builderDev: '',
-      builderBuild: '',
+      dev: '',
+      build: '',
     },
     [Builder.rsbuild]: {
-      builderDev: '',
-      builderBuild: '',
+      dev: '',
+      build: '',
     },
   };
 
-  return scirptMap[builderId];
+  return { ...scirptMap[builderId], ...BASE_SCRIPTS };
 }

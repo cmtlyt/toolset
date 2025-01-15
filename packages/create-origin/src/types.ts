@@ -76,9 +76,9 @@ export type Config = ProjectConfig & EmitConfig & TempConfig;
 /** 命令合集 */
 export interface Scripts {
   /** 打包工具启动开发服务器 */
-  builderDev: string;
-  builderBuild: string;
-  builderPreview?: string;
+  dev: string;
+  build: string;
+  [key: string]: string;
 }
 
 export interface BuilderConfig {

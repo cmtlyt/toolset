@@ -8,11 +8,9 @@ const _default = `{
     <%_ if (enableEslint) { _%>
     "lint": "eslint . --fix",
     <%_ } _%>
-    "dev": "<%= scripts.builderDev %>",
-    <%_ if (scripts.builderPreview) { _%>
-    "preview": "<%= scripts.builderPreview %>",
-    <%_ } _%>
-    "build": "<%= scripts.builderBuild %>"
+    <%_ Object.keys(scripts).forEach((key, idx, arr) => { _%>
+    "<%- key %>": "<%- scripts[key] %>"<%= idx === arr.length - 1 ? '' : ',' %>
+    <%_ }) _%>
   },
   "dependencies": {
 <%# 生成生产依赖 _%>
