@@ -16,6 +16,7 @@ program
   .description('使用 origin 创建一个新项目')
   .argument('[projectName]', '项目名称')
   .version(version)
+  .option('-p, --package', '创建一个 npm 包', parseBoolean)
   // ^ 基础配置
   // 构建器
   .addOption(new Option('--builder <builder>', '构建器').choices(SUPPORT_BUILDERS))
@@ -45,6 +46,7 @@ program.parseAsync().then((command) => {
   return optionPrompt({
     builderId: options.builder,
     frameId: options.frame,
+    isPackage: options.package,
     projectName,
     enableEslint: options.eslint,
     enablePrettier: options.prettier,

@@ -1,14 +1,16 @@
 import type { ProjectConfig } from './types';
 import path from 'node:path';
 import process from 'node:process';
+import gitDown from '@cmtlyt/git-down';
 import fsExtra from 'fs-extra';
 import yoctoSpinner from 'yocto-spinner';
-import { ICON_MAP, TEMPLATE_STORE_FOLDER_NAME } from './constant';
+import { ICON_MAP, NPM_PACKAGE_TEMPLATE_URL, TEMPLATE_STORE_FOLDER_NAME } from './constant';
 import { setItem } from './store';
 import { buildTemplate, downloadTemplates } from './template-system';
 import { Builder, Frame, PackageManager, Registry } from './types';
 import { colorize } from './utils/colorize';
 import { filterObject } from './utils/filter-object';
+import { throwError, tryCall } from './utils/try-call';
 
 function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
   const { projectName } = config;
@@ -29,6 +31,7 @@ function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
     registry: Registry.github,
     ...filteredConfig,
     outputPath,
+    isPackage: false,
   };
 }
 
@@ -37,20 +40,19 @@ async function dirCheckIsEmpty(targetPath: string): Promise<boolean> {
   if (!exists)
     return true;
   const files = await fsExtra.readdir(targetPath);
-  return files.length === 0;
+  if (files.length === 0) {
+    throwError('项目目录不为空');
+    return false;
+  }
+  return true;
 }
 
 export async function createProject(config: Partial<ProjectConfig>) {
   const projectConfig = buildConfig(config);
   setItem('projectConfig', projectConfig);
   const { outputPath } = projectConfig;
-  try {
-    const isEmpty = await dirCheckIsEmpty(outputPath);
-    if (!isEmpty) {
-    // eslint-disable-next-line no-console
-      console.log(colorize`{red ${ICON_MAP.error} 项目目录不为空}`);
-      process.exit(1);
-    }
+  await tryCall(async () => {
+    await dirCheckIsEmpty(outputPath);
     // 创建模板存储目录 (同时会创建项目目录)
     await fsExtra.mkdir(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
     const spinner = yoctoSpinner({ text: '下载模板中' }).start();
@@ -62,13 +64,21 @@ export async function createProject(config: Partial<ProjectConfig>) {
     spinner.success();
     // eslint-disable-next-line no-console
     console.log(colorize`{green ${ICON_MAP.success} ${projectConfig.projectName} 生成成功}`);
-  }
-  catch (e) {
-    const err = e as Error;
-    // eslint-disable-next-line no-console
-    console.log(colorize`{red ${ICON_MAP.error} ${err.message}}`);
-    process.exit(1);
-  }
+  });
   // 删除模板存储目录
   await fsExtra.rm(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
+}
+
+export async function createPackage(config: Partial<ProjectConfig>) {
+  const { outputPath, projectName } = buildConfig(config);
+  // eslint-disable-next-line no-console
+  console.log(colorize`{yellow.bold ${ICON_MAP.warning} npm 包模板不会应用 projectName, projectName 只用于目录生成}`);
+  const spinner = yoctoSpinner({ text: '下载 npm 包模板中' }).start();
+  await tryCall(async () => {
+    await dirCheckIsEmpty(outputPath);
+    await gitDown(NPM_PACKAGE_TEMPLATE_URL, { output: outputPath });
+  });
+  spinner.success();
+  // eslint-disable-next-line no-console
+  console.log(colorize`{green ${ICON_MAP.success} ${projectName} 生成成功}`);
 }

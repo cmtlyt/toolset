@@ -1,6 +1,6 @@
 import type { TemplateInfo } from './types';
 import { getItem, setItem } from '$/store';
-import { baseFiles, getBuilderTemplate, getExtendTemplate, getFrameTemplate } from '$/utils/template-map';
+import { baseFiles, getBuilderTemplate, getExtendTemplate, getFrameTemplate } from './template-map';
 import { getDownloadTemplateFunc } from './utils';
 
 /** 获取模板信息列表 */

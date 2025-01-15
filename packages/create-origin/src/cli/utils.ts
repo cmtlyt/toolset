@@ -3,7 +3,7 @@ import { ICON_MAP } from '$/constant/icon';
 import { Builder, Frame, PackageManager, type ProjectConfig, Registry } from '$/types';
 import { colorize } from '$/utils/colorize';
 import prompts from 'prompts';
-import { createProject } from '..';
+import { createPackage, createProject } from '..';
 
 async function getExtendConfig(options: Partial<ProjectConfig>) {
   const config = { ...options };
@@ -105,6 +105,10 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
     }
     userOptions.projectName = projectName;
   }
+  // 如果是 npm 包则不需要后续交互, 直接下载 npm 包模板
+  if (options.isPackage) {
+    return createPackage(userOptions);
+  }
   // 构建器处理
   if (!options.builderId) {
     const { builder } = await prompts({
@@ -172,5 +176,6 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       Object.assign(userOptions, advancedConfig);
     }
   }
-  createProject(userOptions);
+
+  return createProject(userOptions);
 }

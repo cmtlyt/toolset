@@ -5,7 +5,7 @@ import { resolve as pathResolve } from 'node:path';
 import { TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
 import { Builder } from '$/types';
-import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from '$/utils/dependencie-map';
+import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from './dependencie-map';
 
 type SourceUrl = string;
 

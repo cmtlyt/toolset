@@ -22,3 +22,5 @@ export const SUPPORT_FRAMES = Object.values(Frame);
 export { BUILD_FRAME_PLUGIN_IMPORT_EXPRESSION } from './import-expression';
 
 export { BUILD_FRAME_PLUGIN_MAP } from './plugin-map';
+
+export const NPM_PACKAGE_TEMPLATE_URL = 'https://github.com/cmtlyt/template-pack';

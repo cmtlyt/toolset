@@ -36,6 +36,8 @@ export interface ProjectConfig {
   builderId: Builder;
   /** 模板 id (用户选择) */
   frameId: Frame;
+  /** 是否为 npm 包 */
+  isPackage: boolean;
 
   // ^ 下列为扩展配置
   /** 是否启用 eslint (默认启用) */
