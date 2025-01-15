@@ -1,7 +1,8 @@
 import { Option, program } from 'commander';
 import { version } from '../package.json';
-import { cliProcess } from './cli/utils';
+import { optionPrompt } from './cli/utils';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
+import { Registry } from './types';
 
 function parseBoolean(value: string) {
   if (value === 'false')
@@ -29,19 +30,19 @@ program
   .option('--typescript [enableTypeScript]', '是否启用 typescript (default: true)', parseBoolean)
   // ^ 额外配置
   // 包管理器
-  .addOption(new Option('-m, --package-manager <packageManager>', '包管理器 (默认为执行命令时的包管理器)').choices(['npm', 'yarn', 'pnpm']).default('npm'))
+  .addOption(new Option('-m, --package-manager <packageManager>', '包管理器 (默认为执行命令时的包管理器)').choices(['npm', 'yarn', 'pnpm']))
   // 自动安装依赖
-  .option('-i, --auto-install', '自动安装依赖 (default: false)', parseBoolean, false)
+  .option('-i, --auto-install', '自动安装依赖 (default: false)', parseBoolean)
   // 依赖使用最新版本
-  .option('-l, --use-latest-package', '所有依赖均使用最新版本 (default: false)', parseBoolean, false)
+  .option('-l, --use-latest-package', '所有依赖均使用最新版本 (default: false)', parseBoolean)
   // 模板下载地址
-  .addOption(new Option('--registry', '模板下载地址').choices(['github']).default('github'));
+  .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)));
 
 program.parseAsync().then((command) => {
   const [projectName] = command.args;
   const options = command.opts();
 
-  return cliProcess({
+  return optionPrompt({
     builderId: options.builder,
     frameId: options.frame,
     projectName,

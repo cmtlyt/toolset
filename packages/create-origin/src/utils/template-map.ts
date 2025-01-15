@@ -54,8 +54,6 @@ export function getFrameTemplate(frameId: Frame): TemplateInfoWithParse {
       return { parse, loader, path: '/project-source/solid' };
     case Frame.svelte:
       return { parse, loader, path: '/project-source/svelte' };
-    case Frame.package:
-      return {} as any;
     default:
       frameId satisfies never;
       throw new TypeError('未知框架');
@@ -71,6 +69,10 @@ export function getExtendTemplate(): TemplateInfoWithSource[] {
   // eslint 配置文件
   if (config.enableEslint) {
     sourceList.push({ filePath: `eslint.config.${enableTs ? 'ts' : 'js'}`, loader, path: `/other-config/eslint.config` });
+    // 使用 eslint 格式化
+    if (!config.enablePrettier) {
+      sourceList.push({ filePath: '.vscode/settings.json', loader, path: '/other-config/eslint-vscode.settings' });
+    }
   }
 
   // prettier 配置文件

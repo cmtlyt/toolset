@@ -50,7 +50,6 @@ export function getFrameDeps(config: ProjectConfig) {
     [Frame.preact]: [],
     [Frame.svelte]: [],
     [Frame.solid]: [],
-    [Frame.package]: [],
   };
   return frameDepMap[frameId];
 }

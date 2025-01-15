@@ -9,14 +9,12 @@ export enum Builder {
 /** 框架 id */
 export enum Frame {
   react = 'react',
-  reactSfc = 'react-sfc',
+  reactSfc = 'reactSfc',
   vue = 'vue',
-  vueSfc = 'vue-sfc',
+  vueSfc = 'vueSfc',
   preact = 'preact',
   svelte = 'svelte',
   solid = 'solid',
-  /** npm 包 */
-  package = 'package',
 }
 
 export enum Registry {

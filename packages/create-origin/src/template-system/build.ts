@@ -43,11 +43,11 @@ function buildTemplateState() {
       frameImport: getFramePluginImport(builderId, frameId, framePlugin),
     },
     ...getDepMap(config),
-    enableEslint: config.enableEslint ?? true,
-    enablePrettier: config.enablePrettier ?? false,
-    enableTypeScript: config.enableTypeScript ?? true,
-    frame: config.frameId!,
-    projectName: config.projectName!,
+    enableEslint: config.enableEslint,
+    enablePrettier: config.enablePrettier,
+    enableTypeScript: config.enableTypeScript,
+    frame: config.frameId,
+    projectName: config.projectName,
     scripts: getScripts(config),
   };
   setItem('templateState', templateState);

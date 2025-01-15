@@ -10,7 +10,6 @@ export const BUILD_FRAME_PLUGIN_MAP: Record<Builder, Record<Frame, string>> = {
     [Frame.preact]: '@preact/preset-vite',
     [Frame.solid]: 'vite-plugin-solid',
     [Frame.svelte]: '@sveltejs/vite-plugin-svelte',
-    [Frame.package]: '',
   },
   [Builder.webpack]: {
     [Frame.vue]: '',
@@ -20,7 +19,6 @@ export const BUILD_FRAME_PLUGIN_MAP: Record<Builder, Record<Frame, string>> = {
     [Frame.preact]: '',
     [Frame.solid]: '',
     [Frame.svelte]: '',
-    [Frame.package]: '',
   },
   [Builder.rolldown]: {
     [Frame.vue]: '',
@@ -30,7 +28,6 @@ export const BUILD_FRAME_PLUGIN_MAP: Record<Builder, Record<Frame, string>> = {
     [Frame.preact]: '',
     [Frame.solid]: '',
     [Frame.svelte]: '',
-    [Frame.package]: '',
   },
   [Builder.rsbuild]: {
     [Frame.vue]: '',
@@ -40,6 +37,5 @@ export const BUILD_FRAME_PLUGIN_MAP: Record<Builder, Record<Frame, string>> = {
     [Frame.preact]: '',
     [Frame.solid]: '',
     [Frame.svelte]: '',
-    [Frame.package]: '',
   },
 };
