@@ -28,6 +28,10 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "bin": {
+    "create-origin": "dist/cli.cjs",
+    "coa": "dist/cli.cjs"
+  },
   "files": [
     "dist"
   ],

@@ -3,7 +3,7 @@ import { defineBuildConfig } from 'unbuild';
 
 export default defineBuildConfig({
   // 入口文件配置
-  entries: ['src/index'],
+  entries: ['src/index', 'src/cli'],
   // 输出目录
   outDir: 'dist',
   // 路径别名

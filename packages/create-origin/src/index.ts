@@ -1,10 +1,11 @@
+import type { ProjectConfig } from './types';
 import path from 'node:path';
 import process from 'node:process';
 import fse from 'fs-extra';
 import { TEMPLATE_STORE_FOLDER_NAME } from './constant';
 import { setItem } from './store';
 import { buildTemplate, downloadTemplates } from './template-system';
-import { Builder, Frame, type ProjectConfig } from './types';
+import { Builder, Frame, PackageManager, Registry } from './types';
 
 function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
   const { projectName } = config;
@@ -17,7 +18,9 @@ function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
     enablePrettier: false,
     enableTypeScript: true,
     frameId: Frame.react,
-    packageManager: 'npm',
+    packageManager: PackageManager.npm,
+    useLatestPackage: false,
+    registry: Registry.github,
     ...config,
     outputPath,
   };

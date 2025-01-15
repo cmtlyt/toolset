@@ -2,16 +2,31 @@ import type { DepItem, ProjectConfig, Scripts, TemplateState } from '$/types';
 import type { FinishedTemplateInfo, TemplateInfo, TemplateInfoWithParse, TemplateInfoWithSource } from './types';
 import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
-import { TEMPLATE_ORIGIN_PATH, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
+import { TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
 import { Builder } from '$/types';
 import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from '$/utils/dependencie-map';
 
 type SourceUrl = string;
 
+const getTemplateOriginPath = (() => {
+  let templateOriginPath = '';
+
+  return () => {
+    if (templateOriginPath)
+      return templateOriginPath;
+    const { registry } = getItem('projectConfig');
+    templateOriginPath = TEMPLATE_ORIGIN_PATH_MAP[registry];
+    if (!templateOriginPath) {
+      throw new Error('不支持的模板仓库');
+    }
+    return templateOriginPath;
+  };
+})();
+
 /** 获取模板地址 */
 export function getTemplateUrl(path: string) {
-  return `${TEMPLATE_ORIGIN_PATH}${path}.json`;
+  return `${getTemplateOriginPath()}${path}.json`;
 }
 
 /** 获取下载模板函数 */
