@@ -32,6 +32,19 @@ export const BASE_SCRIPTS: Omit<Scripts, 'dev' | 'build'> = {
   prepare: 'husky',
 };
 
+export const FRAME_DEP_MAP: Record<Frame, DepItem[]> = {
+  [Frame.vue]: [
+    { name: '@vitejs/plugin-vue', version: '^5.2.1', isDev: true },
+    { name: 'vue', version: '^3.5.13' },
+  ],
+  [Frame.vueSfc]: [],
+  [Frame.react]: [],
+  [Frame.reactSfc]: [],
+  [Frame.preact]: [],
+  [Frame.svelte]: [],
+  [Frame.solid]: [],
+};
+
 export const BASE_DEPS: DepItem[] = [
   { name: '@commitlint/cli', version: '^19.6.1', isDev: true },
   { name: '@commitlint/config-conventional', version: '^19.6.0', isDev: true },

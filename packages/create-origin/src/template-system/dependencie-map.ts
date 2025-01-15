@@ -1,6 +1,6 @@
-import type { DepItem, ProjectConfig } from '$/types';
-import { BUILD_FRAME_PLUGIN_IMPORT_EXPRESSION, BUILD_FRAME_PLUGIN_MAP } from '$/constant';
-import { Builder, Frame } from '$/types';
+import type { DepItem, Frame, ProjectConfig } from '$/types';
+import { BUILD_FRAME_PLUGIN_IMPORT_EXPRESSION, BUILD_FRAME_PLUGIN_MAP, FRAME_DEP_MAP } from '$/constant';
+import { Builder } from '$/types';
 
 /** 获取框架插件 */
 export function getFramePlugin(builderId: Builder, frameId: Frame) {
@@ -39,19 +39,7 @@ export function getBuilderDeps(config: ProjectConfig) {
 /** 获取框架依赖 */
 export function getFrameDeps(config: ProjectConfig) {
   const { frameId } = config;
-  const frameDepMap: Record<Frame, DepItem[]> = {
-    [Frame.vue]: [
-      { name: '@vitejs/plugin-vue', version: '^5.2.1', isDev: true },
-      { name: 'vue', version: '^3.5.13' },
-    ],
-    [Frame.vueSfc]: [],
-    [Frame.react]: [],
-    [Frame.reactSfc]: [],
-    [Frame.preact]: [],
-    [Frame.svelte]: [],
-    [Frame.solid]: [],
-  };
-  return frameDepMap[frameId];
+  return FRAME_DEP_MAP[frameId];
 }
 
 /** 获取 eslint 依赖 */
