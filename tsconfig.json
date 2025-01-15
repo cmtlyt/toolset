@@ -23,6 +23,7 @@
   ],
   "exclude": [
     "**/__test__",
-    "node_modules"
+    "node_modules",
+    "packages/create-origin/template"
   ]
 }

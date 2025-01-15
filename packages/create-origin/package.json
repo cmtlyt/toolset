@@ -32,7 +32,7 @@
     "dist"
   ],
   "scripts": {
-    "buildTemplate": "esno ./template/build-template.ts",
+    "buildTemplate": "esno ./template-source/build-template.ts",
     "stub": "pnpm run buildTemplate && unbuild --stub",
     "build": "pnpm run buildTemplate && unbuild",
     "test": "cross-env CI=true vitest run",
@@ -49,6 +49,9 @@
     "yocto-spinner": "^0.1.2"
   },
   "devDependencies": {
-    "@types/prompts": "^2.4.9"
+    "@types/ejs": "^3.1.5",
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
+    "ejs-lint": "^2.0.1"
   }
 }

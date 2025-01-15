@@ -1,11 +1,15 @@
-import fs from 'node:fs';
-import { downloadTemplateList, getSourceTemplateList } from '.';
+import { createProject } from '.';
 import { Builder, Frame } from './types';
 
-fs.existsSync('./temp') || fs.mkdirSync('./temp');
-
-downloadTemplateList(getSourceTemplateList({
+createProject({
   projectName: 'test',
   builderId: Builder.vite,
   frameId: Frame.vue,
-}));
+  enableTypeScript: false,
+  // enableEslint: true,
+  // enablePrettier: true,
+});
+
+// ejsLint('<%= a name %>');
+
+// render('<%= name %>', { name: 'world' }, { async: true }).then(console.log);

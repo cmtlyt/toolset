@@ -1,79 +1,38 @@
-import type { ProjectConfig } from './types';
-import fs from 'node:fs/promises';
-import { Frame } from './types';
+import path from 'node:path';
+import process from 'node:process';
+import fse from 'fs-extra';
+import { TEMPLATE_STORE_FOLDER_NAME } from './constant';
+import { setItem } from './store';
+import { buildTemplate, downloadTemplates } from './template-system';
+import { Builder, Frame, type ProjectConfig } from './types';
 
-const sourceOriginPath = '.';
-
-type FilePath = string;
-type SourceUrl = string;
-
-function getTemplateUrl(path: string) {
-  return `${sourceOriginPath}${path}.json`;
+function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
+  const { projectName } = config;
+  const outputPath = path.resolve(process.cwd(), projectName || '.');
+  return {
+    projectName: projectName === '.' || !projectName ? path.dirname(outputPath) : projectName,
+    autoInstall: false,
+    builderId: Builder.vite,
+    enableEslint: true,
+    enablePrettier: false,
+    enableTypeScript: true,
+    frameId: Frame.react,
+    packageManager: 'npm',
+    ...config,
+    outputPath,
+  };
 }
 
-async function downloadTemplate(url: SourceUrl) {
-  // TODO: 替换为 git-down
-  return fs.copyFile(url, `./temp/${url.split('/').pop()}`);
-}
-
-type DownloadTempalteFunc = typeof downloadTemplate;
-
-type SourceTemplateList = (Record<FilePath, SourceUrl>
-  | { loader: (get: DownloadTempalteFunc) => ReturnType<DownloadTempalteFunc> })[];
-
-function getFrameTemplate(frameId: Frame): SourceTemplateList[number] {
-  switch (frameId) {
-    case Frame.vue:
-    case Frame.vueSfc:
-      return { loader: get => get(getTemplateUrl('/project-source/vue')) };
-    case Frame.react:
-    case Frame.reactSfc:
-      return { loader: get => get(getTemplateUrl('/project-source/react')) };
-    case Frame.preact:
-      return { loader: get => get(getTemplateUrl('/project-source/preact')) };
-    case Frame.solid:
-      return { loader: get => get(getTemplateUrl('/project-source/solid')) };
-    case Frame.svelte:
-      return { loader: get => get(getTemplateUrl('/project-source/svelte')) };
-    case Frame.package:
-      return {};
-    default:
-      frameId satisfies never;
-      throw new TypeError('未知框架');
-  }
-}
-
-export function getSourceTemplateList(config: ProjectConfig) {
-  if (!config.frameId) {
-    throw new TypeError('必须选择一个框架');
-  }
-  const sourceList: SourceTemplateList = [];
-  // 框架源码配置
-  sourceList.push(getFrameTemplate(config.frameId));
-
-  // 基本配置
-  sourceList.push({ 'package.json': getTemplateUrl('/other-config/package') });
-  sourceList.push({ 'readme.json': getTemplateUrl('/other-config/readme') });
-
-  const isTs = config.enableTypeScript;
-  if (config.enableEslint) {
-    sourceList.push({ [`eslint.config.${isTs ? 'ts' : 'js'}`]: getTemplateUrl(`/other-config/eslint.config`) });
-  }
-  if (config.enableTypeScript) {
-    sourceList.push(...[
-      { 'tsconfig.json': getTemplateUrl('/other-config/tsconfig') },
-      { 'tsconfig.app.json': getTemplateUrl('/other-config/tsconfig.app') },
-      { 'tsconfig.node.json': getTemplateUrl('/other-config/tsconfig.node') },
-    ]);
-  }
-  return sourceList;
-}
-
-export function downloadTemplateList(templateList: SourceTemplateList) {
-  return Promise.all(templateList.map((item) => {
-    if (typeof item === 'object' && typeof item.loader === 'function') {
-      return item.loader(downloadTemplate);
-    }
-    return Object.entries(item).map(([_, url]) => downloadTemplate(url)) as Promise<void>[];
-  }));
+export async function createProject(config: Partial<ProjectConfig>) {
+  const projectConfig = buildConfig(config);
+  setItem('projectConfig', projectConfig);
+  const { outputPath } = projectConfig;
+  // 创建模板存储目录 (同时会创建项目目录)
+  await fse.mkdir(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
+  // 下载模板
+  await downloadTemplates();
+  // 生成模板
+  await buildTemplate();
+  // 删除模板存储目录
+  await fse.rm(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
 }

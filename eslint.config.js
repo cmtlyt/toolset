@@ -10,6 +10,7 @@ export default antfu({
     '**/dist',
     '**/.temp',
     '**/*.svg',
+    'packages/create-origin/template',
   ],
   stylistic: {
     indent: 2,

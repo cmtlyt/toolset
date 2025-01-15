@@ -22,22 +22,26 @@ export enum Frame {
 /** 项目生成相关配置 */
 export interface ProjectConfig {
   /** 项目名称 (用户输入) */
-  projectName?: string;
+  projectName: string;
   /** 打包工具 id (用户选择) */
-  builderId?: Builder;
+  builderId: Builder;
   /** 模板 id (用户选择) */
-  frameId?: Frame;
+  frameId: Frame;
+
   // ^ 下列为扩展配置
   /** 是否启用 eslint (默认启用) */
-  enableEslint?: boolean;
+  enableEslint: boolean;
   /** 是否启用 prettier (默认禁用) */
-  enablePrettier?: boolean;
+  enablePrettier: boolean;
   /** 是否自动安装依赖 (默认禁用) */
-  autoInstall?: boolean;
+  autoInstall: boolean;
   /** 包管理工具 (从命令行参数或运行的命令中获取) */
-  packageManager?: 'npm' | 'yarn' | 'pnpm';
+  packageManager: 'npm' | 'yarn' | 'pnpm';
   /** 是否启用 typescript (默认启用) */
-  enableTypeScript?: boolean;
+  enableTypeScript: boolean;
+
+  // ^ 下列为系统注入配置
+  outputPath: string;
 }
 
 /** 提交相关配置 */
@@ -66,6 +70,14 @@ export interface Scripts {
 export interface BuilderConfig {
   framePlugin: string;
   frameName: string;
+  frameImport: string;
+}
+
+export interface DepItem {
+  name: string;
+  version: string;
+  isDev?: boolean;
+  ignore?: boolean;
 }
 
 /** 用于生成模板的状态 */
@@ -87,7 +99,7 @@ export interface TemplateState {
   /** 是否启用 typescript */
   enableTypeScript: boolean;
   /** 生产依赖 */
-  dependencies: Record<'name' | 'version', string>[];
+  dependencies: DepItem[];
   /** 开发依赖 */
-  devDependencies: Record<'name' | 'version', string>[];
+  devDependencies: DepItem[];
 }

@@ -3,15 +3,15 @@ import antfu from '@antfu/eslint-config';
 
 export default antfu({
   formatters: <%= enablePrettier ? false : true %>,
-  <% if (frame === 'react' || frame === 'preact') { %>
+  <%_ if (frame === 'react' || frame === 'preact') { _%>
   react: true,
-  <% } else if (frame === 'vue') { %>
+  <%_ } else if (frame === 'vue') { _%>
   vue: true,
-  <% } else if (frame === 'svelte') { %>
+  <%_ } else if (frame === 'svelte') { _%>
   svelte: true,
-  <% } else if (frame === 'solid') { %>
+  <%_ } else if (frame === 'solid') { _%>
   solid: true,
-  <% } %>
+  <%_ } _%>
   ignores: [
     'patches',
     'playgrounds',
@@ -20,13 +20,13 @@ export default antfu({
     '**/.temp',
     '**/*.svg',
   ],
-  <% if (!enablePrettier) { %>
+  <%_ if (!enablePrettier) { _%>
   stylistic: {
     indent: 2,
     quotes: 'single',
     semi: true,
   },
-  <% } %>
+  <%_ } _%>
 });
 `.trim();
 
