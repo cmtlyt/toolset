@@ -9,9 +9,9 @@ export enum Builder {
 /** 框架 id */
 export enum Frame {
   react = 'react',
-  reactSwc = 'reactSfc',
+  reactSwc = 'reactSwc',
   vue = 'vue',
-  vueSwc = 'vueSfc',
+  vueSwc = 'vueSwc',
   preact = 'preact',
   svelte = 'svelte',
   solid = 'solid',
