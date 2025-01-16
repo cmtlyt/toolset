@@ -31,6 +31,7 @@ function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
     packageManager: PackageManager.npm,
     useLatestPackage: false,
     registry: Registry.github,
+    noGit: false,
     ...filteredConfig,
     outputPath,
     isPackage: false,
@@ -42,7 +43,7 @@ async function dirCheckIsEmpty(targetPath: string): Promise<boolean> {
   if (!exists)
     return true;
   const files = await fsExtra.readdir(targetPath);
-  if (files.length === 0) {
+  if (files.length !== 0) {
     throwError('项目目录不为空');
     return false;
   }
@@ -69,6 +70,7 @@ export async function createProject(config: Partial<ProjectConfig>) {
   });
   // 删除模板存储目录
   await fsExtra.rm(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
+  return projectConfig;
 }
 
 export async function createPackage(config: Partial<ProjectConfig>) {

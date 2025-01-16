@@ -1,10 +1,13 @@
 import type { DepItem, ProjectConfig, Scripts, TemplateState } from '$/types';
 import type { FinishedTemplateInfo, TemplateInfo } from './types';
+import { exec } from 'node:child_process';
 import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
-import { BASE_DEPS, BASE_SCRIPTS, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
+import { BASE_DEPS, BASE_SCRIPTS, ICON_MAP, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
 import { Builder, Frame } from '$/types';
+import { colorize } from '$/utils/colorize';
+import gitDown from '@cmtlyt/git-down';
 import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from './dependencie-map';
 
 type SourceUrl = string;
@@ -51,8 +54,9 @@ export function getDownloadTemplateFunc(): DownloadTempalteFunc {
   const templateStorePath = pathResolve(outputPath, TEMPLATE_STORE_FOLDER_NAME);
   return async (url) => {
     const localPath = pathResolve(templateStorePath, url.split('/').pop()!);
-    // TODO: 替换为 git-down
-    await fs.copyFile(url, localPath);
+    if (import.meta.BUILD)
+      await gitDown(url, { output: localPath });
+    else await fs.copyFile(url, localPath);
     return localPath;
   };
 }
@@ -79,16 +83,46 @@ export function getTemplate(content: any, config: TemplateState) {
   return content[config.frame] || content.default;
 }
 
+async function getLatestVersion(name: string): Promise<string> {
+  return new Promise((res, rej) => {
+    exec(`npm view ${name} dist-tags.latest`, (err, stdout) => {
+      if (err)
+        rej(err);
+      res(stdout.trim());
+    });
+  });
+}
+
+export async function buildPackagesVersion(depList: DepItem[], useLatest: boolean) {
+  if (!useLatest)
+    return depList;
+  return Promise.all(depList.map(async (item) => {
+    const { name, version, ignore } = item;
+    if (ignore)
+      return item;
+    try {
+      const latestVersion = await getLatestVersion(name);
+      item.version = latestVersion ? `^${latestVersion}` : version;
+    }
+    catch {
+      // eslint-disable-next-line no-console
+      console.log(colorize`{yellow ${ICON_MAP.warning} 获取 ${name} 最新版本失败, 使用预设版本兜底}`);
+      return item;
+    }
+    return item;
+  }));
+}
+
 /** 获取开发生产依赖 */
-export function getDepMap(config: ProjectConfig) {
+export async function getDepMap(config: ProjectConfig) {
   const list: DepItem[] = [...BASE_DEPS];
-  const { enableEslint, enablePrettier, enableTypeScript } = config;
+  const { enableEslint, enablePrettier, enableTypeScript, useLatestPackage } = config;
   list.push(...getBuilderDeps(config));
   list.push(...getFrameDeps(config));
   enableEslint && list.push(...getEslintDeps(config));
   enablePrettier && list.push(...getPrettierDeps());
   enableTypeScript && list.push(...getTypescriptDeps());
-  return list.reduce((prev, curr) => {
+  return (await buildPackagesVersion(list, useLatestPackage)).reduce((prev, curr) => {
     if (curr.ignore)
       return prev;
     const key = curr.isDev ? 'devDependencies' : 'dependencies';

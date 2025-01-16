@@ -1,6 +1,6 @@
 import { Option, program } from 'commander';
 import { version } from '../package.json';
-import { optionPrompt } from './cli/utils';
+import { optionPrompt } from './cli/option-prompt';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
 import { Registry } from './types';
 
@@ -36,6 +36,7 @@ program
   .option('-i, --auto-install', '自动安装依赖 (default: false)', parseBoolean)
   // 依赖使用最新版本
   .option('-l, --use-latest-package', '所有依赖均使用最新版本 (default: false)', parseBoolean)
+  .option('--no-git', '不使用 git 初始化 (default: false)', parseBoolean)
   // 模板下载地址
   .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)));
 

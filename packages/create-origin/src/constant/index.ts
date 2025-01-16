@@ -3,8 +3,8 @@ import { Builder, Frame, Registry } from '$/types';
 
 /** 模板的下载目录 */
 export const TEMPLATE_ORIGIN_PATH_MAP: Record<Registry, string> = {
-  [Registry.gitee]: './template',
-  [Registry.github]: './template',
+  [Registry.gitee]: '',
+  [Registry.github]: import.meta.BUILD ? 'https://github.com/cmtlyt/toolset/blob/main/packages/create-origin/template' : './template',
 };
 
 /** 临时存储模板的目录名 */

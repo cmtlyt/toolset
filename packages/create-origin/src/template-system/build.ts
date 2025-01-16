@@ -38,11 +38,12 @@ export async function buildTemplateInfoList() {
   setItem('finishedTemplateInfoList', buildTemplateInfos(finishedTemplateInfoList, templateState));
 }
 
-function buildTemplateState() {
+async function buildTemplateState() {
   const config = getItem('projectConfig');
   const { builderId = Builder.vite, frameId = Frame.react } = config;
   const framePlugin = getFramePlugin(builderId, frameId).name;
   const pluginUseCode = OVERREAD_FRAME_USE_PLUGIN_CODE[builderId][frameId] || frameId;
+  const depMap = await getDepMap(config);
   const templateState: TemplateState = {
     builder: builderId,
     builderConfig: {
@@ -53,7 +54,7 @@ function buildTemplateState() {
       pluginNeedCall: getFramePluginUseFunc(builderId, frameId, framePlugin, pluginUseCode),
     },
     builderConfigPath: buildFilePath({ filePath: BUILDER_CONFIG_PATH[builderId] } as any, config),
-    ...getDepMap(config),
+    ...depMap,
     enableEslint: config.enableEslint,
     enablePrettier: config.enablePrettier,
     enableTypeScript: config.enableTypeScript,
@@ -78,7 +79,7 @@ async function renderTemplate() {
 }
 
 export async function buildTemplate() {
-  buildTemplateState();
+  await buildTemplateState();
   await buildTemplateInfoList();
   await renderTemplate();
 }

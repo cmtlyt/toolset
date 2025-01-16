@@ -5,6 +5,8 @@ import { colorize } from '$/utils/colorize';
 import { throwError } from '$/utils/try-call';
 import prompts from 'prompts';
 import { createPackage, createProject } from '..';
+import { autoInstall } from './auto-install';
+import { initGitRepo } from './init-git';
 
 async function getExtendConfig(options: Partial<ProjectConfig>) {
   const config = { ...options };
@@ -54,7 +56,7 @@ async function getAdvancedConfig(options: Partial<ProjectConfig>) {
     config.autoInstall = autoInstall;
   }
   // 包管理工具
-  if (!options.packageManager) {
+  if (config.autoInstall && !options.packageManager) {
     const { packageManager } = await prompts({
       name: 'packageManager',
       type: 'select',
@@ -73,7 +75,7 @@ async function getAdvancedConfig(options: Partial<ProjectConfig>) {
       name: 'useLatestPackage',
       type: 'confirm',
       initial: false,
-      message: '所有依赖包都使用最新版',
+      message: '所有依赖包都使用最新版 (需要较长时间)',
     });
     config.useLatestPackage = useLatestPackage;
   }
@@ -87,6 +89,16 @@ async function getAdvancedConfig(options: Partial<ProjectConfig>) {
       choices: Object.entries(Registry).map(([id, name]) => ({ title: name, value: id })),
     });
     config.registry = registry;
+  }
+  // 是否禁用 git
+  if (!options.noGit) {
+    const { noGit } = await prompts({
+      name: 'noGit',
+      type: 'confirm',
+      initial: false,
+      message: '是否禁用 git',
+    });
+    config.noGit = noGit;
   }
   return config;
 }
@@ -181,5 +193,12 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
     }
   }
 
-  return createProject(userOptions);
+  const projectConfig = await createProject(userOptions);
+
+  if (!projectConfig.noGit) {
+    await initGitRepo(projectConfig.outputPath);
+  }
+  if (projectConfig.autoInstall) {
+    await autoInstall(projectConfig.outputPath, projectConfig.packageManager);
+  }
 }
