@@ -83,6 +83,7 @@ export interface Scripts {
 
 export interface BuilderConfig {
   framePlugin: string;
+  pluginUseCode: string;
   frameName: string;
   frameImport: string;
   pluginNeedCall: boolean;

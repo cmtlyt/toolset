@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    <%= builderConfig.frameName %><%= builderConfig.pluginNeedCall ? '()' : '' %>,
+    <%= builderConfig.pluginUseCode %><%= builderConfig.pluginNeedCall ? '()' : '' %>,
   ],
   // 设置路径别名
   resolve: {

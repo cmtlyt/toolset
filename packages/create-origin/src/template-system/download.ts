@@ -40,6 +40,8 @@ function getTemplateInfoList() {
 async function downloadTemplateList(templateInfoList: TemplateInfo[]) {
   const downloadTemplate = getDownloadTemplateFunc();
   return Promise.all(templateInfoList.map((item) => {
+    if (item.ignore)
+      return void 0;
     return item.loader(downloadTemplate);
   }));
 }

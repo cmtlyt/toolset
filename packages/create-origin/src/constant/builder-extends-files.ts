@@ -4,11 +4,9 @@ import { loader } from '$/template-system/template-map';
 import { Builder } from '$/types';
 
 export const BUILDER_EXTEND_FILE_MAP: Record<Builder, (config: ProjectConfig) => TemplateInfo[]> = {
-  [Builder.vite]: (config: ProjectConfig) => {
-    if (!config.enableTypeScript)
-      return [];
+  [Builder.vite]: ({ enableTypeScript }) => {
     return [
-      { filePath: 'src/vite-env.d.ts', loader, path: '/other/vite-env.d' },
+      { filePath: 'src/vite-env.d.ts', loader, path: '/other/vite-env.d', ignore: !enableTypeScript },
     ];
   },
   [Builder.webpack]: () => [
@@ -16,5 +14,6 @@ export const BUILDER_EXTEND_FILE_MAP: Record<Builder, (config: ProjectConfig) =>
   [Builder.rolldown]: () => [
   ],
   [Builder.rsbuild]: () => [
+    { filePath: 'src/env.d.ts', loader, path: '/other/rsbuild-env.d' },
   ],
 };

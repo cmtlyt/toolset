@@ -7,6 +7,7 @@ export interface TemplateInfo {
   localPath?: string;
   loader: (download: DownloadTempalteFunc) => ReturnType<DownloadTempalteFunc>;
   filePath?: string;
+  ignore?: boolean;
   parse?: (content: any, config: TemplateState) => string;
 }
 

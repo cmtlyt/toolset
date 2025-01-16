@@ -124,6 +124,11 @@ export function getScripts(config: ProjectConfig): Scripts {
       dev: 'rsbuild dev --open',
       build: 'rsbuild build',
       preview: 'rsbuild preview',
+      ...(frameId === Frame.svelte && enableTypeScript
+        ? {
+            'svelte-check': 'svelte-check --tsconfig ./tsconfig.json',
+          }
+        : {}),
     },
   };
 

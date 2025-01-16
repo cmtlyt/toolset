@@ -79,7 +79,12 @@ export function getTypescriptTemplate(config: ProjectConfig): TemplateInfo[] {
       {
         filePath: 'tsconfig.json',
         loader,
-        parse: ((content, config) => content[config.builder] || content.default) as TemplateInfo['parse'],
+        parse: ((content, config) => {
+          const result = content[config.builder] || content.default;
+          if (typeof result === 'string')
+            return result;
+          return result[config.frame];
+        }) as TemplateInfo['parse'],
         path: '/other-config/tsconfig',
       },
     ];

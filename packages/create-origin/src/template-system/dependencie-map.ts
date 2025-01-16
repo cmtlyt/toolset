@@ -20,8 +20,8 @@ export function getFramePluginImport(builderId: Builder, frameId: Frame, framePl
   return importFunc(frameId, framePlugin);
 }
 
-export function getFramePluginUseFunc(_builderId: Builder, _frameId: Frame, _framePlugin: string): boolean {
-  return true;
+export function getFramePluginUseFunc(_builderId: Builder, frameId: Frame, _framePlugin: string, pluginUseCode: string): boolean {
+  return frameId === pluginUseCode;
 }
 
 /** 获取构建器依赖 */

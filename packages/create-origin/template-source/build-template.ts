@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// @ts-expect-error no type
+import lint from 'ejs-lint';
 import { glob } from 'glob';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -10,6 +12,8 @@ const templatePath = path.resolve(__dirname, '../template');
 
 fs.existsSync(templatePath) && fs.rmSync(templatePath, { recursive: true, force: true });
 fs.mkdirSync(templatePath);
+
+const ignoreLint = ['other-config/package.json'];
 
 glob('./**/*.ts', { cwd: __dirname, absolute: true }).then((paths) => {
   paths.map(async (filePath) => {
@@ -21,6 +25,13 @@ glob('./**/*.ts', { cwd: __dirname, absolute: true }).then((paths) => {
     const targetDir = path.resolve(templatePath, path.dirname(fileName));
     fs.existsSync(targetDir) || fs.mkdirSync(targetDir, { recursive: true });
     const targetPath = path.resolve(templatePath, fileName);
-    fs.writeFileSync(targetPath, JSON.stringify(config), 'utf-8');
+    const json = JSON.stringify(config);
+    if (!ignoreLint.includes(fileName)) {
+      const err = lint(json);
+      if (err) {
+        console.error(filePath, err, fileName);
+      }
+    }
+    fs.writeFileSync(targetPath, json, 'utf-8');
   });
 });

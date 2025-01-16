@@ -1,5 +1,5 @@
-import type { Builder, DepItem, ProjectConfig } from '$/types';
-import { Frame } from '$/types';
+import type { DepItem, ProjectConfig } from '$/types';
+import { Builder, Frame } from '$/types';
 import { BUILD_FRAME_PLUGIN_MAP } from './plugin-map';
 
 function getBuilderPlugin(builderId: Builder, frameId: Frame): [DepItem] {
@@ -31,17 +31,14 @@ export const FRAME_DEPS_MAP: Record<Frame, (config: ProjectConfig) => DepItem[]>
     ...getBuilderPlugin(builderId, Frame.preact),
   ],
   [Frame.svelte]: ({ builderId, enableTypeScript }) => [
-    { name: 'svelte', version: '^5.16.5', isDev: true },
+    { name: 'svelte', version: '^5.16.5' },
+    { name: '@tsconfig/svelte', version: '^5.0.4', isDev: true, ignore: !enableTypeScript },
+    { name: 'svelte-check', version: '^4.1.1', isDev: true, ignore: !enableTypeScript },
     ...getBuilderPlugin(builderId, Frame.svelte),
-    ...(enableTypeScript
-      ? [
-          { name: '@tsconfig/svelte', version: '^5.0.4', isDev: true },
-          { name: 'svelte-check', version: '^4.1.1', isDev: true },
-        ]
-      : []),
   ],
   [Frame.solid]: ({ builderId }) => [
     { name: 'solid-js', version: '^1.9.3' },
+    { name: '@rsbuild/plugin-babel', version: '^1.0.3', isDev: true, ignore: builderId !== Builder.rsbuild },
     ...getBuilderPlugin(builderId, Frame.solid),
   ],
 };

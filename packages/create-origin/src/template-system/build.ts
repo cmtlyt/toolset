@@ -2,6 +2,7 @@ import type { TemplateState } from '$/types';
 import type { FinishedTemplateInfo, TemplateInfo } from './types';
 import { resolve as pathResolve } from 'node:path';
 import { BUILDER_CONFIG_PATH } from '$/constant/builder-config';
+import { OVERREAD_FRAME_USE_PLUGIN_CODE } from '$/constant/import-expression';
 import { getItem, setItem } from '$/store';
 import { getFramePlugin, getFramePluginImport, getFramePluginUseFunc } from '$/template-system/dependencie-map';
 import { Builder, Frame } from '$/types';
@@ -41,13 +42,15 @@ function buildTemplateState() {
   const config = getItem('projectConfig');
   const { builderId = Builder.vite, frameId = Frame.react } = config;
   const framePlugin = getFramePlugin(builderId, frameId).name;
+  const pluginUseCode = OVERREAD_FRAME_USE_PLUGIN_CODE[builderId][frameId] || frameId;
   const templateState: TemplateState = {
     builder: builderId,
     builderConfig: {
-      frameName: frameId,
+      frameName: OVERREAD_FRAME_USE_PLUGIN_CODE[builderId][frameId] || frameId,
+      pluginUseCode,
       framePlugin,
       frameImport: getFramePluginImport(builderId, frameId, framePlugin),
-      pluginNeedCall: getFramePluginUseFunc(builderId, frameId, framePlugin),
+      pluginNeedCall: getFramePluginUseFunc(builderId, frameId, framePlugin, pluginUseCode),
     },
     builderConfigPath: buildFilePath({ filePath: BUILDER_CONFIG_PATH[builderId] } as any, config),
     ...getDepMap(config),
