@@ -49,7 +49,7 @@ const _default = `
     "postcss"
   ]
 }
-`.trim();
+`.trimStart();
 
 export default {
   default: _default,

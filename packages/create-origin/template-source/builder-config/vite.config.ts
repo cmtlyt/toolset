@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
 });
-`.trim();
+`.trimStart();
 
 export default {
   default: _default,

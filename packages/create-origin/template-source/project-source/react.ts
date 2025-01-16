@@ -14,7 +14,7 @@ const indexHtml = `
     <script type="module" src="/src/main.${extname}"></script>
   </body>
 </html>
-`.trim();
+`.trimStart();
 
 const main = `
 import { StrictMode } from 'react';

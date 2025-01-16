@@ -7,7 +7,7 @@ const _default = `
   "tabWidth": 2,
   "useTabs": false
 }
-`.trim();
+`.trimStart();
 
 export default {
   default: _default,

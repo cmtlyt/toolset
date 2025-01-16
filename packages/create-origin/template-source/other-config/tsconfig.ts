@@ -6,7 +6,7 @@ const vite = `
     { "path": "./tsconfig.node.json" }
   ]
 }
-`.trim();
+`.trimStart();
 
 const rsbuild = `
 {

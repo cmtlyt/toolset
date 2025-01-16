@@ -16,14 +16,18 @@ export const FRAME_DEPS_MAP: Record<Frame, (config: ProjectConfig) => DepItem[]>
     ...getBuilderPlugin(builderId, Frame.vue),
   ],
   [Frame.vueSwc]: () => [],
-  [Frame.react]: ({ builderId }) => [
+  [Frame.react]: ({ builderId, enableTypeScript }) => [
     { name: 'react', version: '^18.3.1' },
     { name: 'react-dom', version: '^18.3.1' },
+    { name: '@types/react', version: '^18.3.1', isDev: true, ignore: !enableTypeScript },
+    { name: '@types/react-dom', version: '^18.3.1', isDev: true, ignore: !enableTypeScript },
     ...getBuilderPlugin(builderId, Frame.react),
   ],
-  [Frame.reactSwc]: ({ builderId }) => [
+  [Frame.reactSwc]: ({ builderId, enableTypeScript }) => [
     { name: 'react', version: '^18.3.1' },
     { name: 'react-dom', version: '^18.3.1' },
+    { name: '@types/react', version: '^18.3.1', isDev: true, ignore: !enableTypeScript },
+    { name: '@types/react-dom', version: '^18.3.1', isDev: true, ignore: !enableTypeScript },
     ...getBuilderPlugin(builderId, Frame.reactSwc),
   ],
   [Frame.preact]: ({ builderId }) => [

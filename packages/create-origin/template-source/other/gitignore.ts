@@ -25,7 +25,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-`.trim();
+`.trimStart();
 
 export default {
   default: _default,

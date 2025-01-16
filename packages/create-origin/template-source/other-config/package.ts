@@ -30,7 +30,7 @@ const _default = `{
     ]
   }
   <%_ } _%>
-}`.trim();
+}`.trimStart();
 
 export default {
   default: _default,

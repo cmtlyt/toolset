@@ -14,7 +14,7 @@ const indexHtml = `
     <script type="module" src="/src/index.${extname}"></script>
   </body>
 </html>
-`.trim();
+`.trimStart();
 
 const index = `
 /* @refresh reload */

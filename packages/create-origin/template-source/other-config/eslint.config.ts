@@ -28,7 +28,7 @@ export default antfu({
   },
   <%_ } _%>
 });
-`.trim();
+`.trimStart();
 
 export default {
   default: _default,
