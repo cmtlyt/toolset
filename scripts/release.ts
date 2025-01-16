@@ -20,7 +20,7 @@ async function patchVersion(cwd: string) {
 }
 
 (async function run() {
-  const packages = globSync('packages/**/package.json', { absolute: true, ignore: ['**/node_modules/**'] });
+  const packages = globSync('packages/*/package.json', { absolute: true, ignore: ['**/node_modules/**'] });
   const dumpPackages = await selectPackage(packages);
   if (!dumpPackages || !dumpPackages.length)
     return;

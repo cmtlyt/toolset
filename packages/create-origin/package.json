@@ -2,6 +2,7 @@
   "name": "@cmtlyt/create-origin",
   "type": "module",
   "version": "0.1.0",
+  "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "",
   "author": {
@@ -35,6 +36,10 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "scripts": {
     "build:template": "esno ./template-source/build-template.ts",
     "stub": "unbuild --stub && pnpm run build:template",
