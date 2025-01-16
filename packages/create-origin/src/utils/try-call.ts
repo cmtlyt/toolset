@@ -9,7 +9,7 @@ export function throwError(message: string) {
   const { outputPath } = getItem('projectConfig');
   fsExtra.removeSync(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME));
   // eslint-disable-next-line no-console
-  console.log(colorize`{red ${ICON_MAP.error} ${message}}`);
+  console.log('\n', colorize`{red ${ICON_MAP.error} ${message}}`);
   process.exit(1);
 }
 

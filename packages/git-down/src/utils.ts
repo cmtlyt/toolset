@@ -6,9 +6,8 @@ import { extname } from 'node:path';
 
 import { promisify } from 'node:util';
 
-export { rename as mv, writeFile } from 'node:fs/promises';
+export { rename as mv, readFile, writeFile } from 'node:fs/promises';
 export { resolve } from 'node:path';
-export { chdir, cwd } from 'node:process';
 export { existsSync };
 
 export const exec = promisify(execWithCallback);

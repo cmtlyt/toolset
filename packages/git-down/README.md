@@ -39,6 +39,10 @@ await gitDown('http://github.com/cmtlyt/test', { output: tempFolder });
 
 ## 更新
 
+### v0.2.0
+
+移除目录切换逻辑, 下载文件/目录支持并发
+
 ### v0.1.0
 
 实现文件/仓库/目录下载功能 (js 接口, 暂不支持 cli)

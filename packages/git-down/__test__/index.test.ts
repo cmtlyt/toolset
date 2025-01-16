@@ -1,9 +1,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import process from 'node:process';
 import { afterEach, beforeEach, describe, expect, inject, it } from 'vitest';
-import { createOutput, cwd, rmdir } from '../src/utils';
+import { createOutput, rmdir } from '../src/utils';
 
-const tempFolder = resolve(cwd(), './git-down-test-temp-folder');
+const tempFolder = resolve(process.cwd(), './git-down-test-temp-folder');
 
 beforeEach(async () => {
   await rmdir(tempFolder);
