@@ -34,7 +34,7 @@ import { useState } from 'react';
 import './app.css';
 
 function App() {
-  const [projectName, setProjectName] = useState(<%= projectName %>);
+  const [projectName, setProjectName] = useState('<%= projectName %>');
 
   return (
     <section>

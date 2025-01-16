@@ -8,7 +8,8 @@ const __dirname = path.dirname(__filename);
 
 const templatePath = path.resolve(__dirname, '../template');
 
-fs.existsSync(templatePath) || fs.mkdirSync(templatePath);
+fs.existsSync(templatePath) && fs.rmSync(templatePath, { recursive: true, force: true });
+fs.mkdirSync(templatePath);
 
 glob('./**/*.ts', { cwd: __dirname, absolute: true }).then((paths) => {
   paths.map(async (filePath) => {

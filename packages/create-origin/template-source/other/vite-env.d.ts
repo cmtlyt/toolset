@@ -3,5 +3,5 @@ const _default = `
 `.trimStart();
 
 export default {
-  defualt: _default,
+  default: _default,
 };

@@ -8,7 +8,7 @@ export const BUILDER_EXTEND_FILE_MAP: Record<Builder, (config: ProjectConfig) =>
     if (!config.enableTypeScript)
       return [];
     return [
-      { filePath: 'vite-env.d.ts', loader, path: '/other-config/vite-env.d' },
+      { filePath: 'src/vite-env.d.ts', loader, path: '/other/vite-env.d' },
     ];
   },
   [Builder.webpack]: () => [

@@ -32,7 +32,7 @@ import { createSignal } from 'solid-js'
 import './app.css';
 
 function App() {
-  const [projectName, setProjectName] = createSignal(<%= projectName %>);
+  const [projectName, setProjectName] = createSignal('<%= projectName %>');
 
   return (
     <section>

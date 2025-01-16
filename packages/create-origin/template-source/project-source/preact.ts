@@ -29,7 +29,7 @@ import { useState } from 'preact/hooks';
 import './app.css';
 
 export function App() {
-  const [projectName, setProjectName] = useState(<%= projectName %>);
+  const [projectName, setProjectName] = useState('<%= projectName %>');
 
   return (
     <section>
