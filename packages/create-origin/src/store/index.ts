@@ -1,11 +1,13 @@
 import type { FinishedTemplateInfo, TemplateInfo } from '$/template-system/types';
 import type { ProjectConfig, TemplateState } from '$/types';
+import type { Spinner } from 'yocto-spinner';
 
 interface Store {
   templateState: TemplateState;
   projectConfig: ProjectConfig;
   finishedTemplateInfoList: FinishedTemplateInfo[];
   templateInfoList: TemplateInfo[];
+  spinner: Spinner;
 }
 
 const store = {} as Store;

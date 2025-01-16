@@ -58,12 +58,13 @@ export async function createProject(config: Partial<ProjectConfig>) {
     await dirCheckIsEmpty(outputPath);
     // 创建模板存储目录 (同时会创建项目目录)
     await fsExtra.mkdir(path.resolve(outputPath, TEMPLATE_STORE_FOLDER_NAME), { recursive: true });
-    const spinner = yoctoSpinner({ text: '下载模板中' }).start();
+    const spinner = yoctoSpinner({ text: '下载模板...' }).start();
+    setItem('spinner', spinner);
     // 下载模板
     await downloadTemplates();
-    spinner.text = '生成模板中';
     // 生成模板
     await buildTemplate();
+    spinner.text = '项目生成成功';
     spinner.success();
     // eslint-disable-next-line no-console
     console.log(colorize`{green ${ICON_MAP.success} ${projectConfig.projectName} 生成成功}`);

@@ -55,7 +55,7 @@ export function getDownloadTemplateFunc(): DownloadTempalteFunc {
   return async (url) => {
     const localPath = pathResolve(templateStorePath, url.split('/').pop()!);
     if (import.meta.BUILD)
-      await gitDown(url, { output: localPath });
+      await gitDown(url, { output: templateStorePath });
     else await fs.copyFile(url, localPath);
     return localPath;
   };

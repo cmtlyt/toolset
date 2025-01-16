@@ -6,6 +6,7 @@ import { OVERREAD_FRAME_USE_PLUGIN_CODE } from '$/constant/import-expression';
 import { getItem, setItem } from '$/store';
 import { getFramePlugin, getFramePluginImport, getFramePluginUseFunc } from '$/template-system/dependencie-map';
 import { Builder, Frame } from '$/types';
+import { tryCall } from '$/utils/try-call';
 import { render } from 'ejs';
 import { outputFile, readJSON } from 'fs-extra/esm';
 import { buildFilePath, buildTemplateInfo, buildTemplateInfos, getDepMap, getScripts, getTemplate, parseTemplate } from './utils';
@@ -15,25 +16,27 @@ export async function buildTemplateInfoList() {
   const templateInfoList = getItem('templateInfoList');
   const finishedTemplateInfoList: FinishedTemplateInfo[] = [];
   await Promise.all(templateInfoList.map(async (item) => {
-    if (!item.localPath)
-      return void 0;
+    return tryCall(async () => {
+      if (!item.localPath)
+        return void 0;
 
-    const content = await readJSON(item.localPath);
+      const content = await readJSON(item.localPath);
 
-    if ((item as TemplateInfo).parse) {
-      const fileMap = parseTemplate(item as any, content, templateState);
-      if (typeof fileMap === 'string') {
-        finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: fileMap }));
+      if ((item as TemplateInfo).parse) {
+        const fileMap = parseTemplate(item as any, content, templateState);
+        if (typeof fileMap === 'string') {
+          finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: fileMap }));
+        }
+        else {
+          Object.entries<string>(fileMap).forEach(([filePath, content]) => {
+            finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content, filePath }));
+          });
+        }
       }
       else {
-        Object.entries<string>(fileMap).forEach(([filePath, content]) => {
-          finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content, filePath }));
-        });
+        finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: getTemplate(content, templateState) }));
       }
-    }
-    else {
-      finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: getTemplate(content, templateState) }));
-    }
+    });
   }));
   setItem('finishedTemplateInfoList', buildTemplateInfos(finishedTemplateInfoList, templateState));
 }
@@ -79,7 +82,10 @@ async function renderTemplate() {
 }
 
 export async function buildTemplate() {
+  const spinner = getItem('spinner');
   await buildTemplateState();
+  spinner.text = '编译模板...';
   await buildTemplateInfoList();
+  spinner.text = '生成文件...';
   await renderTemplate();
 }
