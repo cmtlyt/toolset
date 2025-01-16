@@ -12,6 +12,8 @@ import { colorize } from './utils/colorize';
 import { filterObject } from './utils/filter-object';
 import { throwError, tryCall } from './utils/try-call';
 
+export { Builder, Frame, PackageManager, Registry };
+
 function buildConfig(config: Partial<ProjectConfig>): ProjectConfig {
   const { projectName } = config;
   const outputPath = path.resolve(process.cwd(), projectName || '.');

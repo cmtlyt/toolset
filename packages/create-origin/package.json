@@ -37,8 +37,8 @@
   ],
   "scripts": {
     "build:template": "esno ./template-source/build-template.ts",
-    "stub": "pnpm run buildTemplate && unbuild --stub",
-    "build": "pnpm run buildTemplate && unbuild",
+    "stub": "pnpm run build:template && unbuild --stub",
+    "build": "pnpm run build:template && unbuild",
     "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
   },
