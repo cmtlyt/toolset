@@ -1,4 +1,4 @@
-import type { TemplateInfoWithSource } from '$/template-system/types';
+import type { TemplateInfo } from '$/template-system/types';
 import { loader } from '$/template-system/template-map';
 import { Builder } from '$/types';
 
@@ -9,7 +9,7 @@ export const BUILDER_CONFIG_PATH: Record<Builder, string> = {
   [Builder.rsbuild]: 'rsbuild.config.#{ext}',
 };
 
-export const BUILDER_CONFIG_MAP: Record<Builder, TemplateInfoWithSource[]> = {
+export const BUILDER_CONFIG_MAP: Record<Builder, TemplateInfo[]> = {
   [Builder.vite]: [
     { filePath: BUILDER_CONFIG_PATH[Builder.vite], loader, path: '/builder-config/vite.config' },
   ],

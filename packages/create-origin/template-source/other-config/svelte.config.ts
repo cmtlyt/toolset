@@ -14,11 +14,7 @@ export default {
 }
 `.trimStart();
 
-const vite = {
-  'svelte.config.#{ext}': viteConfig,
-};
-
 export default {
-  default: vite,
-  vite,
+  default: viteConfig,
+  vite: viteConfig,
 };

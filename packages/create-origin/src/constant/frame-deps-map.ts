@@ -1,29 +1,38 @@
-import type { DepItem, ProjectConfig } from '$/types';
+import type { Builder, DepItem, ProjectConfig } from '$/types';
 import { Frame } from '$/types';
+import { BUILD_FRAME_PLUGIN_MAP } from './plugin-map';
+
+function getBuilderPlugin(builderId: Builder, frameId: Frame): [DepItem] {
+  const plugin = BUILD_FRAME_PLUGIN_MAP[builderId][frameId];
+  if (!plugin) {
+    throw new TypeError(`${builderId} 没有预设 ${frameId} 的插件`);
+  }
+  return [plugin];
+}
 
 export const FRAME_DEPS_MAP: Record<Frame, (config: ProjectConfig) => DepItem[]> = {
-  [Frame.vue]: () => [
+  [Frame.vue]: ({ builderId }) => [
     { name: 'vue', version: '^3.5.13' },
-    { name: '@vitejs/plugin-vue', version: '^5.2.1', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.vue),
   ],
   [Frame.vueSwc]: () => [],
-  [Frame.react]: () => [
+  [Frame.react]: ({ builderId }) => [
     { name: 'react', version: '^18.3.1' },
     { name: 'react-dom', version: '^18.3.1' },
-    { name: '@vitejs/plugin-react', version: '^4.3.4', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.react),
   ],
-  [Frame.reactSwc]: () => [
+  [Frame.reactSwc]: ({ builderId }) => [
     { name: 'react', version: '^18.3.1' },
     { name: 'react-dom', version: '^18.3.1' },
-    { name: '@vitejs/plugin-react-swc', version: '^3.7.2', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.reactSwc),
   ],
-  [Frame.preact]: () => [
+  [Frame.preact]: ({ builderId }) => [
     { name: 'preact', version: '^10.25.4' },
-    { name: '@preact/preset-vite', version: '^2.9.4', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.preact),
   ],
-  [Frame.svelte]: ({ enableTypeScript }) => [
-    { name: '@sveltejs/vite-plugin-svelte', version: '^5.0.3', isDev: true },
+  [Frame.svelte]: ({ builderId, enableTypeScript }) => [
     { name: 'svelte', version: '^5.16.5', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.svelte),
     ...(enableTypeScript
       ? [
           { name: '@tsconfig/svelte', version: '^5.0.4', isDev: true },
@@ -31,8 +40,8 @@ export const FRAME_DEPS_MAP: Record<Frame, (config: ProjectConfig) => DepItem[]>
         ]
       : []),
   ],
-  [Frame.solid]: () => [
+  [Frame.solid]: ({ builderId }) => [
     { name: 'solid-js', version: '^1.9.3' },
-    { name: 'vite-plugin-solid', version: '^2.11.0', isDev: true },
+    ...getBuilderPlugin(builderId, Frame.solid),
   ],
 };

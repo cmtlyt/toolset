@@ -1,5 +1,5 @@
 import type { TemplateState } from '$/types';
-import type { FinishedTemplateInfo, TemplateInfoWithParse } from './types';
+import type { FinishedTemplateInfo, TemplateInfo } from './types';
 import { resolve as pathResolve } from 'node:path';
 import { BUILDER_CONFIG_PATH } from '$/constant/builder-config';
 import { getItem, setItem } from '$/store';
@@ -19,11 +19,16 @@ export async function buildTemplateInfoList() {
 
     const content = await readJSON(item.localPath);
 
-    if ((item as TemplateInfoWithParse).parse) {
+    if ((item as TemplateInfo).parse) {
       const fileMap = parseTemplate(item as any, content, templateState);
-      Object.entries<string>(fileMap).forEach(([filePath, content]) => {
-        finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content, filePath }));
-      });
+      if (typeof fileMap === 'string') {
+        finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: fileMap }));
+      }
+      else {
+        Object.entries<string>(fileMap).forEach(([filePath, content]) => {
+          finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content, filePath }));
+        });
+      }
     }
     else {
       finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: getTemplate(content, templateState) }));
@@ -35,7 +40,7 @@ export async function buildTemplateInfoList() {
 function buildTemplateState() {
   const config = getItem('projectConfig');
   const { builderId = Builder.vite, frameId = Frame.react } = config;
-  const framePlugin = getFramePlugin(builderId, frameId);
+  const framePlugin = getFramePlugin(builderId, frameId).name;
   const templateState: TemplateState = {
     builder: builderId,
     builderConfig: {
@@ -44,7 +49,7 @@ function buildTemplateState() {
       frameImport: getFramePluginImport(builderId, frameId, framePlugin),
       pluginNeedCall: getFramePluginUseFunc(builderId, frameId, framePlugin),
     },
-    builderConfigPath: buildFilePath({ filePath: BUILDER_CONFIG_PATH[builderId], path: '', loader: async () => '' }, config),
+    builderConfigPath: buildFilePath({ filePath: BUILDER_CONFIG_PATH[builderId] } as any, config),
     ...getDepMap(config),
     enableEslint: config.enableEslint,
     enablePrettier: config.enablePrettier,

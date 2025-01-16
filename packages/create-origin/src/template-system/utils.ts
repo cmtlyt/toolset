@@ -1,5 +1,5 @@
 import type { DepItem, ProjectConfig, Scripts, TemplateState } from '$/types';
-import type { FinishedTemplateInfo, TemplateInfo, TemplateInfoWithParse, TemplateInfoWithSource } from './types';
+import type { FinishedTemplateInfo, TemplateInfo } from './types';
 import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
 import { BASE_DEPS, BASE_SCRIPTS, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
@@ -29,7 +29,7 @@ export function getTemplateUrl(path: string) {
   return `${getTemplateOriginPath()}${path}.json`;
 }
 
-export function buildFilePath(template: TemplateInfoWithSource, config: ProjectConfig | TemplateState) {
+export function buildFilePath(template: FinishedTemplateInfo, config: ProjectConfig | TemplateState) {
   const { enableTypeScript } = config;
   const extname = enableTypeScript ? 'ts' : 'js';
   return template.filePath.replace(/#\{ext\}/g, extname);
@@ -37,8 +37,8 @@ export function buildFilePath(template: TemplateInfoWithSource, config: ProjectC
 
 export function buildTemplateInfos(templates: FinishedTemplateInfo[], config: ProjectConfig | TemplateState) {
   return templates.map((item) => {
-    if ((item as TemplateInfoWithSource).filePath) {
-      (item as any).filePath = buildFilePath(item as any, config);
+    if (item.filePath) {
+      item.filePath = buildFilePath(item, config);
     }
     return item;
   });
@@ -65,13 +65,13 @@ export function buildTemplateInfo(templateInfo: TemplateInfo): FinishedTemplateI
     content: templateInfo.content || '',
     localPath: templateInfo.localPath!,
     path: templateInfo.path,
-    filePath: (templateInfo as TemplateInfoWithSource).filePath || '',
+    filePath: (templateInfo as TemplateInfo).filePath || '',
   };
 }
 
 /** 解析模板 */
-export function parseTemplate(item: TemplateInfoWithParse, content: any, config: TemplateState) {
-  return item.parse(content, config);
+export function parseTemplate(item: TemplateInfo, content: any, config: TemplateState) {
+  return item.parse!(content, config);
 }
 
 /** 获取模板 */
@@ -121,8 +121,9 @@ export function getScripts(config: ProjectConfig): Scripts {
       build: '',
     },
     [Builder.rsbuild]: {
-      dev: '',
-      build: '',
+      dev: 'rsbuild dev --open',
+      build: 'rsbuild build',
+      preview: 'rsbuild preview',
     },
   };
 

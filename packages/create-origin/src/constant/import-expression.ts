@@ -6,7 +6,8 @@ type ImportFunc = (frameId: Frame, framePlugin: string) => string;
 const defaultImport: ImportFunc = (frameId, framePlugin) => `import ${frameId} from '${framePlugin}';`;
 
 /** 具名导入 */
-const namedImport: ImportFunc = (frameId, framePlugin) => `import { ${frameId} } from '${framePlugin}';`;
+const namedImport: (name: string) => ImportFunc
+  = (name: string) => (frameId, framePlugin) => `import { ${name} as ${frameId} } from '${framePlugin}';`;
 
 /** 空函数 */
 const noop: ImportFunc = () => '';
@@ -19,7 +20,7 @@ export const BUILD_FRAME_PLUGIN_IMPORT_EXPRESSION: Record<Builder, Record<Frame,
     [Frame.reactSwc]: defaultImport,
     [Frame.preact]: defaultImport,
     [Frame.solid]: defaultImport,
-    [Frame.svelte]: namedImport,
+    [Frame.svelte]: namedImport('svelte'),
   },
   [Builder.webpack]: {
     [Frame.vue]: noop,
@@ -42,7 +43,7 @@ export const BUILD_FRAME_PLUGIN_IMPORT_EXPRESSION: Record<Builder, Record<Frame,
   [Builder.rsbuild]: {
     [Frame.vue]: noop,
     [Frame.vueSwc]: noop,
-    [Frame.react]: noop,
+    [Frame.react]: namedImport('pluginReact'),
     [Frame.reactSwc]: noop,
     [Frame.preact]: noop,
     [Frame.solid]: noop,

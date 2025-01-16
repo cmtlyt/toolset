@@ -8,5 +8,5 @@ export const BASE_FILES: TemplateInfo[] = [
   { filePath: '.gitignore', loader, path: '/other/gitignore' },
   { filePath: 'commitlint.config.ts', loader, path: '/other-config/commitlint.config' },
   { parse: content => content.default, loader, path: '/other/husky' },
-  { parse: (content, config) => content[config.builder] || content.default, loader, path: '/static-file/builder-icon' },
+  { filePath: 'public/builder.svg', parse: (content, config) => content[config.builder] || content.default, loader, path: '/static-file/builder-icon' },
 ];

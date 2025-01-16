@@ -1,4 +1,4 @@
-import type { TemplateInfo, TemplateInfoBase, TemplateInfoWithParse, TemplateInfoWithSource } from '$/template-system/types';
+import type { TemplateInfo } from '$/template-system/types';
 import type { DownloadTempalteFunc } from '$/template-system/utils';
 import type { ProjectConfig } from '$/types';
 import { BUILDER_CONFIG_MAP } from '$/constant/builder-config';
@@ -9,14 +9,14 @@ import { getTemplateUrl } from '$/template-system/utils';
 import { Builder, Frame } from '$/types';
 
 /** 资源加载方法 */
-export async function loader(this: TemplateInfoBase, download: DownloadTempalteFunc) {
+export async function loader(this: TemplateInfo, download: DownloadTempalteFunc) {
   const localPath = await download(getTemplateUrl(this.path));
   this.localPath = localPath;
   return localPath;
 };
 
 /** 获取打包工具配置模板 */
-export function getBuilderTemplate(config: ProjectConfig): TemplateInfoWithSource[] {
+export function getBuilderTemplate(config: ProjectConfig): TemplateInfo[] {
   const { builderId } = config;
   const templates = BUILDER_CONFIG_MAP[builderId];
   if (!templates) {
@@ -25,7 +25,7 @@ export function getBuilderTemplate(config: ProjectConfig): TemplateInfoWithSourc
   return templates;
 }
 
-export function getBuilderExtendTemplate(config: ProjectConfig): TemplateInfoWithSource[] {
+export function getBuilderExtendTemplate(config: ProjectConfig): TemplateInfo[] {
   const { builderId } = config;
   const getFunc = BUILDER_EXTEND_FILE_MAP[builderId];
   if (!getFunc)
@@ -35,12 +35,15 @@ export function getBuilderExtendTemplate(config: ProjectConfig): TemplateInfoWit
 
 export function getFrameExtendTemplate(config: ProjectConfig): TemplateInfo[] {
   const { frameId } = config;
-  return FRAME_EXTEND_FILES[frameId] || [];
+  const getFunc = FRAME_EXTEND_FILES[frameId];
+  if (!getFunc)
+    return [];
+  return getFunc(config);
 }
 
 /** 获取框架模板 */
-export function getFrameTemplate(frameId: Frame): TemplateInfoWithParse {
-  const parse: TemplateInfoWithParse['parse'] = (content, config) => {
+export function getFrameTemplate(frameId: Frame): TemplateInfo {
+  const parse: TemplateInfo['parse'] = (content, config) => {
     const { enableTypeScript } = config;
     return content[enableTypeScript ? 'typescript' : 'javascript'] || content.default;
   };
@@ -63,10 +66,30 @@ export function getFrameTemplate(frameId: Frame): TemplateInfoWithParse {
   }
 }
 
+export function getTypescriptTemplate(config: ProjectConfig): TemplateInfo[] {
+  if (config.builderId === Builder.vite) {
+    return [
+      { filePath: 'tsconfig.json', loader, path: '/other-config/tsconfig' },
+      { filePath: 'tsconfig.app.json', loader, path: '/other-config/tsconfig.app' },
+      { filePath: 'tsconfig.node.json', loader, path: '/other-config/tsconfig.node' },
+    ];
+  }
+  else {
+    return [
+      {
+        filePath: 'tsconfig.json',
+        loader,
+        parse: ((content, config) => content[config.builder] || content.default) as TemplateInfo['parse'],
+        path: '/other-config/tsconfig',
+      },
+    ];
+  }
+}
+
 /** 获取扩展配置模板 */
-export function getExtendTemplate(): TemplateInfoWithSource[] {
+export function getExtendTemplate(): TemplateInfo[] {
   const config = getItem('projectConfig');
-  const sourceList: TemplateInfoWithSource[] = [];
+  const sourceList: TemplateInfo[] = [];
   const enableTs = config.enableTypeScript;
 
   // eslint 配置文件
@@ -84,11 +107,7 @@ export function getExtendTemplate(): TemplateInfoWithSource[] {
   }
   // ts 配置文件
   if (config.enableTypeScript) {
-    sourceList.push(...[
-      { filePath: 'tsconfig.json', loader, path: '/other-config/tsconfig' },
-      { filePath: 'tsconfig.app.json', loader, path: '/other-config/tsconfig.app' },
-      { filePath: 'tsconfig.node.json', loader, path: '/other-config/tsconfig.node' },
-    ]);
+    sourceList.push(...getTypescriptTemplate(config));
   }
   return sourceList;
 }

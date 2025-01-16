@@ -1,11 +1,13 @@
 import type { TemplateState } from '$/types';
 import type { DownloadTempalteFunc } from './utils';
 
-export interface TemplateInfoBase {
+export interface TemplateInfo {
   path: string;
   content?: string;
   localPath?: string;
   loader: (download: DownloadTempalteFunc) => ReturnType<DownloadTempalteFunc>;
+  filePath?: string;
+  parse?: (content: any, config: TemplateState) => string;
 }
 
 export interface FinishedTemplateInfo {
@@ -18,13 +20,3 @@ export interface FinishedTemplateInfo {
   /** 文件路径 */
   filePath: string;
 }
-
-export interface TemplateInfoWithParse extends TemplateInfoBase {
-  parse: (content: any, config: TemplateState) => string;
-}
-
-export interface TemplateInfoWithSource extends TemplateInfoBase {
-  filePath: string;
-}
-
-export type TemplateInfo = (TemplateInfoWithParse | TemplateInfoWithSource);

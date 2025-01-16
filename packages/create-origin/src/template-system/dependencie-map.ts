@@ -35,7 +35,9 @@ export function getBuilderDeps(config: ProjectConfig) {
     ],
     [Builder.webpack]: [],
     [Builder.rolldown]: [],
-    [Builder.rsbuild]: [],
+    [Builder.rsbuild]: [
+      { name: '@rsbuild/core', version: '^1.1.8', isDev: true },
+    ],
   };
   return builderDepMap[builderId];
 }
@@ -55,7 +57,7 @@ export function getEslintDeps(config: ProjectConfig): DepItem[] {
   return [
     { name: '@antfu/eslint-config', version: '^3.12.0', isDev: true },
     { name: 'eslint', version: '^9.17.0', isDev: true },
-    { name: 'eslint-plugin-format', version: '^0.1.3', isDev: true, ignore: enablePrettier },
+    { name: 'eslint-plugin-format', version: '^1.0.1', isDev: true, ignore: enablePrettier },
   ];
 }
 
