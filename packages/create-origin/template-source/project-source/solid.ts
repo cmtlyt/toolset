@@ -24,7 +24,7 @@ import App from './app.tsx';
 
 const root = document.getElementById('root');
 
-render(() => <App />, root!);
+render(() => <App />, root<%= enableTypeScript ? '!' : '' %>);
 `.trimStart();
 
 const app = `

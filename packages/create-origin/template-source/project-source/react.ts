@@ -22,7 +22,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './app.${extname}';
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root')<%= enableTypeScript ? '!' : '' %>).render(
   <StrictMode>
     <App />
   </StrictMode>,

@@ -43,7 +43,10 @@ export function getBuilderDeps(config: ProjectConfig) {
 /** 获取框架依赖 */
 export function getFrameDeps(config: ProjectConfig) {
   const { frameId } = config;
-  return FRAME_DEP_MAP[frameId];
+  const getFunc = FRAME_DEP_MAP[frameId];
+  if (!getFunc)
+    return [];
+  return getFunc(config);
 }
 
 /** 获取 eslint 依赖 */

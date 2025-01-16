@@ -21,7 +21,7 @@ import { render } from 'preact';
 import './index.css';
 import { App } from './app.${extname}';
 
-render(<App />, document.getElementById('app')!);
+render(<App />, document.getElementById('app')<%= enableTypeScript ? '!' : '' %>);
 `.trimStart();
 
 const app = `

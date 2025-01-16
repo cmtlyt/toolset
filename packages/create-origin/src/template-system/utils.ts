@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
 import { BASE_DEPS, BASE_SCRIPTS, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
-import { Builder } from '$/types';
+import { Builder, Frame } from '$/types';
 import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from './dependencie-map';
 
 type SourceUrl = string;
@@ -92,21 +92,25 @@ export function getDepMap(config: ProjectConfig) {
     if (curr.ignore)
       return prev;
     const key = curr.isDev ? 'devDependencies' : 'dependencies';
-    prev[key] ||= [];
     prev[key].push(curr);
     return prev;
-  }, {} as Record<'devDependencies' | 'dependencies', DepItem[]>);
+  }, { dependencies: [], devDependencies: [] } as Record<'devDependencies' | 'dependencies', DepItem[]>);
 }
 
 /** 获取 npm 脚本 */
 export function getScripts(config: ProjectConfig): Scripts {
-  const { builderId, enableTypeScript } = config;
+  const { builderId, frameId, enableTypeScript } = config;
 
   const scirptMap = {
     [Builder.vite]: {
       dev: 'vite',
-      build: `${enableTypeScript ? 'vue-tsc -b && ' : ''}vite build`,
+      build: `${enableTypeScript && frameId !== Frame.svelte ? 'vue-tsc -b && ' : ''}vite build`,
       preview: 'vite preview',
+      ...(frameId === Frame.svelte && enableTypeScript
+        ? {
+            check: 'svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json',
+          }
+        : {}),
     },
     [Builder.webpack]: {
       dev: '',
