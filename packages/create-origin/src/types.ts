@@ -9,9 +9,9 @@ export enum Builder {
 /** 框架 id */
 export enum Frame {
   react = 'react',
-  reactSfc = 'reactSfc',
+  reactSwc = 'reactSfc',
   vue = 'vue',
-  vueSfc = 'vueSfc',
+  vueSwc = 'vueSfc',
   preact = 'preact',
   svelte = 'svelte',
   solid = 'solid',
@@ -85,6 +85,7 @@ export interface BuilderConfig {
   framePlugin: string;
   frameName: string;
   frameImport: string;
+  pluginNeedCall: boolean;
 }
 
 export interface DepItem {
@@ -102,6 +103,8 @@ export interface TemplateState {
   builder: string;
   /** 打包工具配置 */
   builderConfig: BuilderConfig;
+  /** 打包工具配置文件路径 */
+  builderConfigPath: string;
   /** 框架 */
   frame: string;
   /** 命令 */

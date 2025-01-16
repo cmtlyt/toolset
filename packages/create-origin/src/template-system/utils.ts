@@ -29,6 +29,21 @@ export function getTemplateUrl(path: string) {
   return `${getTemplateOriginPath()}${path}.json`;
 }
 
+export function buildFilePath(template: TemplateInfoWithSource, config: ProjectConfig | TemplateState) {
+  const { enableTypeScript } = config;
+  const extname = enableTypeScript ? 'ts' : 'js';
+  return template.filePath.replace(/#\{ext\}/g, extname);
+}
+
+export function buildTemplateInfos(templates: FinishedTemplateInfo[], config: ProjectConfig | TemplateState) {
+  return templates.map((item) => {
+    if ((item as TemplateInfoWithSource).filePath) {
+      (item as any).filePath = buildFilePath(item as any, config);
+    }
+    return item;
+  });
+}
+
 /** 获取下载模板函数 */
 export function getDownloadTemplateFunc(): DownloadTempalteFunc {
   const config = getItem('projectConfig');

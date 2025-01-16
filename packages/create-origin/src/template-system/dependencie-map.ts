@@ -20,6 +20,10 @@ export function getFramePluginImport(builderId: Builder, frameId: Frame, framePl
   return importFunc(frameId, framePlugin);
 }
 
+export function getFramePluginUseFunc(_builderId: Builder, _frameId: Frame, _framePlugin: string): boolean {
+  return true;
+}
+
 /** 获取构建器依赖 */
 export function getBuilderDeps(config: ProjectConfig) {
   const { builderId = Builder.vite, enableTypeScript = true } = config;

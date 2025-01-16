@@ -36,7 +36,7 @@ const indexHtml = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/builder.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= builder %> + Vue<%= enableTypeScript ? ' + TS' : '' %></title>
   </head>
@@ -52,7 +52,6 @@ const typescript = {
   'src/main.ts': mainScript,
   'src/app.vue': appScript,
   'src/style.css': style,
-  'src/vite-env.d.ts': '/// <reference types="vite/client" />\n',
 };
 
 const javascript = {

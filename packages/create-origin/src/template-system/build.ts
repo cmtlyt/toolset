@@ -1,12 +1,13 @@
 import type { TemplateState } from '$/types';
 import type { FinishedTemplateInfo, TemplateInfoWithParse } from './types';
 import { resolve as pathResolve } from 'node:path';
+import { BUILDER_CONFIG_PATH } from '$/constant/builder-config';
 import { getItem, setItem } from '$/store';
-import { getFramePlugin, getFramePluginImport } from '$/template-system/dependencie-map';
+import { getFramePlugin, getFramePluginImport, getFramePluginUseFunc } from '$/template-system/dependencie-map';
 import { Builder, Frame } from '$/types';
 import { render } from 'ejs';
 import { outputFile, readJSON } from 'fs-extra/esm';
-import { buildTemplateInfo, getDepMap, getScripts, getTemplate, parseTemplate } from './utils';
+import { buildFilePath, buildTemplateInfo, buildTemplateInfos, getDepMap, getScripts, getTemplate, parseTemplate } from './utils';
 
 export async function buildTemplateInfoList() {
   const templateState = getItem('templateState');
@@ -28,7 +29,7 @@ export async function buildTemplateInfoList() {
       finishedTemplateInfoList.push(buildTemplateInfo({ ...item, content: getTemplate(content, templateState) }));
     }
   }));
-  setItem('finishedTemplateInfoList', finishedTemplateInfoList);
+  setItem('finishedTemplateInfoList', buildTemplateInfos(finishedTemplateInfoList, templateState));
 }
 
 function buildTemplateState() {
@@ -41,7 +42,9 @@ function buildTemplateState() {
       frameName: frameId,
       framePlugin,
       frameImport: getFramePluginImport(builderId, frameId, framePlugin),
+      pluginNeedCall: getFramePluginUseFunc(builderId, frameId, framePlugin),
     },
+    builderConfigPath: buildFilePath({ filePath: BUILDER_CONFIG_PATH[builderId], path: '', loader: async () => '' }, config),
     ...getDepMap(config),
     enableEslint: config.enableEslint,
     enablePrettier: config.enablePrettier,

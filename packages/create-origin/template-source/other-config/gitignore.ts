@@ -1,16 +1,30 @@
 const _default = `
-dist
-node_modules
-.DS_Store
-.idea
-# 排除其他 IDE 配置
-.vscode/*
-# 覆盖 prettier 和 eslint 配置
-!.vscode/settings.json
-.temp
+# Logs
+logs
 *.log
-coverage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
 .eslintcache
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 `.trim();
 
 export default {

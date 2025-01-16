@@ -20,21 +20,57 @@ const compilerOptions = `
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   }
-`.trim();
+`.trimStart();
 
 const _defualt = `{
   "compilerOptions": ${compilerOptions}
 }
-`.trim();
+`.trimStart();
+
+const builderConfigPath = `"<%- builderConfigPath %>"`;
 
 const vue = `
 {
   "compilerOptions": ${compilerOptions},
-  "include": ["vite.config.ts"]
+  "include": [${builderConfigPath}]
 }
-`.trim();
+`.trimStart();
+
+const react = `
+{
+  "compilerOptions": ${compilerOptions},
+  "include": [${builderConfigPath}]
+}
+`.trimStart();
+
+const preact = `
+{
+  "compilerOptions": ${compilerOptions},
+  "include": [${builderConfigPath}]
+}
+`.trimStart();
+
+const svelte = `
+{
+  "compilerOptions": ${compilerOptions},
+  "include": [${builderConfigPath}]
+}
+`.trimStart();
+
+const solid = `
+{
+  "compilerOptions": ${compilerOptions},
+  "include": [${builderConfigPath}]
+}
+`.trimStart();
 
 export default {
   default: _defualt,
   vue,
+  vueSwc: vue,
+  react,
+  reactSwc: react,
+  preact,
+  svelte,
+  solid,
 };

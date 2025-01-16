@@ -1,7 +1,7 @@
 import type { TemplateInfo } from './types';
 import { BASE_FILES } from '$/constant';
 import { getItem, setItem } from '$/store';
-import { getBuilderTemplate, getExtendTemplate, getFrameTemplate } from './template-map';
+import { getBuilderExtendTemplate, getBuilderTemplate, getExtendTemplate, getFrameExtendTemplate, getFrameTemplate } from './template-map';
 import { getDownloadTemplateFunc } from './utils';
 
 /** 获取模板信息列表 */
@@ -18,14 +18,21 @@ function getTemplateInfoList() {
   // 框架源码模板信息
   sourceList.push(getFrameTemplate(config.frameId));
 
+  // 框架扩展模板信息
+  sourceList.push(...getFrameExtendTemplate(config));
+
   // 加载打包工具模板信息
-  sourceList.push(getBuilderTemplate(config.builderId));
+  sourceList.push(...getBuilderTemplate(config));
+
+  // 加载打包工具扩展模板信息
+  sourceList.push(...getBuilderExtendTemplate(config));
 
   // 基本模板信息
   sourceList.push(...BASE_FILES);
 
   // 工程化模板信息
   sourceList.push(...getExtendTemplate());
+
   return sourceList;
 }
 
