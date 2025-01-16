@@ -4,6 +4,7 @@ import { Builder, Frame, PackageManager, type ProjectConfig, Registry } from '$/
 import { colorize } from '$/utils/colorize';
 import { throwError } from '$/utils/try-call';
 import prompts from 'prompts';
+import yoctoSpinner from 'yocto-spinner';
 import { createPackage, createProject } from '..';
 import { autoInstall } from './auto-install';
 import { initGitRepo } from './init-git';
@@ -196,9 +197,15 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
   const projectConfig = await createProject(userOptions);
 
   if (!projectConfig.noGit) {
+    const spinner = yoctoSpinner({ text: '初始化 git 仓库中...' }).start();
     await initGitRepo(projectConfig.outputPath);
+    spinner.text = 'git 仓库初始化完成';
+    spinner.success();
   }
   if (projectConfig.autoInstall) {
+    const spinner = yoctoSpinner({ text: '自动安装依赖中...' }).start();
     await autoInstall(projectConfig.outputPath, projectConfig.packageManager);
+    spinner.text = '依赖安装完成';
+    spinner.success();
   }
 }

@@ -9,3 +9,21 @@
 3. 调整 tsconfig (template-source/other-config/tsconfig.ts)
 4. 调整 env (template-source/other/${builder}-env.d.ts)
 5. 添加框架支持 (src/constant/frame-support.ts)
+
+## 使用示例
+
+```bash
+npm create @cmtlyt/origin [<project-name>]
+```
+
+## 更新
+
+### v0.1.1
+
+添加更多进度
+
+### v0.1.0
+
+支持生成 npm 包
+
+支持生成 vite, rsbuild 两个构建器所支持的框架包括: vue, react, preact, svelte, solid
