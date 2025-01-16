@@ -2,6 +2,7 @@ import { FRAME_SUPPORT } from '$/constant';
 import { ICON_MAP } from '$/constant/icon';
 import { Builder, Frame, PackageManager, type ProjectConfig, Registry } from '$/types';
 import { colorize } from '$/utils/colorize';
+import { throwError } from '$/utils/try-call';
 import prompts from 'prompts';
 import { createPackage, createProject } from '..';
 
@@ -116,8 +117,11 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       type: 'select',
       message: '请选择构建器',
       choices: Object.entries(Builder).map(([id, name]) => {
-        return { title: colorize`${name} {gray (${FRAME_SUPPORT[id as Builder]?.join(', ')})}`, value: id };
-      }),
+        const frames = FRAME_SUPPORT[id as Builder] || [];
+        if (!frames.length)
+          return null;
+        return { title: colorize`${name} {gray (${frames.join(', ')})}`, value: id };
+      }).filter(item => item !== null),
     });
     if (!builder) {
       return console.log(colorize`{red ${ICON_MAP.error} 构建器不能为空}`);
@@ -146,7 +150,7 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
   }
   // 检查是否预设了构建器对框架的处理
   if (!supportFrame.includes(userOptions.frameId!)) {
-    console.log(colorize`{red  ${ICON_MAP.error} 脚手架没有预设 ${userOptions.builderId} 构建器对 ${userOptions.frameId} 框架的支持}`);
+    throwError(`脚手架没有预设 ${userOptions.builderId} 构建器对 ${userOptions.frameId} 框架的支持`);
   }
 
   // ? 使用默认配置或自定义配置
