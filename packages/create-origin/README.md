@@ -58,7 +58,15 @@ pnpm add -g @cmtlyt/create-origin
 
 ### v0.2.0
 
-新增 `fetch` 子命令, 保存自定义配置, 管理自定义配置
+安装本包后
+
+新增 `fetch` , `template` 和 `create` 命令
+
+fetch 用于持久化远端配置到本地, 减少创建项目时下载资源的时间
+
+template 用于管理自定义配置, 包含 创建/删除/查看/清空 配置
+
+create 用于创建项目
 
 ### v0.1.1
 
