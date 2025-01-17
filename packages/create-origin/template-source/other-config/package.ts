@@ -29,7 +29,7 @@ const _default = `{
       "eslint --cache --fix"
     ]
   }
-  <%_ } _%>
+  <%_ } %>
 }`.trimStart();
 
 export default {

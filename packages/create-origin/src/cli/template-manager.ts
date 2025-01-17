@@ -6,7 +6,7 @@ import { addUserTemplateConfig, deleteUserTemplateConfig, getUserTemplateConfig 
 import { print } from '$/utils/print';
 import { throwError } from '$/utils/try-call';
 import prompts from 'prompts';
-import { optionPrompt } from './option-prompt';
+import { getBuilderFrameConfig, optionPrompt } from './option-prompt';
 
 export async function getTemplateChoices() {
   const userTemplateConfig = await getUserTemplateConfig();
@@ -49,7 +49,7 @@ export async function saveTemplate(config: Partial<ProjectConfig>, name?: string
       }
     }
   }
-  const { projectName: _p, outputPath: _o, frameId: _f, builderId: _b, ...saveConfig } = config;
+  const { projectName: _p, outputPath: _o, ...saveConfig } = config;
   await addUserTemplateConfig(tempName, saveConfig);
   print(colorize`{green ${ICON_MAP.success} 模板 ${tempName} 保存成功}`);
 }
@@ -57,10 +57,13 @@ export async function saveTemplate(config: Partial<ProjectConfig>, name?: string
 export async function createTemplate(name: string) {
   if (!name)
     throwError('请输入模板名');
+  const builderFrameConfig = await getBuilderFrameConfig({});
+  if (!builderFrameConfig)
+    return throwError('模板保存失败');
   const promptOptions = await optionPrompt({});
   if (!promptOptions)
     return throwError('模板保存失败');
-  await saveTemplate(promptOptions, name);
+  await saveTemplate(Object.assign({}, builderFrameConfig, promptOptions), name);
 }
 
 export async function templateManagerHandler(this: Command) {

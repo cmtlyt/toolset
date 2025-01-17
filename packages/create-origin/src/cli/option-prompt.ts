@@ -105,6 +105,69 @@ async function getAdvancedConfig(options: Partial<ProjectConfig>) {
   return config;
 }
 
+export async function getBuilderFrameConfig(options: Partial<ProjectConfig>) {
+  const config = { builderId: '', frameId: '' } as any as Partial<ProjectConfig>;
+
+  let readLoacl: boolean = false;
+  if (import.meta.BUILD) {
+    const { readRemote } = await prompts({
+      name: 'readRemote',
+      type: 'confirm',
+      initial: false,
+      message: '是否拉取远程配置 (需请求 github)',
+    });
+    readLoacl = !readRemote;
+  }
+  const getConfigSpinner = yoctoSpinner({ text: '正在读取配置...' }).start();
+  const { FRAME_SUPPORT } = await getOriginConfig(readLoacl);
+  getConfigSpinner.text = '配置读取成功';
+  getConfigSpinner.success();
+
+  // 构建器处理
+  if (!options.builderId) {
+    const { builder } = await prompts({
+      name: 'builder',
+      type: 'select',
+      message: '请选择构建器',
+      choices: Object.entries(Builder).map(([id, name]) => {
+        const frames = FRAME_SUPPORT[id as Builder] || [];
+        if (!frames.length)
+          return null;
+        return { title: colorize`${name} {gray (${frames.join(', ')})}`, value: id };
+      }).filter(item => item !== null),
+    });
+    if (!builder) {
+      return throwError('构建器不能为空');
+    }
+    config.builderId = builder;
+  }
+  // 框架处理
+  const supportFrame = FRAME_SUPPORT[config.builderId!];
+  if (!options.frameId) {
+    const choices = Object.entries(Frame).map(([id, name]) => {
+      if (!supportFrame.includes(id as any)) {
+        return null;
+      }
+      return { title: name, value: id };
+    }).filter(item => item !== null);
+    const { frame } = await prompts({
+      name: 'frame',
+      type: 'select',
+      message: '请选择框架',
+      choices: choices.length < 1 ? [{ title: '当前脚手架没有支持的框架, 等待后续更新', value: '' }] : choices,
+    });
+    if (!frame) {
+      return throwError('框架不能为空');
+    }
+    config.frameId = frame;
+  }
+  // 检查是否预设了构建器对框架的处理
+  if (!supportFrame.includes(config.frameId!)) {
+    return throwError(`脚手架没有预设 ${config.builderId} 构建器对 ${config.frameId} 框架的支持`);
+  }
+  return config;
+}
+
 export type UserOptions = Partial<ProjectConfig> & { useDefaultConfig?: boolean; useSaveConfig?: boolean };
 
 export async function getBaseConfig(options: Partial<ProjectConfig>, templateId?: string): Promise<UserOptions | void> {
@@ -174,62 +237,14 @@ export async function getBaseConfig(options: Partial<ProjectConfig>, templateId?
       await downloadTemplateConfig(registry);
     }
   }
-  let readLoacl: boolean = false;
-  if (import.meta.BUILD) {
-    const { readRemote } = await prompts({
-      name: 'readRemote',
-      type: 'confirm',
-      initial: false,
-      message: '是否拉取远程配置 (需请求 github)',
-    });
-    readLoacl = !readRemote;
+
+  // 构建器和框架
+  const builderFrameConfig = await getBuilderFrameConfig(userOptions);
+  if (!builderFrameConfig) {
+    return builderFrameConfig;
   }
-  const getConfigSpinner = yoctoSpinner({ text: '正在读取配置...' }).start();
-  const { FRAME_SUPPORT } = await getOriginConfig(readLoacl);
-  getConfigSpinner.text = '配置读取成功';
-  getConfigSpinner.success();
-  // 构建器处理
-  if (!options.builderId) {
-    const { builder } = await prompts({
-      name: 'builder',
-      type: 'select',
-      message: '请选择构建器',
-      choices: Object.entries(Builder).map(([id, name]) => {
-        const frames = FRAME_SUPPORT[id as Builder] || [];
-        if (!frames.length)
-          return null;
-        return { title: colorize`${name} {gray (${frames.join(', ')})}`, value: id };
-      }).filter(item => item !== null),
-    });
-    if (!builder) {
-      return throwError('构建器不能为空');
-    }
-    userOptions.builderId = builder;
-  }
-  // 框架处理
-  const supportFrame = FRAME_SUPPORT[userOptions.builderId!];
-  if (!options.frameId) {
-    const choices = Object.entries(Frame).map(([id, name]) => {
-      if (!supportFrame.includes(id as any)) {
-        return null;
-      }
-      return { title: name, value: id };
-    }).filter(item => item !== null);
-    const { frame } = await prompts({
-      name: 'frame',
-      type: 'select',
-      message: '请选择框架',
-      choices: choices.length < 1 ? [{ title: '当前脚手架没有支持的框架, 等待后续更新', value: '' }] : choices,
-    });
-    if (!frame) {
-      return throwError('框架不能为空');
-    }
-    userOptions.frameId = frame;
-  }
-  // 检查是否预设了构建器对框架的处理
-  if (!supportFrame.includes(userOptions.frameId!)) {
-    return throwError(`脚手架没有预设 ${userOptions.builderId} 构建器对 ${userOptions.frameId} 框架的支持`);
-  }
+
+  Object.assign(userOptions, builderFrameConfig);
 
   // ? 使用默认配置或自定义配置
   const { useDefaultConfig } = await prompts({

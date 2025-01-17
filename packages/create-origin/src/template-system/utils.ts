@@ -16,11 +16,11 @@ type SourceUrl = string;
 
 const getTemplateOriginPath = (() => {
   let templateOriginPath = '';
-  const localExistsTemplate = getItem('localExistsTemplate');
 
   return () => {
     if (templateOriginPath)
       return templateOriginPath;
+    const localExistsTemplate = getItem('localExistsTemplate');
     if (localExistsTemplate) {
       return templateOriginPath = getTemplateStorePath();
     }
