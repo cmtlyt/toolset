@@ -1,8 +1,11 @@
 import { Option, program } from 'commander';
 import { version } from '../package.json';
+import { downloadTemplateConfig } from './cli/download-template-config';
 import { optionPrompt } from './cli/option-prompt';
+import { updateOriginConfig } from './cli/update-origin-config';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
 import { Registry } from './types';
+import { throwError } from './utils/try-call';
 
 function parseBoolean(value: string) {
   if (value === 'false')
@@ -39,6 +42,25 @@ program
   .option('--no-git', '不使用 git 初始化 (default: false)', parseBoolean)
   // 模板下载地址
   .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)));
+
+program.createCommand('fetch')
+  .description('获取 origin 模板信息')
+  .option('-c, --config', '获取 origin 配置', parseBoolean)
+  .option('-t, --template', '获取模板配置文件', parseBoolean)
+  .option('-a, --all', '获取所有配置', parseBoolean)
+  .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)).default(Registry.github))
+  .action(async () => {
+    const { config, template, all, registry } = program.opts();
+    if (!(config || all || template)) {
+      throwError('请选择获取配置');
+    }
+    if (all || config) {
+      await updateOriginConfig();
+    }
+    if (all || template) {
+      await downloadTemplateConfig(registry);
+    }
+  });
 
 program.parseAsync().then((command) => {
   const [projectName] = command.args;

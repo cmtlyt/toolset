@@ -3,10 +3,12 @@ import type { FinishedTemplateInfo, TemplateInfo } from './types';
 import { exec } from 'node:child_process';
 import fs from 'node:fs/promises';
 import { resolve as pathResolve } from 'node:path';
-import { BASE_DEPS, BASE_SCRIPTS, ICON_MAP, TEMPLATE_ORIGIN_PATH_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
+import { BASE_DEPS, BASE_SCRIPTS, ICON_MAP, TEMPLATE_STORE_FOLDER_NAME } from '$/constant';
 import { getItem } from '$/store';
 import { Builder, Frame } from '$/types';
 import { colorize } from '$/utils/colorize';
+import { getTemplateStorePath } from '$/utils/origin-config';
+import { print } from '$/utils/print';
 import gitDown from '@cmtlyt/git-down';
 import { getBuilderDeps, getEslintDeps, getFrameDeps, getPrettierDeps, getTypescriptDeps } from './dependencie-map';
 
@@ -14,11 +16,16 @@ type SourceUrl = string;
 
 const getTemplateOriginPath = (() => {
   let templateOriginPath = '';
+  const localExistsTemplate = getItem('localExistsTemplate');
 
   return () => {
     if (templateOriginPath)
       return templateOriginPath;
+    if (localExistsTemplate) {
+      return templateOriginPath = getTemplateStorePath();
+    }
     const { registry } = getItem('projectConfig');
+    const { TEMPLATE_ORIGIN_PATH_MAP } = getItem('originConfig');
     templateOriginPath = TEMPLATE_ORIGIN_PATH_MAP[registry];
     if (!templateOriginPath) {
       throw new Error('不支持的模板仓库');
@@ -50,11 +57,14 @@ export function buildTemplateInfos(templates: FinishedTemplateInfo[], config: Pr
 /** 获取下载模板函数 */
 export function getDownloadTemplateFunc(): DownloadTempalteFunc {
   const config = getItem('projectConfig');
+  const localExistsTemplate = getItem('localExistsTemplate');
   const { outputPath } = config;
   const templateStorePath = pathResolve(outputPath, TEMPLATE_STORE_FOLDER_NAME);
+
   return async (url) => {
     const localPath = pathResolve(templateStorePath, url.split('/').pop()!);
-    if (import.meta.BUILD)
+    // 开发环境判断本地不存在模板则从模板仓库下载
+    if (import.meta.BUILD && !localExistsTemplate)
       await gitDown(url, { output: templateStorePath });
     else await fs.copyFile(url, localPath);
     return localPath;
@@ -105,8 +115,7 @@ export async function buildPackagesVersion(depList: DepItem[], useLatest: boolea
       item.version = latestVersion ? `^${latestVersion}` : version;
     }
     catch {
-      // eslint-disable-next-line no-console
-      console.log(colorize`{yellow ${ICON_MAP.warning} 获取 ${name} 最新版本失败, 使用预设版本兜底}`);
+      print(colorize`{yellow ${ICON_MAP.warning} 获取 ${name} 最新版本失败, 使用预设版本兜底}`);
       return item;
     }
     return item;

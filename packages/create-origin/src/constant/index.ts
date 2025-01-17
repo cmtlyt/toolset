@@ -1,11 +1,5 @@
 import type { Scripts } from '$/types';
-import { Builder, Frame, Registry } from '$/types';
-
-/** 模板的下载目录 */
-export const TEMPLATE_ORIGIN_PATH_MAP: Record<Registry, string> = {
-  [Registry.gitee]: '',
-  [Registry.github]: import.meta.BUILD ? 'https://github.com/cmtlyt/toolset/blob/main/packages/create-origin/template' : './template',
-};
+import { Builder, Frame } from '$/types';
 
 /** 临时存储模板的目录名 */
 export const TEMPLATE_STORE_FOLDER_NAME = `.template-${Date.now()}`;
@@ -21,8 +15,6 @@ export const SUPPORT_BUILDERS = Object.values(Builder);
 export const SUPPORT_FRAMES = Object.values(Frame);
 
 export { FRAME_DEPS_MAP as FRAME_DEP_MAP } from './frame-deps-map';
-
-export { FRAME_SUPPORT } from './frame-support';
 
 export const NPM_PACKAGE_TEMPLATE_URL = 'https://github.com/cmtlyt/template-pack';
 

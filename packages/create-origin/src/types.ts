@@ -126,3 +126,12 @@ export interface TemplateState {
   /** 开发依赖 */
   devDependencies: DepItem[];
 }
+
+export interface OriginConfig {
+  FRAME_SUPPORT: Record<Builder, Frame[]>;
+  TEMPLATE_ORIGIN_PATH_MAP: Record<Registry, string>;
+}
+
+export interface CallOption {
+  noPrint?: boolean;
+}

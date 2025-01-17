@@ -1,5 +1,5 @@
 import type { FinishedTemplateInfo, TemplateInfo } from '$/template-system/types';
-import type { ProjectConfig, TemplateState } from '$/types';
+import type { CallOption, OriginConfig, ProjectConfig, TemplateState } from '$/types';
 import type { Spinner } from 'yocto-spinner';
 
 interface Store {
@@ -8,6 +8,9 @@ interface Store {
   finishedTemplateInfoList: FinishedTemplateInfo[];
   templateInfoList: TemplateInfo[];
   spinner: Spinner;
+  originConfig: OriginConfig;
+  localExistsTemplate: boolean;
+  callOption: CallOption;
 }
 
 const store = {} as Store;

@@ -31,7 +31,8 @@
   "types": "dist/index.d.ts",
   "bin": {
     "create-origin": "index.js",
-    "coa": "index.js"
+    "coa": "index.js",
+    "origin": "index.js"
   },
   "files": [
     "dist"
