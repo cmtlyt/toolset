@@ -30,8 +30,8 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "bin": {
-    "create-origin": "index.js",
-    "coa": "index.js",
+    "create-origin": "create-cli.js",
+    "coa": "create-cli.js",
     "origin": "index.js"
   },
   "files": [

@@ -1,15 +1,14 @@
 import { ICON_MAP } from '$/constant/icon';
 import { Builder, Frame, PackageManager, type ProjectConfig, Registry } from '$/types';
 import { colorize } from '$/utils/colorize';
-import { addUserTemplateConfig, downloadTemplateExists, getOriginConfig, getUserTemplateConfig } from '$/utils/origin-config';
+import { filterObject } from '$/utils/filter-object';
+import { downloadTemplateExists, getOriginConfig, getUserTemplateConfig } from '$/utils/origin-config';
 import { print } from '$/utils/print';
 import { throwError } from '$/utils/try-call';
 import prompts from 'prompts';
 import yoctoSpinner from 'yocto-spinner';
-import { createPackage, createProject } from '..';
-import { autoInstall } from './auto-install';
 import { downloadTemplateConfig } from './download-template-config';
-import { initGitRepo } from './init-git';
+import { getTemplateChoices } from './template-manager';
 
 async function getExtendConfig(options: Partial<ProjectConfig>) {
   const config = { ...options };
@@ -106,26 +105,10 @@ async function getAdvancedConfig(options: Partial<ProjectConfig>) {
   return config;
 }
 
-async function saveTemplate(config: ProjectConfig) {
-  while (true) {
-    const { templateName } = await prompts({
-      name: 'templateName',
-      type: 'text',
-      message: '请输入模板名',
-    });
-    if (!templateName) {
-      print(colorize`{yellow ${ICON_MAP.warning} 模板名不能为空}`);
-    }
-    else {
-      await addUserTemplateConfig(templateName, config);
-      print(colorize`{green ${ICON_MAP.success} 模板 ${templateName} 保存成功}`);
-      return;
-    }
-  }
-}
+export type UserOptions = Partial<ProjectConfig> & { useDefaultConfig?: boolean; useSaveConfig?: boolean };
 
-export async function optionPrompt(options: Partial<ProjectConfig>) {
-  const userOptions = { ...options };
+export async function getBaseConfig(options: Partial<ProjectConfig>, templateId?: string): Promise<UserOptions | void> {
+  const userOptions: UserOptions = { ...options, useDefaultConfig: true };
   // ^ 基础配置
   // 项目名处理
   if (!options.projectName) {
@@ -135,13 +118,42 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       message: '请输入项目名',
     });
     if (!projectName) {
-      return print(colorize`{red ${ICON_MAP.error} 项目名不能为空}`);
+      return throwError('项目名不能为空');
     }
     userOptions.projectName = projectName;
   }
   // 如果是 npm 包则不需要后续交互, 直接下载 npm 包模板
   if (options.isPackage) {
-    return createPackage(userOptions);
+    userOptions.isPackage = true;
+    return userOptions;
+  }
+  if (templateId) {
+    const userConfig = (await getUserTemplateConfig())[templateId];
+    if (!userConfig) {
+      print(colorize`{yellow ${ICON_MAP.warning} 模板 ${templateId} 不存在}`);
+    }
+    else {
+      return { ...userConfig, ...filterObject(userOptions), useSaveConfig: true };
+    }
+  }
+  const userTemplateChoices = await getTemplateChoices();
+  if (userTemplateChoices.length) {
+    // 是否使用保存的配置
+    const { useSaveConfig } = await prompts({
+      name: 'useSaveConfig',
+      type: 'confirm',
+      initial: false,
+      message: '是否使用保存的框架配置',
+    });
+    if (useSaveConfig) {
+      const { userConfig } = await prompts({
+        name: 'userConfig',
+        type: 'select',
+        message: '请选择框架配置',
+        choices: userTemplateChoices,
+      });
+      return { ...userConfig, ...filterObject(userOptions), useSaveConfig: true };
+    }
   }
   if (!downloadTemplateExists()) {
     const { downloadTemplateFlag } = await prompts({
@@ -160,26 +172,6 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       });
       userOptions.registry = registry;
       await downloadTemplateConfig(registry);
-    }
-  }
-  const userTemplateConfig = await getUserTemplateConfig();
-  const userTemplateChoices = Object.entries(userTemplateConfig).map(([name, config]) => ({ title: name, value: config }));
-  if (userTemplateChoices.length) {
-    // 是否使用保存的配置
-    const { useSaveConfig } = await prompts({
-      name: 'useSaveConfig',
-      type: 'confirm',
-      initial: false,
-      message: '是否使用保存的框架配置',
-    });
-    if (useSaveConfig) {
-      const { userConfig } = await prompts({
-        name: 'userConfig',
-        type: 'select',
-        message: '请选择框架配置',
-        choices: userTemplateChoices,
-      });
-      return createProject(userConfig);
     }
   }
   let readLoacl: boolean = false;
@@ -210,7 +202,7 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       }).filter(item => item !== null),
     });
     if (!builder) {
-      return print(colorize`{red ${ICON_MAP.error} 构建器不能为空}`);
+      return throwError('构建器不能为空');
     }
     userOptions.builderId = builder;
   }
@@ -230,13 +222,13 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
       choices: choices.length < 1 ? [{ title: '当前脚手架没有支持的框架, 等待后续更新', value: '' }] : choices,
     });
     if (!frame) {
-      return print(colorize`{red ${ICON_MAP.error} 框架不能为空}`);
+      return throwError('框架不能为空');
     }
     userOptions.frameId = frame;
   }
   // 检查是否预设了构建器对框架的处理
   if (!supportFrame.includes(userOptions.frameId!)) {
-    throwError(`脚手架没有预设 ${userOptions.builderId} 构建器对 ${userOptions.frameId} 框架的支持`);
+    return throwError(`脚手架没有预设 ${userOptions.builderId} 构建器对 ${userOptions.frameId} 框架的支持`);
   }
 
   // ? 使用默认配置或自定义配置
@@ -247,55 +239,32 @@ export async function optionPrompt(options: Partial<ProjectConfig>) {
     message: colorize`是否使用默认配置 {gray enableEslint disablePrettier enableTypeScript}`,
   });
 
-  if (!useDefaultConfig) {
-    // ^ 扩展配置
-    const extendConfig = await getExtendConfig(userOptions);
-    Object.assign(userOptions, extendConfig);
+  userOptions.useDefaultConfig = useDefaultConfig;
 
-    // ? 是否修改高级配置
-    const { modifyAdvancedConfig } = await prompts({
-      name: 'modifyAdvancedConfig',
-      type: 'confirm',
-      initial: false,
-      message: '是否修改高级配置',
-    });
+  return userOptions;
+}
 
-    if (modifyAdvancedConfig) {
-      // ^ 高级配置
-      const advancedConfig = await getAdvancedConfig(userOptions);
-      Object.assign(userOptions, advancedConfig);
-    }
-  }
+export async function optionPrompt(options: Partial<ProjectConfig>):
+Promise<UserOptions | void> {
+  const userOptions: UserOptions = { ...options };
 
-  const projectConfig = await createProject(userOptions);
+  // ^ 扩展配置
+  const extendConfig = await getExtendConfig(userOptions);
+  Object.assign(userOptions, extendConfig);
 
-  if (!projectConfig.noGit) {
-    const spinner = yoctoSpinner({ text: '初始化 git 仓库中...' }).start();
-    await initGitRepo(projectConfig.outputPath);
-    spinner.text = 'git 仓库初始化完成';
-    spinner.success();
-  }
-  if (projectConfig.autoInstall) {
-    const spinner = yoctoSpinner({ text: '自动安装依赖中...' }).start();
-    await autoInstall(projectConfig.outputPath, projectConfig.packageManager);
-    spinner.text = '依赖安装完成';
-    spinner.success();
-  }
-
-  // 使用默认配置直接跳过保存逻辑
-  if (useDefaultConfig)
-    return;
-
-  // 保存模板
-  const { saveTemplateFlag } = await prompts({
-    name: 'saveTemplateFlag',
+  // ? 是否修改高级配置
+  const { modifyAdvancedConfig } = await prompts({
+    name: 'modifyAdvancedConfig',
     type: 'confirm',
     initial: false,
-    message: '是否保存模板',
+    message: '是否修改高级配置',
   });
 
-  if (!saveTemplateFlag)
-    return;
+  if (modifyAdvancedConfig) {
+    // ^ 高级配置
+    const advancedConfig = await getAdvancedConfig(userOptions);
+    Object.assign(userOptions, advancedConfig);
+  }
 
-  return saveTemplate(projectConfig);
+  return userOptions;
 }

@@ -13,10 +13,52 @@
 ## 使用示例
 
 ```bash
+# 创建项目
 npm create @cmtlyt/origin [<project-name>]
+# 创建 npm 包
+npm create @cmtlyt/origin <package-name> --package
+
+# 下列方法需要全局安装本 npm 包才支持
+
+# 创建项目 (等价于 npm create @cmtlyt/origin)
+origin create [<project-name>]
+# 创建 npm 包 (等价于 npm create @cmtlyt/origin <package-name> --package)
+origin create <package-name> --package
+# 获取配置
+origin fetch --config
+# 获取模板
+origin fetch --template
+# 获取所有
+origin fetch --all
+# 从 github 获取所有
+origin fetch --all --registry=github
+```
+
+## 安装
+
+npm
+
+```bash
+npm i -g @cmtlyt/create-origin
+```
+
+yarn
+
+```bash
+yarn global add @cmtlyt/create-origin
+```
+
+pnpm
+
+```bash
+pnpm add -g @cmtlyt/create-origin
 ```
 
 ## 更新
+
+### v0.2.0
+
+新增 `fetch` 子命令, 保存自定义配置, 管理自定义配置
 
 ### v0.1.1
 

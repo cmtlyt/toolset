@@ -1,7 +1,9 @@
-import { Option, program } from 'commander';
+import { createCommand, Option, program } from 'commander';
 import { version } from '../package.json';
+import { createHandler } from './cli/create';
 import { downloadTemplateConfig } from './cli/download-template-config';
 import { optionPrompt } from './cli/option-prompt';
+import { templateManagerHandler } from './cli/template-manager';
 import { updateOriginConfig } from './cli/update-origin-config';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
 import { Registry } from './types';
@@ -13,9 +15,8 @@ function parseBoolean(value: string) {
   return true;
 }
 
-program
-  .name('create-origin')
-  .alias('coa')
+const generateCommand = createCommand()
+  .name('create')
   .description('使用 origin 创建一个新项目')
   .argument('[projectName]', '项目名称')
   .version(version)
@@ -41,16 +42,40 @@ program
   .option('-l, --use-latest-package', '所有依赖均使用最新版本 (default: false)', parseBoolean)
   .option('--no-git', '不使用 git 初始化 (default: false)', parseBoolean)
   // 模板下载地址
-  .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)));
+  .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)))
+  .option('-t, --template <templateId>', '使用模板创建项目')
+  .action(async function () {
+    const [projectName] = this.args;
+    const options = this.opts();
 
-program.createCommand('fetch')
+    const cliOptions = {
+      builderId: options.builder,
+      frameId: options.frame,
+      isPackage: options.package,
+      projectName,
+      enableEslint: options.eslint,
+      enablePrettier: options.prettier,
+      enableTypeScript: options.typescript,
+      packageManager: options.packageManager,
+      autoInstall: options.autoInstall,
+      useLatestPackage: options.useLatestPackage,
+      registry: options.registry,
+    };
+
+    await createHandler.call(this, cliOptions, options.template);
+  });
+
+program.addCommand(generateCommand);
+
+const fetchCommand = createCommand()
+  .name('fetch')
   .description('获取 origin 模板信息')
   .option('-c, --config', '获取 origin 配置', parseBoolean)
   .option('-t, --template', '获取模板配置文件', parseBoolean)
   .option('-a, --all', '获取所有配置', parseBoolean)
   .addOption(new Option('--registry', '模板下载地址').choices(Object.keys(Registry)).default(Registry.github))
-  .action(async () => {
-    const { config, template, all, registry } = program.opts();
+  .action(async function () {
+    const { config, template, all, registry } = this.opts();
     if (!(config || all || template)) {
       throwError('请选择获取配置');
     }
@@ -62,21 +87,17 @@ program.createCommand('fetch')
     }
   });
 
-program.parseAsync().then((command) => {
-  const [projectName] = command.args;
-  const options = command.opts();
+program.addCommand(fetchCommand);
 
-  return optionPrompt({
-    builderId: options.builder,
-    frameId: options.frame,
-    isPackage: options.package,
-    projectName,
-    enableEslint: options.eslint,
-    enablePrettier: options.prettier,
-    enableTypeScript: options.typescript,
-    packageManager: options.packageManager,
-    autoInstall: options.autoInstall,
-    useLatestPackage: options.useLatestPackage,
-    registry: options.registry,
-  });
-});
+const templateManagerCommand = createCommand()
+  .name('template')
+  .description('模板管理')
+  .option('-l, --list', '获取模板列表', parseBoolean)
+  .option('-d, --delete <templateName>', '删除模板')
+  .option('-c, --create <templateName>', '创建模板')
+  .option('--clear', '清空模板', parseBoolean)
+  .action(templateManagerHandler);
+
+program.addCommand(templateManagerCommand);
+
+program.parse();

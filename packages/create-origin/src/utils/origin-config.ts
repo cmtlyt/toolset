@@ -91,9 +91,17 @@ export async function getUserTemplateConfig(): Promise<Record<string, ProjectCon
   return fsExtra.readJSON(USER_TEMPLATE_CONFIG_OUTPUT);
 }
 
-export async function addUserTemplateConfig(name: string, config: ProjectConfig) {
+export async function addUserTemplateConfig(name: string, config: Partial<ProjectConfig>) {
   const userTemplateConfig = await getUserTemplateConfig();
   return fsExtra.writeJSON(USER_TEMPLATE_CONFIG_OUTPUT, { ...userTemplateConfig, [name]: config });
+}
+
+export async function deleteUserTemplateConfig(name?: string) {
+  if (!name)
+    return fsExtra.writeJSON(USER_TEMPLATE_CONFIG_OUTPUT, {});
+  const userTemplateConfig = await getUserTemplateConfig();
+  delete userTemplateConfig[name];
+  return fsExtra.writeJSON(USER_TEMPLATE_CONFIG_OUTPUT, userTemplateConfig);
 }
 
 export function downloadTemplateExists() {
