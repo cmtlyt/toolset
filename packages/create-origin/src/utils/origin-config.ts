@@ -122,5 +122,6 @@ export async function downloadTemplate(registry: Registry) {
   if (!templateOriginPath) {
     throwError('模板源不存在');
   }
+  await fsExtra.remove(TEMPLATE_STORE_FOLDER_NAME);
   await gitDown(templateOriginPath, { output: path.dirname(TEMPLATE_STORE_FOLDER_NAME) });
 }
