@@ -2,7 +2,7 @@ import type { ProjectConfig } from '$/types';
 import type { UserOptions } from './option-prompt';
 import prompts from 'prompts';
 import yoctoSpinner from 'yocto-spinner';
-import { createProject } from '..';
+import { createPackage, createProject } from '..';
 import { autoInstall } from './auto-install';
 import { initGitRepo } from './init-git';
 import { getBaseConfig, optionPrompt } from './option-prompt';
@@ -20,7 +20,7 @@ export async function createHandler(options: Partial<ProjectConfig>, templateId?
 
   if (isPackage) {
     // 如果是 npm 包则不需要后续交互, 直接下载 npm 包模板
-    return createProject(baseConfig);
+    return createPackage(baseConfig);
   }
 
   const finishedOptions: UserOptions = { ...baseConfig };
