@@ -9,12 +9,17 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [<%= builderConfig.pluginUseCode %><%= builderConfig.pluginNeedCall ? '()' : '' %>],
-  html:{
+  html: {
+    crossorigin: true,
+    mountId: 'app',
     template: path.resolve(__dirname, './index.html'),
   },
   source: {
     entry: {
-      main: path.resolve(__dirname, './src/main.<%= enableTypeScript ? 'ts' : 'js' %>')
+      index: {
+        import: path.resolve(__dirname, './src/main.ts'),
+        html: true,
+      },
     },
   },
   // 设置路径别名
