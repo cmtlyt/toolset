@@ -38,6 +38,30 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.11.1
+
+tryCall, tryCalFunc 支持捕获 promise 异常
+
+新增 iife 方法, 本质上就是直接调用传入的函数
+
+新增 cacheReturnValue 方法, 与 cacheByReturn 方法的区别是, cacheByReturn 会直接执行缓存的函数, 而 cacheReturnValue 会直接返回函数
+
+```js
+function addOne(a) {
+  return 1 + a;
+}
+
+cacheReturnValue(() => {
+  console.log(arguments); // [2]
+  return addOne;
+})(2); // addOne
+
+cacheByReturn(() => {
+  console.log(arguments); // []
+  return addOne;
+})(2); // 3
+```
+
 ### v0.11.0
 
 新增

@@ -20,7 +20,7 @@ interface OmitCurry {
 }
 
 /**
- * 删除对部分属性
+ * 删除对象部分属性
  *
  * @sig omit :: [string] -> object -> object
  */

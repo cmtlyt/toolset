@@ -1,4 +1,4 @@
-import type { TAnyFunc, TGetArgs, TGetReturnType } from '$/types/base';
+import type { TAnyFunc, TFunc, TGetArgs, TGetReturnType } from '$/types/base';
 import { INTERNAL_EMPTY } from '$/common/constant';
 
 /**
@@ -69,6 +69,7 @@ export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (
 
 /**
  * 缓存函数执行结果
+ * 如果执行结果为函数, 则会调用函数
  */
 export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   cacheLoad: T,
@@ -96,3 +97,16 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
     };
   };
 })();
+
+/**
+ * 缓存函数执行结果
+ */
+export function cacheReturnValue<T extends any[], R>(cacheLoad: TFunc<T, R>): (...args: T) => R {
+  let cache: any = INTERNAL_EMPTY;
+
+  return (...args) => {
+    if (cache === INTERNAL_EMPTY)
+      cache = cacheLoad(...args);
+    return cache;
+  };
+}
