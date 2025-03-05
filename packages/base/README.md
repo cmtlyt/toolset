@@ -38,6 +38,13 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.11.2
+
+新增 fp 相关内容
+
+- (F) rename
+- (F) deleteProp
+
 ### v0.11.1
 
 tryCall, tryCalFunc 支持捕获 promise 异常
