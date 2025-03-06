@@ -5,6 +5,20 @@ describe('object utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils');
   })() as typeof import('../../src/fp/utils');
 
+  it('rename', () => {
+    const { rename } = utils;
+    expect(rename({ a: 'b' }, { a: 1 })).toEqual({ b: 1 });
+    expect(rename({ a: 'b' })({ a: 1 })).toEqual({ b: 1 });
+    expect(rename({ a: 'b' })({ a: 1, b: 2 })).toEqual({ b: 1 });
+    expect(rename({ a: 'b' })({ a: 1, c: 2 })).toEqual({ b: 1, c: 2 });
+    expect(rename({ a: 'b' })({ c: 1 })).toEqual({ c: 1, b: undefined });
+  });
+  it('deleteProp', () => {
+    const { deleteProp } = utils;
+    expect(deleteProp('a', { a: 1 })).toEqual({});
+    expect(deleteProp('a', { a: 1, b: 2 })).toEqual({ b: 2 });
+    expect(deleteProp('c')({ a: 1, b: 2 })).toEqual({ b: 2, a: 1 });
+  });
   it('props', () => {
     const { props } = utils;
     expect(props(['a', 'b'], { a: 1, b: 2 })).toEqual({ a: 1, b: 2 });

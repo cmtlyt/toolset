@@ -5,6 +5,13 @@ describe('array utils', async () => {
     return inject('CI') ? import('../../dist/fp/utils') : import('../../src/fp/utils/array');
   })() as typeof import('../../src/fp/utils/array');
 
+  it('zip', () => {
+    const { zip } = utils;
+    expect(zip([1, 2, 3], [4, 5, 6])).toEqual([[1, 2, 3], [4, 5, 6]]);
+    expect(zip(1, 2)).toEqual([1, 2]);
+    expect(zip(1, '2')).toEqual([1, '2']);
+  });
+
   it('take', () => {
     const { take } = utils;
     expect(take(2, [1, 2, 3])).toEqual([1, 2]);

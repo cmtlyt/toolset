@@ -18,3 +18,4 @@ export * from './reduce';
 export * from './replicate';
 export * from './some';
 export * from './take';
+export * from './zip';

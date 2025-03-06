@@ -1,13 +1,12 @@
 import type { TObject, TOptional } from '$/types/base';
 import { curry } from '../function';
-import { deleteProp_ } from './delete-prop';
 import { prop_ } from './prop';
 
 export function rename_<O extends TObject<any>>(nameMap: Record<keyof O, string>, source: O): TOptional<O> & TObject<any> {
   const result = { ...source };
   for (const key in nameMap) {
     const value = prop_(key, source);
-    deleteProp_(key, source);
+    delete result[key];
     result[nameMap[key]] = value;
   }
   return result;
