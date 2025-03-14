@@ -43,5 +43,10 @@ export function completion<T, A extends any[]>(func: (...args: A) => T, ...args:
 export function iife<R>(func: TFunc<[], R>): R;
 export function iife<T extends any[], R>(func: TFunc<T, R>, args: T): R;
 export function iife<T extends any[], R>(func: TFunc<T, R>, args?: T) {
-  return func(...args as any);
+  /**
+   * 20250313 - cmtlyt
+   * 扩展运算符可以作用于 undefined, 但是只支持对象内使用
+   * 此处为数组展开, 所以需要对 args 进行兜底处理
+   */
+  return func(...(args || []) as any);
 }

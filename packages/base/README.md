@@ -38,6 +38,10 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.11.4
+
+修复 iife 函数不传递 args 参数报错问题
+
 ### v0.11.3
 
 rename 方法属性无法删除问题修复
