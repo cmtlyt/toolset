@@ -1,7 +1,7 @@
-import type { TObject } from '$/types/base';
+import type { TObject, TObjKeyType } from '$/types/base';
 import { STATIC_TYPE } from '$/common/constant';
 import { warning } from '$/common/warning';
-import { cacheByReturn, tryCall, tryCallFunc } from '../func-handler';
+import { cacheByReturn, tryCall } from '../func-handler';
 import { getType } from '../get-data';
 
 /**
@@ -84,7 +84,7 @@ export const fromEntries = cacheByReturn(() => {
       for (const [key, val] of entires) {
         obj[key] = val;
       }
-    }, tryCallFunc(() => {
+    }, () => {
       const iterable = entires[Symbol.iterator]();
       let curr = iterable.next();
       while (!curr.done) {
@@ -92,7 +92,115 @@ export const fromEntries = cacheByReturn(() => {
         obj[key] = val;
         curr = iterable.next();
       }
-    }));
+    });
     return obj;
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 forEach
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectForEach = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => any) => void) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      Object.entries(obj).forEach(([key, value]) => callback(value, key));
+    };
+  }
+  return (obj, callback) => {
+    Object.keys(obj).forEach((key) => {
+      callback(obj[key], key);
+    });
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 map
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectMap = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => any) => TObject<any>) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      return fromEntries(Object.entries(obj).map(([key, value]) => [key, callback(value, key)]));
+    };
+  }
+  return (obj, callback) => {
+    const newObj: TObject<any> = {};
+    Object.keys(obj).forEach((key) => {
+      newObj[key] = callback(obj[key], key);
+    });
+    return newObj;
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 filter
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectFilter = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => boolean) => TObject<any>) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      return fromEntries(Object.entries(obj).filter(([key, value]) => callback(value, key)));
+    };
+  }
+  return (obj, callback) => {
+    const newObj: TObject<any> = {};
+    Object.keys(obj).forEach((key) => {
+      if (callback(obj[key], key)) {
+        newObj[key] = obj[key];
+      }
+    });
+    return newObj;
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 reduce
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectReduce = cacheByReturn((): (<T>(obj: TObject<any>, callback: (previousValue: T, currentValue: any, currentKey: TObjKeyType, obj: TObject<any>) => any, initialValue: T) => T) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback, initialValue) => {
+      return Object.entries(obj).reduce((previousValue, [key, value]) => callback(previousValue, value, key, obj), initialValue);
+    };
+  }
+  return (obj, callback, initialValue) => {
+    return Object.keys(obj).reduce((previousValue, key) => callback(previousValue, obj[key], key, obj), initialValue);
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 some
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectSome = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => boolean) => boolean) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      return Object.entries(obj).some(([key, value]) => callback(value, key));
+    };
+  }
+  return (obj, callback) => {
+    return Object.keys(obj).some(key => callback(obj[key], key));
+  };
+});
+
+/**
+ * 遍历对象, 参考数组的 every
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectEvery = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => boolean) => boolean) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      return Object.entries(obj).every(([key, value]) => callback(value, key));
+    };
+  }
+  return (obj, callback) => {
+    return Object.keys(obj).every(key => callback(obj[key], key));
   };
 });

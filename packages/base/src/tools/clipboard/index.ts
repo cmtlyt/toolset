@@ -1,31 +1,31 @@
 import { warning } from '../../common/warning';
-import { cacheByReturn, isHttpsUrlString, safeGetGlobal } from '../../utils';
+import { cacheByReturn, isHttpsUrlString, onceFunc, safeGetGlobal } from '../../utils';
 
-const hasExecCommand = cacheByReturn(() => {
+const hasExecCommand = onceFunc(() => {
   return typeof safeGetGlobal().document?.execCommand === 'function';
 });
 
-const hasCopyCommand = cacheByReturn(() => {
+const hasCopyCommand = onceFunc(() => {
   return safeGetGlobal().document?.queryCommandSupported?.('copy') && hasExecCommand();
 });
 
-const hasPasteCommand = cacheByReturn(() => {
+const hasPasteCommand = onceFunc(() => {
   return safeGetGlobal().document?.queryCommandSupported?.('paste') && hasExecCommand();
 });
 
-const isNavCopyable = cacheByReturn(() => {
+const isNavCopyable = onceFunc(() => {
   return (isHttpsUrlString(safeGetGlobal().location?.href) && !!navigator.clipboard?.writeText) || false;
 });
 
-const isCopyable = cacheByReturn(() => {
+const isCopyable = onceFunc(() => {
   return isNavCopyable() || hasCopyCommand() || false;
 });
 
-const isNavPasteable = cacheByReturn(() => {
+const isNavPasteable = onceFunc(() => {
   return (isHttpsUrlString(safeGetGlobal().location?.href) && !!navigator.clipboard?.readText) || false;
 });
 
-const isPasteable = cacheByReturn(() => {
+const isPasteable = onceFunc(() => {
   return isNavPasteable() || hasPasteCommand() || false;
 });
 

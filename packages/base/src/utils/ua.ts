@@ -1,30 +1,30 @@
-import { cacheByReturn } from './func-handler';
+import { onceFunc } from './func-handler';
 import { getAliAppEnv, getDeviceInfo, getUserAgent } from './get-data';
 import { isUndef } from './verify';
 
 /** 判断是否为浏览器环境 */
-export const isWeb = cacheByReturn(() => {
+export const isWeb = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return !ua.includes('node') && window && 'onload' in window;
 });
 
 /** 判断是否为 iframe 环境 */
-export function isInIframe(): boolean {
+export const isInIframe = onceFunc((): boolean => {
   if (!isWeb())
     return false;
   if (window?.frames?.length !== window?.parent?.frames?.length)
     return true;
   return false;
-}
+});
 
 /** 判断是否为 node 环境 */
-export const isNode = cacheByReturn(() => {
+export const isNode = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('node');
 });
 
 /** 小程序环境 */
-export const isMiniApp = cacheByReturn(() => {
+export const isMiniApp = onceFunc(() => {
   return typeof my !== 'undefined' && my !== null && typeof my.alert !== 'undefined';
 });
 
@@ -32,149 +32,149 @@ export const isMiniApp = cacheByReturn(() => {
 export const isAliMiniApp = isMiniApp;
 
 /** 字节小程序 */
-export const isByteDanceMicroApp = cacheByReturn(() => {
+export const isByteDanceMicroApp = onceFunc(() => {
   return typeof tt !== 'undefined' && tt !== null && typeof tt.showToast !== 'undefined';
 });
 
 /** 微信小程序 */
-export const isWeChatMiniProgram = cacheByReturn(() => {
+export const isWeChatMiniProgram = onceFunc(() => {
   return (
     !isWeb() && !isByteDanceMicroApp() && !isUndef(typeof wx) && (!isUndef(wx?.login) || !isUndef(wx?.miniProgram))
   );
 });
 
 /** weex 环境 */
-export const isWeex = cacheByReturn(() => {
+export const isWeex = onceFunc(() => {
   return typeof WXEnvironment !== 'undefined' && WXEnvironment.platform !== 'Web';
 });
 
 /** ios */
-export const isIOS = cacheByReturn(() => {
+export const isIOS = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('iphone') || ua.includes('ipad');
 });
 
 /** 安卓 */
-export const isAndroid = cacheByReturn(() => {
+export const isAndroid = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('android');
 });
 
 /** 鸿蒙 */
-export const isOpenHarmony = cacheByReturn(() => {
+export const isOpenHarmony = onceFunc(() => {
   const ua = getUserAgent();
   return /\sOpenHarmony\s\d/i.test(ua);
 });
 
 /** chrome */
-export const isChrome = cacheByReturn(() => {
+export const isChrome = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('chrome') || ua.includes('crios') || ua.includes('headlesschrome');
 });
 
 /** firefox */
-export const isFirefox = cacheByReturn(() => {
+export const isFirefox = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('firefox');
 });
 
 /** safari */
-export const isSafari = cacheByReturn(() => {
+export const isSafari = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('safari') && !isChrome();
 });
 
 /** 新 edge */
-export const isNewEdge = cacheByReturn(() => {
+export const isNewEdge = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('edg');
 });
 
 /** 旧 edge */
-export const isOldEdge = cacheByReturn(() => {
+export const isOldEdge = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('edge') && !ua.includes('edg');
 });
 
 /** edge */
-export const isEdge = cacheByReturn(() => {
+export const isEdge = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return ua.includes('edge');
 });
 
 /** kraken 环境 */
-export const isKraken = cacheByReturn(() => {
+export const isKraken = onceFunc(() => {
   return typeof __kraken__ !== 'undefined';
 });
 
 /** 快应用 */
-export const isQuickApp = cacheByReturn(() => {
+export const isQuickApp = onceFunc(() => {
   // @ts-expect-error any
   // eslint-disable-next-line no-restricted-globals
   return typeof global !== 'undefined' && global !== null && typeof global.callNative !== 'undefined' && !isWeex();
 });
 
 /** 淘宝 */
-export const isTBWeb = cacheByReturn(() => {
+export const isTBWeb = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(TB/i.test(ua);
 });
 
 /** 淘特 */
-export const isLTWeb = cacheByReturn(() => {
+export const isLTWeb = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(LT/i.test(ua);
 });
 
 /** 点淘 */
-export const isTbLive = cacheByReturn(() => {
+export const isTbLive = onceFunc(() => {
   const ua = getUserAgent();
   return (isWeb() || isNode()) && /AliApp\(TAOBAOLIVEAPP/i.test(ua);
 });
 
 /** 所有淘宝 web 环境 */
-export const isTbWebEnv = cacheByReturn(() => {
+export const isTbWebEnv = onceFunc(() => {
   return isTBWeb() || (isWeb() && isTbLive());
 });
 
 /** 微信 */
-export const isWechatWeb = cacheByReturn(() => {
+export const isWechatWeb = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /MicroMessenger/i.test(ua);
 });
 
 /** 支付宝 */
-export const isAliPayWeb = cacheByReturn(() => {
+export const isAliPayWeb = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(AP/i.test(ua);
 });
 
 /** 钉钉 */
-export const isWebInDingding = cacheByReturn(() => {
+export const isWebInDingding = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(DingTalk/i.test(ua);
 });
 
 /** 淘宝买菜团长端 */
-export const isTuan = cacheByReturn(() => {
+export const isTuan = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(MMC/i.test(ua);
 });
 
 /** 零售通 */
-export const isLST = cacheByReturn(() => {
+export const isLST = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(RetailTrader/i.test(ua);
 });
 
 /** 零销宝 */
-export const isLXB = cacheByReturn(() => {
+export const isLXB = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(RETAIL(?!Trader)/i.test(ua);
 });
 
 /** 阿里 app */
-export const isAliAppWeb = cacheByReturn(() => {
+export const isAliAppWeb = onceFunc(() => {
   return isTBWeb() || isLTWeb() || isTbLive() || isAliPayWeb();
 });
 
@@ -189,204 +189,204 @@ const CaiNiaoAppNames = ['cn', 'cainiao', 'com.cainiao.wireless'];
 const AlipayMiniAppNames = [...AlipayAppNames, ...CaiNiaoAppNames];
 
 /** 钉钉小程序 */
-export const isDingdingMiniapp = cacheByReturn(() => {
+export const isDingdingMiniapp = onceFunc(() => {
   return !isUndef(typeof dd) && dd !== null && !isUndef(typeof dd.alert) && !isWeb();
 });
 
 /** 淘系小程序 */
-export const isTaobaoMiniapp = cacheByReturn(() => {
+export const isTaobaoMiniapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && TaobaoAppNames.includes(appName);
 });
 
 /** 支付宝 | 菜鸟小程序 */
-export const isAlipayMiniapp = cacheByReturn(() => {
+export const isAlipayMiniapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && AlipayMiniAppNames.includes(appName);
 });
 
 /** 阿里小程序 */
-export const isTBMiniapp = cacheByReturn(() => {
+export const isTBMiniapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && TBAppNames.includes(appName);
 });
 
 /** 淘特小程序 */
-export const isLTMiniapp = cacheByReturn(() => {
+export const isLTMiniapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && LTAppNames.includes(appName);
 });
 
 /** 淘菜菜小程序 */
-export const isMMCMiniapp = cacheByReturn(() => {
+export const isMMCMiniapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && MMCAppNames.includes(appName);
 });
 
 /** 犀鸟小程序 */
-export const isXiNiaoapp = cacheByReturn(() => {
+export const isXiNiaoapp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && XiNiaoAppNames.includes(appName);
 });
 
 /** 菜鸟小程序 */
-export const isCaiNiaoApp = cacheByReturn(() => {
+export const isCaiNiaoApp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && CaiNiaoAppNames.includes(appName);
 });
 /** 支付宝小程序 */
-export const isAlipayApp = cacheByReturn(() => {
+export const isAlipayApp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return isAliMiniApp() && AlipayAppNames.includes(appName);
 });
 
 /** 百度小程序 */
-export const isBaiduSmartProgram = cacheByReturn(() => {
+export const isBaiduSmartProgram = onceFunc(() => {
   return typeof swan !== 'undefined' && swan !== null && typeof swan.showToast !== 'undefined';
 });
 
 /** 快手小程序 */
-export const isKuaiShouMiniProgram = cacheByReturn(() => {
+export const isKuaiShouMiniProgram = onceFunc(() => {
   return typeof ks !== 'undefined' && ks !== null && typeof ks.showToast !== 'undefined';
 });
 
 /** 小程序 */
-export const isAliMiniappPlatform = cacheByReturn(() => {
+export const isAliMiniappPlatform = onceFunc(() => {
   return isAliMiniApp() || isWeChatMiniProgram() || isByteDanceMicroApp();
 });
 
 /** 淘宝 */
-export const isTBNode = cacheByReturn(() => {
+export const isTBNode = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return isNode() && /AliApp\(TB/i.test(ua);
 });
 
 /** 淘特 */
-export const isLTNode = cacheByReturn(() => {
+export const isLTNode = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return isNode() && /AliApp\(LT/i.test(ua);
 });
 
 /** 微信 */
-export const isWechatNode = cacheByReturn(() => {
+export const isWechatNode = onceFunc(() => {
   const ua = getUserAgent().toLocaleLowerCase();
   return isNode() && /MicroMessenger/i.test(ua);
 });
 
 /** 淘宝 */
-export const isTB = cacheByReturn(() => {
+export const isTB = onceFunc(() => {
   return isTBMiniapp() || isTBWeb() || isTBNode();
 });
 
 /** 淘特 */
-export const isLT = cacheByReturn(() => {
+export const isLT = onceFunc(() => {
   return isLTMiniapp() || isLTWeb() || isLTNode();
 });
 
 /** 支付宝 */
-export const isAliPay = cacheByReturn(() => {
+export const isAliPay = onceFunc(() => {
   return isAlipayMiniapp() || isAliPayWeb();
 });
 
 /** 天猫 */
-export const isTmall = cacheByReturn(() => {
+export const isTmall = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return appName === 'tm';
 });
 
 /** 阿里app */
-export const isAliApp = cacheByReturn(() => {
+export const isAliApp = onceFunc(() => {
   return isTB() || isLT() || isAliPay() || isTbLive() || isTmall();
 });
 
 /** 微信端 */
-export const isWechat = cacheByReturn(() => {
+export const isWechat = onceFunc(() => {
   return isWechatWeb() || isWeChatMiniProgram() || isWechatNode();
 });
 
 /** 菜鸟商业版本App，内嵌团长端小程序 */
-export const isCaiNiaoBusiness = cacheByReturn(() => {
+export const isCaiNiaoBusiness = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(group_leader/i.test(ua);
 });
 
 /** 菜鸟商业版本App */
-export const isCaiNiao = cacheByReturn(() => {
+export const isCaiNiao = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && (/AliApp\(CN/i.test(ua) || /AliApp\(cainiao/i.test(ua));
 });
 
 /** 阿里系app */
-export const isAliUa = cacheByReturn(() => {
+export const isAliUa = onceFunc(() => {
   return isWeb() && /AliApp\(/.test(window.navigator.userAgent);
 });
 
 /** 盒马 */
-export const isHmApp = cacheByReturn(() => {
+export const isHmApp = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return appName === 'wdkhema';
 });
 
 /** 优酷 */
-export const isYouKu = cacheByReturn(() => {
+export const isYouKu = onceFunc(() => {
   const { appName } = getAliAppEnv();
   return appName === 'youku';
 });
 
 /** 支付宝 webview */
-export const isAlipayMiniWeb = cacheByReturn(() => {
+export const isAlipayMiniWeb = onceFunc(() => {
   return !!(isWeb() && window?.location?.search?.includes?.('__webview__=alipay'));
 });
 
 /** 淘特的 webview */
-export const isLTMiniWeb = cacheByReturn(() => {
+export const isLTMiniWeb = onceFunc(() => {
   return !!(isLTWeb() && window?.location?.search?.includes?.('__webview__=taobao'));
 });
 
 /** 【历史兼容】淘宝的 webview */
-export const isLBMiniWeb = cacheByReturn(() => {
+export const isLBMiniWeb = onceFunc(() => {
   return !!(isTBWeb() && window?.location?.search?.includes?.('__webview__=taobao'));
 });
 
 /** 淘宝的 webview */
-export const isTBMiniWeb = cacheByReturn(() => {
+export const isTBMiniWeb = onceFunc(() => {
   return isLBMiniWeb();
 });
 
 /** 钉钉 webview */
-export const isDingTalk = cacheByReturn(() => {
+export const isDingTalk = onceFunc(() => {
   const ua = getUserAgent();
   return isWeb() && /AliApp\(DingTalk/i.test(ua);
 });
 
 /** 团长小程序 webview 嵌套的 h5 */
-export const isTuanWebview = cacheByReturn(() => {
+export const isTuanWebview = onceFunc(() => {
   return isWeb() && (isTuan() || isCaiNiaoBusiness() || window?.location?.search?.includes?.('__webview__=mmc'));
 });
 
 /** 微信小程序 webview */
-export const isWechatMiniWeb = cacheByReturn(() => {
+export const isWechatMiniWeb = onceFunc(() => {
   const ua = getUserAgent();
   return isWechatWeb() && /miniProgram/i.test(ua);
 });
 
 /** 微信 h5 */
-export const isWechatH5 = cacheByReturn(() => {
+export const isWechatH5 = onceFunc(() => {
   return isWechatWeb() && !isWechatMiniWeb();
 });
 
 /** 小程序 webview */
-export const isWebInMiniApp = cacheByReturn(() => {
+export const isWebInMiniApp = onceFunc(() => {
   return isAlipayMiniWeb() || isWechatMiniWeb() || isLBMiniWeb() || isLTMiniWeb();
 });
 
 /** 阿里小程序 webview */
-export const isAliWebInMiniApp = cacheByReturn(() => {
+export const isAliWebInMiniApp = onceFunc(() => {
   return isAlipayMiniWeb() || isLBMiniWeb() || isLTMiniWeb();
 });
 
 /** 阿里应用小程序 */
-export const isAliAppMiniApp = cacheByReturn(() => {
+export const isAliAppMiniApp = onceFunc(() => {
   return isTBMiniapp() || isLTMiniapp() || isAlipayMiniapp() || isMMCMiniapp();
 });
 
@@ -407,7 +407,7 @@ export const isAliAppMiniApp = cacheByReturn(() => {
  *
  * 如果要判断是否为「刘海屏」，建议使用 `isIOSNotchScreen`
  */
-export const isIPhoneX = cacheByReturn(() => {
+export const isIPhoneX = onceFunc(() => {
   const { screenHeight } = getDeviceInfo();
   return (
     isIOS()
@@ -420,7 +420,7 @@ export const isIPhoneX = cacheByReturn(() => {
 /**
  * 是否 iPhone XS Max （2688 x 1242）
  */
-export const isIPhoneXSMax = cacheByReturn(() => {
+export const isIPhoneXSMax = onceFunc(() => {
   const { screenHeight, devicePixelRatio } = getDeviceInfo();
   return isIOS() && screenHeight === 896 && devicePixelRatio === 3;
 });
@@ -428,7 +428,7 @@ export const isIPhoneXSMax = cacheByReturn(() => {
 /**
  * 是否 iPhone XR （1792 x 828）
  */
-export const isIPhoneXR = cacheByReturn(() => {
+export const isIPhoneXR = onceFunc(() => {
   const { screenHeight, devicePixelRatio } = getDeviceInfo();
   return isIOS() && screenHeight === 896 && devicePixelRatio === 2;
 });
@@ -436,7 +436,7 @@ export const isIPhoneXR = cacheByReturn(() => {
 /**
  * 是否 iPhone14 pro max
  */
-export const isIPhone14PM = cacheByReturn(() => {
+export const isIPhone14PM = onceFunc(() => {
   const { screenHeight } = getDeviceInfo();
   return isIOS() && screenHeight === 932;
 });
@@ -446,6 +446,6 @@ export const isIPhone14PM = cacheByReturn(() => {
  *
  * 目前 iOS 所有的「刘海屏」的适配方案是一样的
  */
-export const isIOSNotchScreen = cacheByReturn(() => {
+export const isIOSNotchScreen = onceFunc(() => {
   return isIPhoneX() || isIPhoneXSMax() || isIPhoneXR() || isIPhone14PM();
 });

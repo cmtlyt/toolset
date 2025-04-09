@@ -1,5 +1,5 @@
 import { warning } from '$/common/warning';
-import { tryCall, tryCallFunc } from '../func-handler';
+import { tryCall } from '../func-handler';
 import { safeGetGlobal } from '../get-data';
 import { isNode, isWeb } from '../ua';
 import { caniuse, isHttpsUrlString, isHttpUrlString } from '../verify';
@@ -270,9 +270,9 @@ export function parseSearchObject(search: string | URLSearchParams) {
   if (typeof search === 'string') {
     return tryCall(() => {
       return fromEntries(parseSearch(search).entries());
-    }, tryCallFunc(() => {
+    }, () => {
       return fromEntries(search.replace(/^\?/, '').split('&').map(item => item.split('=')) as any);
-    }));
+    });
   }
   return fromEntries(search.entries());
 }

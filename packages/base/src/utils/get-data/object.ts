@@ -1,5 +1,5 @@
 import ms from 'ms';
-import { cacheByReturn } from '../func-handler';
+import { onceFunc } from '../func-handler';
 import { isAliMiniApp, isByteDanceMicroApp, isMiniApp, isNode, isWeb, isWeChatMiniProgram, isWeex } from '../ua';
 import { isEmpty, isString } from '../verify';
 import { getOsType, getUserAgent } from './string';
@@ -7,7 +7,7 @@ import { getOsType, getUserAgent } from './string';
 /**
  * 安全的获取全局对象
  */
-export const safeGetGlobal = cacheByReturn((): any => {
+export const safeGetGlobal = onceFunc((): any => {
   if (isWeb())
     return window;
   if (globalThis)
@@ -86,7 +86,7 @@ export function withResolvers<T>(func?: (resolve: (value: T) => void, reject: (r
 /**
  * 获取 AliApp 版本和名称
  */
-export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: string } => {
+export const getAliAppEnv = onceFunc((): { appName: string; appVersion: string } => {
   let appNameI = '';
   let appVersionI = '';
   if (isWeb() || isNode()) {
@@ -110,7 +110,7 @@ export const getAliAppEnv = cacheByReturn((): { appName: string; appVersion: str
 /**
  * 获取设备信息
  */
-export const getDeviceInfo = cacheByReturn(
+export const getDeviceInfo = onceFunc(
   (): {
     appName: string;
     appVersion: string;
