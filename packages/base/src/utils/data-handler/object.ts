@@ -3,6 +3,7 @@ import { STATIC_TYPE } from '$/common/constant';
 import { warning } from '$/common/warning';
 import { cacheByReturn, tryCall } from '../func-handler';
 import { getType } from '../get-data';
+import { isNull } from '../verify';
 
 /**
  * 深度克隆对象
@@ -105,6 +106,8 @@ export const fromEntries = cacheByReturn(() => {
 export const objectForEach = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => any) => void) => {
   if (typeof Object.entries === 'function') {
     return (obj, callback) => {
+      if (isNull(obj))
+        return;
       Object.entries(obj).forEach(([key, value]) => callback(value, key));
     };
   }

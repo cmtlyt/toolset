@@ -9,13 +9,82 @@ describe('data-handler', async () => {
 
   const longString = readFileSync(resolve(import.meta.dirname, './long-str.txt'), 'utf-8');
 
+  it('objectToString', async () => {
+    const { objectToString } = utils;
+    expect(objectToString({ a: 1, b: 2 })).toMatchInlineSnapshot(`"{a: 1, b: 2}"`);
+    expect(objectToString({ a: 1, b: 2 }, { wrap: true })).toMatchInlineSnapshot(`
+      "{
+        a: 1,
+        b: 2
+      }"
+    `);
+    expect(objectToString({ a: 1, b: 2 }, { wrap: true, indent: 4 })).toMatchInlineSnapshot(`
+      "{
+          a: 1,
+          b: 2
+      }"
+    `);
+    expect(objectToString({ a: 1, b: 2 }, { wrap: true, indentChar: '-' })).toMatchInlineSnapshot(`
+      "{
+      --a: 1,
+      --b: 2
+      }"
+    `);
+    expect(objectToString({ a: 1, b: 2 }, { wrap: false, indentChar: '-' })).toMatchInlineSnapshot(`"{a: 1, b: 2}"`);
+    expect(objectToString({ a: 1, b: '2' })).toMatchInlineSnapshot(`"{a: 1, b: "2"}"`);
+    expect(objectToString({ a: 1, b: '2' }, { singleQuotes: true })).toMatchInlineSnapshot(`"{a: 1, b: '2'}"`);
+    expect(objectToString({
+      a: 1,
+      b: '2',
+      boolean: true,
+      array: [1, 2],
+      object: { a: 1 },
+      arrObj: [{ a: 1, b: [] }],
+      emptyObj: {},
+      null: null,
+      undefined: void 0,
+      symbol: Symbol('test'),
+      func: () => import('../src'),
+      func2() {
+        return import('../src');
+      },
+      regexp: /test/gi,
+    }, { singleQuotes: true })).toMatchInlineSnapshot(`
+      "{a: 1, b: '2', boolean: true, array: [1, 2], object: {a: 1}, arrObj: [{a: 1, b: []}], emptyObj: {}, null: null, undefined: undefined, symbol: Symbol('test'), func: () => __vite_ssr_dynamic_import__("/src/index.ts"), func2: function func2() {
+              return __vite_ssr_dynamic_import__("/src/index.ts");
+            }, regexp: /test/gi}"
+    `);
+  });
+  it('toString', async () => {
+    const { toString } = utils;
+    expect(toString(1)).toEqual('1');
+    expect(toString('1')).toEqual('"1"');
+    expect(toString(true)).toEqual('true');
+    expect(toString({})).toEqual('{}');
+    expect(toString([])).toEqual('[]');
+    expect(toString(Symbol('test'), { singleQuotes: false })).toEqual('Symbol("test")');
+    expect(toString(Symbol('test'), { singleQuotes: true })).toEqual('Symbol(\'test\')');
+    expect(toString(() => 1)).toEqual('() => 1');
+    expect(toString(null)).toEqual('null');
+    expect(toString({ a: 1 })).toEqual('{a: 1}');
+    // eslint-disable-next-line prefer-arrow-callback
+    expect(toString(function test() {
+      return 1;
+    })).toMatchInlineSnapshot(`
+      "function test() {
+            return 1;
+          }"
+    `);
+    expect(toString(/test/gi)).toEqual('/test/gi');
+    expect(toString(new Date())).toMatch(/^new Date\(\d+\)$/);
+  });
   it('原文和 base64 相互转换', async () => {
     const blob = new Blob([longString]);
     const arrayBuffer = await blob.arrayBuffer();
     const base64 = utils.arrayBufferToBase64String(arrayBuffer);
     expect(base64).toMatchFileSnapshot('./__snapshots__/long-string.base64.txt');
     const decodeBuffer = utils.base64StringToUint8Array(base64);
-    expect(utils.arrayBufferToBase64String(decodeBuffer)).toEqual(base64);
+    expect(utils.arrayBufferToBase64String(decodeBuffer.buffer)).toEqual(base64);
   });
 
   it('arrayBufferToBase64String and base64StringToArrayBuffer', async () => {

@@ -51,7 +51,12 @@ pnpm add @cmtlyt/base
 - (F) objectFilter
 - (F) objectSome
 - (F) objectEvery
+- (F) getChar
+- (F) toString
+- (F) objectToString
 - cacheByReturn -> onceFunc
+
+转换函数类型调整
 
 ### v0.11.4
 

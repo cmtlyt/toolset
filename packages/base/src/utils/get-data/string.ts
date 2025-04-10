@@ -123,3 +123,10 @@ export const getUserAgent = onceFunc((): string => {
 export function getSpace(length = 1) {
   return Array.from({ length }, () => ' ').join('');
 }
+
+/**
+ * 获取字符
+ */
+export function getChar(char: string, length = 1) {
+  return Array.from({ length }, () => char).join('');
+}
