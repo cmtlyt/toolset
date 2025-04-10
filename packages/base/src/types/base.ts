@@ -14,10 +14,13 @@ export type THeadType<A extends any[]> = A extends [infer H] ? H : A extends [in
 export type TFirstType<A extends any[]> = A[0];
 
 /** 获取数组的最后一个元素类型 */
-export type TLastType<A extends any[]> = A extends [infer L] ? L : A extends [...any[], infer L] ? L : never;
+export type TLastType<A extends any[], F = never> = A extends [infer L] ? L : A extends [...any[], infer L] ? L : F;
 
 /** 获取数组的剩余元素类型 */
 export type TTailTypes<A extends any[]> = A extends [any] ? [] : A extends [any, ...infer T] ? T : [];
+
+/** 获取数组最后一个元素之前的元素类型 */
+export type TLastBeforeTypes<A extends any[]> = A extends [...infer T, any] ? T : [];
 
 /** 添加类型到数组头部 */
 export type TPrepend<T, A extends any[]> = [T, ...A];
