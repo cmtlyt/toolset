@@ -1,4 +1,4 @@
-import type { TAnyFunc, TAppend, TLastBeforeTypes, TLastType, TTailTypes } from '$/types/base';
+import type { TAnyFunc, TAppend, TLastBeforeTypes, TLastType } from '$/types/base';
 import { isPromise, objectFind } from '$/utils';
 
 interface BaseTypeMap {
@@ -61,18 +61,18 @@ interface Pick<T extends any[]> { _: T }
 type GetCompType<H> = H extends keyof ExtendsTypeMap ? Pick<TypeMap[H]> : TypeMap[H];
 
 /** 函数类型信息 */
-type FuncTypes<A extends any[], R extends any[] = []> = A extends [infer H, ...any[]]
-  ? FuncTypes<TTailTypes<A>, TAppend<GetCompType<H>, R>>
+type FuncTypes<A extends any[], R extends any[] = []> = A extends [infer H, ...infer L]
+  ? FuncTypes<L, TAppend<GetCompType<H>, R>>
   : R;
 
 /** 判断函数是否在多态映射中 */
 type FuncInMap<F extends TAnyFunc, M extends TAnyFunc> = M extends F ? F : never;
 
 /** 参数解析 */
-type ArgsParse<T extends any[], R extends any[] = []> = T extends [infer H, ...any]
+type ArgsParse<T extends any[], R extends any[] = []> = T extends [infer H, ...infer L]
   ? H extends Pick<infer V>
     ? [...R, ...V]
-    : ArgsParse<TTailTypes<T>, TAppend<H, R>>
+    : ArgsParse<L, TAppend<H, R>>
   : R;
 
 /** 回调函数类型 */
