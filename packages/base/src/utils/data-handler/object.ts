@@ -207,3 +207,20 @@ export const objectEvery = cacheByReturn((): ((obj: TObject<any>, callback: (val
     return Object.keys(obj).every(key => callback(obj[key], key));
   };
 });
+
+/**
+ * 遍历对象, 参考数组的 find
+ *
+ * @warning 不保证遍历顺序
+ */
+export const objectFind = cacheByReturn((): ((obj: TObject<any>, callback: (value: any, key: string) => boolean) => any) => {
+  if (typeof Object.entries === 'function') {
+    return (obj, callback) => {
+      return Object.entries(obj).find(([key, value]) => callback(value, key))?.[1];
+    };
+  }
+  return (obj, callback) => {
+    const key = Object.keys(obj).find(key => callback(obj[key], key));
+    return key ? obj[key] : undefined;
+  };
+});

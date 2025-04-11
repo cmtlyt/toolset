@@ -44,6 +44,7 @@ pnpm add @cmtlyt/base
 
 新增
 
+- (F) createPolymorphismFunc
 - (F) getSpace
 - (F) objectForEach
 - (F) objectMap
@@ -51,6 +52,7 @@ pnpm add @cmtlyt/base
 - (F) objectFilter
 - (F) objectSome
 - (F) objectEvery
+- (F) objectFind
 - (F) getChar
 - (F) toString
 - (F) objectToString
