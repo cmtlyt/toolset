@@ -71,15 +71,18 @@ describe('createPolymorphismFunc', async () => {
     const test = createPolymorphismFunc<{
       (): Promise<string>;
       (a: Promise<number>): number;
+      (a: Promise<string>): string;
       (...args: Promise<boolean>[]): Promise<boolean>;
     }>();
 
     test.register(async () => '', 'promise<string>');
     test.register(_a => 1, 'promise<number>', 'number');
+    test.register(_a => '1', 'promise<string>', 'string');
     test.register(async (..._a) => true as boolean, '...promise<boolean>', 'promise<boolean>');
 
     expect(await test()).toBe('');
     expect(test(Promise.resolve(1))).toBe(1);
+    expect(test(Promise.resolve('1'))).toBe(1);
     expect(await test(Promise.resolve(true), Promise.resolve(false))).toBe(true);
   });
 });
