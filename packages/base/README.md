@@ -38,6 +38,28 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.12.0
+
+部分函数性能提升
+
+新增
+
+- (F) createPolymorphismFunc
+- (F) getSpace
+- (F) objectForEach
+- (F) objectMap
+- (F) objectReduce
+- (F) objectFilter
+- (F) objectSome
+- (F) objectEvery
+- (F) objectFind
+- (F) getChar
+- (F) toString
+- (F) objectToString
+- cacheByReturn -> onceFunc
+
+转换函数类型调整
+
 ### v0.11.4
 
 修复 iife 函数不传递 args 参数报错问题

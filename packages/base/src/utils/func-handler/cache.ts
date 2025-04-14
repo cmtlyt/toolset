@@ -1,19 +1,26 @@
-import type { TAnyFunc, TFunc, TGetArgs, TGetReturnType } from '$/types/base';
+import type { TAnyFunc, TGetArgs, TGetReturnType } from '$/types/base';
 import { INTERNAL_EMPTY } from '$/common/constant';
 
 /**
  * 将函数转为只执行一次的函数, 后续调用将返回第一次调用的结果
+ *
+ * 单纯缓存函数返回结果, 如果返回值为函数, 并且希望直接调用则使用 `cacheByReturn`
  */
 export function onceFunc<T extends TAnyFunc>(func: T): T {
-  let called = false;
-  let result: ReturnType<T> | null = null;
+  let result: ReturnType<T> | symbol = INTERNAL_EMPTY;
   return function (...args) {
-    if (called)
+    if (result !== INTERNAL_EMPTY)
       return result;
-    called = true;
     return (result = func(...args));
   } as T;
 }
+
+/**
+ * 将函数转为只执行一次的函数, 后续调用将返回第一次调用的结果
+ *
+ * @alias onceFunc
+ */
+export const cacheReturnValue = onceFunc;
 
 class MemoizeMap {
   #_map = new Map();
@@ -69,7 +76,12 @@ export function memoize<F extends (...args: any[]) => any>(func: F, resolver?: (
 
 /**
  * 缓存函数执行结果
+ *
  * 如果执行结果为函数, 则会调用函数
+ *
+ * 如果执行结果为非函数, 则返回执行结果
+ *
+ * 使用场景: 缓存的是函数, 并且每次都需要调用函数, 如果单纯为了缓存返回值, 请使用 `cacheReturnValue` 或 `onceFunc`
  */
 export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
   cacheLoad: T,
@@ -97,16 +109,3 @@ export const cacheByReturn: <T extends () => any, R = ReturnType<T>>(
     };
   };
 })();
-
-/**
- * 缓存函数执行结果
- */
-export function cacheReturnValue<T extends any[], R>(cacheLoad: TFunc<T, R>): (...args: T) => R {
-  let cache: any = INTERNAL_EMPTY;
-
-  return (...args) => {
-    if (cache === INTERNAL_EMPTY)
-      cache = cacheLoad(...args);
-    return cache;
-  };
-}

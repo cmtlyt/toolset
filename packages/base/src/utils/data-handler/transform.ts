@@ -1,9 +1,10 @@
+import type { TObject } from '$/types/base';
 import { warning } from '$/common/warning';
-import { tryCall, tryCallFunc } from '../func-handler';
-import { safeGetGlobal } from '../get-data';
+import { iife, tryCall } from '../func-handler';
+import { getChar, getType, safeGetGlobal } from '../get-data';
 import { isNode, isWeb } from '../ua';
 import { caniuse, isHttpsUrlString, isHttpUrlString } from '../verify';
-import { fromEntries } from './object';
+import { fromEntries, objectForEach } from './object';
 
 /**
  * stream 转 string
@@ -62,7 +63,7 @@ export async function streamToArrayBuffer(stream: ReadableStream) {
 /**
  * arrayBuffer 转 base64
  */
-export function arrayBufferToBase64String(arrayBuffer: ArrayBuffer) {
+export function arrayBufferToBase64String(arrayBuffer: ArrayBufferLike) {
   const chars = new Uint8Array(arrayBuffer).reduce((result, cur) => {
     return result + String.fromCharCode(cur);
   }, '');
@@ -203,7 +204,7 @@ export function base64StringToStream(source: string) {
 /**
  * arrayBuffer 转 stream
  */
-export function arrayBufferToStream(source: AllowSharedBufferSource) {
+export function arrayBufferToStream(source: AllowSharedBufferSource | ArrayBufferLike) {
   const stream = new ReadableStream({
     start(controller) {
       controller.enqueue(source);
@@ -270,9 +271,88 @@ export function parseSearchObject(search: string | URLSearchParams) {
   if (typeof search === 'string') {
     return tryCall(() => {
       return fromEntries(parseSearch(search).entries());
-    }, tryCallFunc(() => {
+    }, () => {
       return fromEntries(search.replace(/^\?/, '').split('&').map(item => item.split('=')) as any);
-    }));
+    });
   }
   return fromEntries(search.entries());
+}
+
+interface ObjectToStringOptions {
+  /**
+   * 是否使用单引号
+   *
+   * @default false
+   */
+  singleQuotes?: boolean;
+  /**
+   * 是否换行
+   *
+   * @default false
+   */
+  wrap?: boolean;
+  /** 缩进使用字符, 默认空格 */
+  indentChar?: string;
+  /**
+   * 缩进数量, 默认 2
+   *
+   * 如果 wrap 为 true, 则该值生效
+   */
+  indent?: number;
+}
+
+export function toString(value: any, options?: Pick<ObjectToStringOptions, 'singleQuotes'>) {
+  const { singleQuotes = false } = options || {};
+
+  const _type = typeof value;
+
+  switch (_type) {
+    case 'string':
+      return singleQuotes ? `'${value}'` : `"${value}"`;
+    case 'number':
+    case 'boolean':
+    case 'bigint':
+      return value.toString();
+    case 'symbol':
+      return value.toString().replace(/^Symbol\((.*)\)$/, `Symbol(${singleQuotes ? `'$1'` : `"$1"`})`);
+    case 'function': {
+      const funcStr: string = value.toString();
+      return funcStr.startsWith('(') || funcStr.startsWith('function ') ? funcStr : `function ${funcStr}`;
+    }
+    case 'object':
+      return objectToString(value, options);
+    default:
+      return JSON.stringify(value);
+  }
+}
+
+export function objectToString(obj: TObject<any>, options?: ObjectToStringOptions): string {
+  const _type = getType(obj);
+  if (_type === 'regexp')
+    return obj.toString();
+  if (_type === 'null')
+    return 'null';
+  if (_type === 'date') {
+    return `new Date(${obj.getTime()})`;
+  }
+  const { wrap = false, indentChar = ' ', indent = wrap ? 2 : 0 } = options || {};
+  const indentStr = getChar(indentChar, indent);
+  const objIsArray = Array.isArray(obj);
+  const stringified: string[] = [];
+  objectForEach(obj, (value, key) => {
+    const result = iife(() => {
+      if (objIsArray) {
+        return `${wrap ? indentStr : ''}${toString(value, options)}`;
+      }
+      if (typeof value === 'object') {
+        return `${wrap ? indentStr : ''}${key}: ${objectToString(value, { ...options, indent: indent + 2 })}`;
+      }
+      return `${wrap ? indentStr : ''}${key}: ${toString(value, options)}`;
+    });
+    stringified.push(result);
+  });
+  if (objIsArray) {
+    return `[${wrap ? `\n` : ''}${stringified.join(wrap ? `,\n` : ', ')}${wrap ? `\n` : ''}]`;
+  }
+  return `{${wrap ? `\n` : ''}${stringified.join(wrap ? `,\n` : ', ')}${wrap ? `\n` : ''}}`;
 }

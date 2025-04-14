@@ -117,11 +117,18 @@ describe('utils', async () => {
     sleep,
     sleepSync,
     throttle,
+    getSpace,
   } = await (() => {
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');
 
   describe('getData', () => {
+    it('getSpace', ({ expect }) => {
+      expect(getSpace()).toMatchInlineSnapshot(`" "`);
+      expect(getSpace(1)).toMatchInlineSnapshot(`" "`);
+      expect(getSpace(2)).toMatchInlineSnapshot(`"  "`);
+      expect(getSpace(0)).toMatchInlineSnapshot(`""`);
+    });
     it('generateCookieInfo', ({ expect }) => {
       expect(generateCookieInfo()).toMatchInlineSnapshot(`""`);
       expect(generateCookieInfo({})).toMatchInlineSnapshot(`""`);

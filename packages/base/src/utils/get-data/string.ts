@@ -1,5 +1,5 @@
 import type { TAllType } from '$/types/base';
-import { cacheByReturn } from '../func-handler';
+import { onceFunc } from '../func-handler';
 import { isAndroid, isIOS, isNode, isOpenHarmony } from '../ua';
 
 /**
@@ -70,7 +70,7 @@ export const gc = generateClassName;
 /**
  * 获取操作系统类型
  */
-export const getOsType = cacheByReturn(() => {
+export const getOsType = onceFunc(() => {
   if (isIOS())
     return 'ios';
   if (isAndroid())
@@ -104,7 +104,7 @@ export function getType(value: any): TAllType {
 /**
  * 获取 userAgent
  */
-export const getUserAgent = cacheByReturn((): string => {
+export const getUserAgent = onceFunc((): string => {
   if (globalThis.navigator) {
     // @ts-expect-error env
     return globalThis.navigator.userAgent || globalThis.navigator.swuserAgent;
@@ -116,3 +116,17 @@ export const getUserAgent = cacheByReturn((): string => {
   }
   return '';
 });
+
+/**
+ * 获取空格
+ */
+export function getSpace(length = 1) {
+  return Array.from({ length }, () => ' ').join('');
+}
+
+/**
+ * 获取字符
+ */
+export function getChar(char: string, length = 1) {
+  return Array.from({ length }, () => char).join('');
+}
