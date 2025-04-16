@@ -1,12 +1,12 @@
 import { describe, expect, inject, it } from 'vitest';
 
-describe('createPolymorphismFunc', async () => {
-  const { createPolymorphismFunc, typesMatch } = await (() => {
+describe('createOverloadFunc', async () => {
+  const { createOverloadFunc, typesMatch } = await (() => {
     // @ts-expect-error any
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');
 
-  const add = createPolymorphismFunc<{
+  const add = createOverloadFunc<{
     (): void;
     (a: number, b: number): string;
     (a: string, b: string): string;
@@ -68,7 +68,7 @@ describe('createPolymorphismFunc', async () => {
   });
 
   it('promise impl', async () => {
-    const test = createPolymorphismFunc<{
+    const test = createOverloadFunc<{
       (): Promise<string>;
       (a: Promise<number>): number;
       (a: Promise<string>): string;

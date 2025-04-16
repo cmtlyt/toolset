@@ -80,9 +80,8 @@ type Callback<T extends any[]> = (...args: ArgsParse<TLastBeforeTypes<T>>) => TL
 
 interface RegisterFunc<M extends TAnyFunc> {
   /**
-   * 注册一个多态实现
+   * 注册一个重载实现
    *
-   * @warning 返回值不参与函数匹配, 只用作类型签名
    * @warning promise 只判断是否是 promise, 对 promise 的返回值不进行校验, 所以 Promise\<number> 和 Promise\<string> 在函数匹配时是等价的
    */
   <
@@ -91,9 +90,8 @@ interface RegisterFunc<M extends TAnyFunc> {
     F extends Callback<T> = Callback<T>,
   >(func: FuncInMap<F, M>, ...args: A): PolymorphismInstance<M>;
   /**
-   * 注册一个多态实现
+   * 注册一个重载实现
    *
-   * @warning 返回值不参与函数匹配, 只用作类型签名
    * @warning promise 只判断是否是 promise, 对 promise 的返回值不进行校验, 所以 Promise\<number> 和 Promise\<string> 在函数匹配时是等价的
    */
   <
@@ -254,9 +252,9 @@ function getController(funcImplInfoMap: FuncImplInfoMap): PolymorphismController
 }
 
 /**
- * 创建一个支持多态的函数
+ * 创建一个支持重载的函数
  */
-export function createPolymorphismFunc<T extends TAnyFunc = (...args: any) => any>(): PolymorphismInstance<T> {
+export function createOverloadFunc<T extends TAnyFunc = (...args: any) => any>(): PolymorphismInstance<T> {
   const funcImplInfoMap: FuncImplInfoMap = {};
 
   const controller = getController(funcImplInfoMap);
@@ -277,4 +275,4 @@ export function createPolymorphismFunc<T extends TAnyFunc = (...args: any) => an
   }) as any;
 }
 
-export { createPolymorphismFunc as createOverloadFunc };
+export { createOverloadFunc as createPolymorphismFunc };

@@ -38,6 +38,10 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.12.2
+
+- createPolymorphismFunc -> createOverloadFunc
+
 ### v0.12.1
 
 - createOverloadFunc -> createPolymorphismFunc
