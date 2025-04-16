@@ -276,3 +276,5 @@ export function createPolymorphismFunc<T extends TAnyFunc = (...args: any) => an
     },
   }) as any;
 }
+
+export { createPolymorphismFunc as createOverloadFunc };
