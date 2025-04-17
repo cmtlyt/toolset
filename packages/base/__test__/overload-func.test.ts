@@ -40,7 +40,7 @@ describe('createOverloadFunc', async () => {
         .register((_a, _b) => '', () => false, 'any', 'object', 'string'),
     ).toBe(add);
     // @ts-expect-error any
-    expect(() => add.register('test')).toThrowErrorMatchingInlineSnapshot(`[TypeError: 第一个参数必须为 function 类型]`);
+    expect(() => add.register('test')).toThrowErrorMatchingInlineSnapshot(`[TypeError: 第一个参数必须为 function 类型，或者为可识别的 配置项 类型]`);
     // @ts-expect-error any
     expect(() => add.register(() => {}, () => {}, () => {})).toThrowErrorMatchingInlineSnapshot(`[TypeError: 剩余参数必须为 string 类型]`);
     expect(() => add.register((_a, _b) => ``, 'number', 'unknown', 'string')).toThrowErrorMatchingInlineSnapshot(`[TypeError: 当前多态已实现, 类型: number,any]`);
