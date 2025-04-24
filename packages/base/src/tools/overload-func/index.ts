@@ -80,12 +80,13 @@ type Callback<T extends any[]> = (...args: ArgsParse<TLastBeforeTypes<T>>) => TL
 
 interface RegisterFuncOptions<
   A extends TypeMapKeys[] = TypeMapKeys[],
-  T extends any[] = FuncTypes<A>,
+  RT extends TypeMapKeys = 'void',
+  T extends any[] = FuncTypes<TAppend<RT, A>>,
   F extends Callback<T> = Callback<T>,
   M extends TAnyFunc = TAnyFunc,
 > {
-  matchFunc?: (args: any[], types: A) => boolean;
-  returnType?: TypeMapKeys;
+  matchFunc?: (args: any[], types: TAppend<RT, A>) => boolean;
+  returnType?: RT;
   types?: A;
   func: FuncInMap<F, M>;
 }
@@ -97,10 +98,11 @@ interface RegisterFunc<M extends TAnyFunc> {
    * @warning promise 只判断是否是 promise, 对 promise 的返回值不进行校验, 所以 Promise\<number> 和 Promise\<string> 在函数匹配时是等价的
    */
   <
-    A extends TypeMapKeys[],
-    T extends any[] = FuncTypes<A>,
+    A extends TypeMapKeys[] = TypeMapKeys[],
+    RT extends TypeMapKeys = 'void',
+    T extends any[] = FuncTypes<TAppend<RT, A>>,
     F extends Callback<T> = Callback<T>,
-  >(options: RegisterFuncOptions<A, T, F, M>): PolymorphismInstance<M>;
+  >(options: RegisterFuncOptions<A, RT, T, F, M>): PolymorphismInstance<M>;
 
   /**
    * 注册一个重载实现
@@ -230,7 +232,7 @@ function findFuncImplInfo(funcImplInfoMap: FuncImplInfoMap, types?: TypeMapKeys[
  * 对register的args进行处理，返回匹配函数以及allTypes，参数归一化
  */
 function dealRegisterArgs(args: any[]): {
-  matchFunc: ((args: any[], types: TypeMapKeys[]) => boolean) | undefined;
+  matchFunc?: ((args: any[], types: TypeMapKeys[]) => boolean);
   allTypes: TypeMapKeys[];
   func: TAnyFunc;
 } {
@@ -248,15 +250,19 @@ function dealRegisterArgs(args: any[]): {
       throw new TypeError('func 必须为 function 类型');
     }
 
-    const matchFunc = (funcOrOptions as RegisterFuncOptions).matchFunc;
-    const allTypes = [];
+    const matchFunc = (funcOrOptions as RegisterFuncOptions).matchFunc as ((args: any[], types: TypeMapKeys[]) => boolean);
+    const allTypes: TypeMapKeys[] = [];
 
     if (funcOrOptions.types) {
       allTypes.push(...funcOrOptions.types);
     }
 
+    // 有则添加，无则加入void
     if (funcOrOptions.returnType) {
       allTypes.push(funcOrOptions.returnType);
+    }
+    else {
+      allTypes.push('void');
     }
 
     return {
@@ -344,25 +350,12 @@ export function createOverloadFunc<T extends TAnyFunc = (...args: any) => any>()
 
   return new Proxy((...args: any[]) => {
     const funcImplInfo = findFuncImplInfo(funcImplInfoMap, undefined, args);
+
     if (!funcImplInfo) {
       throw new TypeError(`没有找到匹配的函数`);
     }
 
     const result = callFuncImpl(funcImplInfo, args);
-
-    // 此处用于校验出参是否正确
-    const expectReturnType = funcImplInfo.returnType;
-
-    // 如果没有期望输出类型，则直接跳过校验
-    if (!expectReturnType) {
-      return result;
-    }
-
-    const actualReturnType = getType(result);
-
-    if (!typeEq(expectReturnType, actualReturnType)) {
-      throw new TypeError(`出参类型不匹配, 期望: ${expectReturnType}, 实际: ${actualReturnType}`);
-    }
 
     return result;
   }, {
