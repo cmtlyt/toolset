@@ -78,7 +78,32 @@ type ArgsParse<T extends any[], R extends any[] = []> = T extends [infer H, ...i
 /** 回调函数类型 */
 type Callback<T extends any[]> = (...args: ArgsParse<TLastBeforeTypes<T>>) => TLastType<T, void>;
 
+interface RegisterFuncOptions<
+  A extends TypeMapKeys[] = TypeMapKeys[],
+  RT extends TypeMapKeys = 'void',
+  T extends any[] = FuncTypes<TAppend<RT, A>>,
+  F extends Callback<T> = Callback<T>,
+  M extends TAnyFunc = TAnyFunc,
+> {
+  matchFunc?: (args: any[], types: TAppend<RT, A>) => boolean;
+  returnType?: RT;
+  types?: A;
+  func: FuncInMap<F, M>;
+}
+
 interface RegisterFunc<M extends TAnyFunc> {
+  /**
+   * 注册一个重载实现
+   *
+   * @warning promise 只判断是否是 promise, 对 promise 的返回值不进行校验, 所以 Promise\<number> 和 Promise\<string> 在函数匹配时是等价的
+   */
+  <
+    A extends TypeMapKeys[] = TypeMapKeys[],
+    RT extends TypeMapKeys = 'void',
+    T extends any[] = FuncTypes<TAppend<RT, A>>,
+    F extends Callback<T> = Callback<T>,
+  >(options: RegisterFuncOptions<A, RT, T, F, M>): PolymorphismInstance<M>;
+
   /**
    * 注册一个重载实现
    *
@@ -89,6 +114,7 @@ interface RegisterFunc<M extends TAnyFunc> {
     T extends any[] = FuncTypes<A>,
     F extends Callback<T> = Callback<T>,
   >(func: FuncInMap<F, M>, ...args: A): PolymorphismInstance<M>;
+
   /**
    * 注册一个重载实现
    *
@@ -202,37 +228,100 @@ function findFuncImplInfo(funcImplInfoMap: FuncImplInfoMap, types?: TypeMapKeys[
   return funcImplInfoMap[_types];
 }
 
+/**
+ * 对register的args进行处理，返回匹配函数以及allTypes，参数归一化
+ */
+function dealRegisterArgs(args: any[]): {
+  matchFunc?: ((args: any[], types: TypeMapKeys[]) => boolean);
+  allTypes: TypeMapKeys[];
+  func: TAnyFunc;
+} {
+  const [funcOrOptions, ...restArgs] = args;
+
+  if (typeof funcOrOptions !== 'object' && typeof funcOrOptions !== 'function') {
+    throw new TypeError('第一个参数必须为 function 类型，或者为可识别的 配置项 类型');
+  }
+
+  // 如果第一个参数是对象，则当作配置项直接使用
+  if (typeof funcOrOptions === 'object' && funcOrOptions !== null) {
+    const func = funcOrOptions.func;
+
+    if (typeof func !== 'function') {
+      throw new TypeError('func 必须为 function 类型');
+    }
+
+    const matchFunc = (funcOrOptions as RegisterFuncOptions).matchFunc as ((args: any[], types: TypeMapKeys[]) => boolean);
+    const allTypes: TypeMapKeys[] = [];
+
+    if (funcOrOptions.types) {
+      allTypes.push(...funcOrOptions.types);
+    }
+
+    // 有则添加，无则加入void
+    if (funcOrOptions.returnType) {
+      allTypes.push(funcOrOptions.returnType);
+    }
+    else {
+      allTypes.push('void');
+    }
+
+    return {
+      matchFunc,
+      allTypes,
+      func,
+    };
+  }
+
+  let matchFunc: ((args: any[], types: TypeMapKeys[]) => boolean) | undefined; // 参数匹配函数
+
+  const func = funcOrOptions;
+  const [matchFuncOrType, ...restTypes] = restArgs;
+  const allTypes = restTypes;
+
+  if (typeof matchFuncOrType === 'function') {
+    matchFunc = matchFuncOrType;
+  }
+  else {
+    if (matchFuncOrType) {
+      allTypes.unshift(matchFuncOrType);
+    }
+  }
+
+  return {
+    matchFunc,
+    allTypes,
+    func,
+  };
+};
+
 function getController(funcImplInfoMap: FuncImplInfoMap): PolymorphismController<any> {
   return {
-    register(func: TAnyFunc, ...args: any[]) {
-      if (typeof func !== 'function') {
-        throw new TypeError('第一个参数必须为 function 类型');
-      }
-      const [matchFunc, ...types] = args;
-      const isMatchFunc = typeof matchFunc === 'function';
-      if (!isMatchFunc) {
-        types.unshift(matchFunc);
-      }
-      if (types.some(item => typeof item !== 'string')) {
+    register(...args: any[]) {
+      const { matchFunc, allTypes, func } = dealRegisterArgs(args);
+
+      if (allTypes.some(item => typeof item !== 'string')) {
         throw new TypeError('剩余参数必须为 string 类型');
       }
 
-      const _types = types.map((item) => {
-        if (item === 'void')
+      const transformType = (type: TypeMapKeys) => {
+        if (type === 'void')
           return 'undefined';
-        if (item === 'unknown')
+        if (type === 'unknown')
           return 'any';
-        return item;
-      });
+        return type;
+      };
+
+      const _allTypes = allTypes.map(transformType);
+
+      const _types = _allTypes.slice(0, -1);
+      const _returnType = _allTypes[_allTypes.length - 1];
 
       const funcImpl = {
         callback: func,
-        matchFunc: isMatchFunc ? matchFunc : undefined,
+        matchFunc,
       };
 
-      const implType = isMatchFunc ? 'match' : 'base';
-
-      const returnType = _types.pop();
+      const implType = typeof matchFunc === 'function' ? 'match' : 'base';
 
       const oldFuncImplInfo = findFuncImplInfo(funcImplInfoMap, _types);
       if (oldFuncImplInfo?.[implType]) {
@@ -241,7 +330,7 @@ function getController(funcImplInfoMap: FuncImplInfoMap): PolymorphismController
 
       const funcImplInfo = {
         types: _types,
-        returnType,
+        returnType: _returnType,
         [implType]: funcImpl,
       };
 
@@ -261,10 +350,14 @@ export function createOverloadFunc<T extends TAnyFunc = (...args: any) => any>()
 
   return new Proxy((...args: any[]) => {
     const funcImplInfo = findFuncImplInfo(funcImplInfoMap, undefined, args);
+
     if (!funcImplInfo) {
       throw new TypeError(`没有找到匹配的函数`);
     }
-    return callFuncImpl(funcImplInfo, args);
+
+    const result = callFuncImpl(funcImplInfo, args);
+
+    return result;
   }, {
     get(target, prop, receiver) {
       if (prop in controller) {
