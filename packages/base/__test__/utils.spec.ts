@@ -118,6 +118,8 @@ describe('utils', async () => {
     sleepSync,
     throttle,
     getSpace,
+    tryOrErrorFunc,
+    tryOrErrorAsyncFunc
   } = await (() => {
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');
@@ -636,6 +638,35 @@ describe('utils', async () => {
         })(3),
       ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: error]`);
     });
+
+    it('errorHandler', () => {
+      const presetError = new Error('error self');
+
+      const func = function (flag: 'this' | 'error' | 'pass') {
+        if (flag === 'this') {
+          return this;
+        }
+
+        if (flag === 'error') {
+          throw presetError;
+        }
+
+        return 'pass';
+      }
+
+      const obj = {
+        func: tryOrErrorFunc(func),
+        asyncFunc: tryOrErrorAsyncFunc(func)
+      };
+
+      expect(obj.func('this')).toStrictEqual([null, obj]);
+      expect(obj.func('error')).toEqual([presetError, null])
+      expect(obj.func('pass')).toEqual([null, 'pass']);
+
+      expect(obj.asyncFunc('this')).resolves.toStrictEqual([null, obj]);
+      expect(obj.asyncFunc('error')).resolves.toEqual([presetError, null])
+      expect(obj.asyncFunc('pass')).resolves.toEqual([null, 'pass']);
+    })
   });
 
   describe('datahandler', () => {
