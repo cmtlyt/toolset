@@ -42,3 +42,11 @@ export const isBlob = cacheByReturn(() => {
   }
   return (value: any): boolean => value instanceof Blob;
 });
+
+/**
+ * 判断是否为Object对象
+ * @param value
+ */
+export function isObject(value: any): value is object {
+  return typeof value === 'object' && value !== null;
+}
