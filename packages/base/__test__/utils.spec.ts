@@ -119,7 +119,10 @@ describe('utils', async () => {
     throttle,
     getSpace,
     tryOrErrorFunc,
-    tryOrErrorAsyncFunc
+    tryOrErrorAsyncFunc,
+    tryOrError,
+    tryOrErrorAsync,
+    resultOrError
   } = await (() => {
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');
@@ -654,16 +657,28 @@ describe('utils', async () => {
         return 'pass';
       }
 
+      const resolveResult = Promise.resolve(func('pass'));
+      const rejectResult = Promise.reject(presetError);
+
       const obj = {
         func: tryOrErrorFunc(func),
         asyncFunc: tryOrErrorAsyncFunc(func)
       };
 
-      expect(obj.func('this')).toStrictEqual([null, obj]);
+      expect(tryOrError(() => func('pass'))).toEqual([null, 'pass']);
+      expect(tryOrError(() => func('error'))).toEqual([presetError, null])
+
+      expect(tryOrErrorAsync(async () => func('pass'))).resolves.toEqual([null, 'pass']);
+      expect(tryOrErrorAsync(async () => func('error'))).resolves.toEqual([presetError, null])
+
+      expect(resultOrError(resolveResult)).resolves.toEqual([null, 'pass']);
+      expect(resultOrError(rejectResult)).resolves.toEqual([presetError, null])
+
+      expect(obj.func('this')).toEqual([null, obj]);
       expect(obj.func('error')).toEqual([presetError, null])
       expect(obj.func('pass')).toEqual([null, 'pass']);
 
-      expect(obj.asyncFunc('this')).resolves.toStrictEqual([null, obj]);
+      expect(obj.asyncFunc('this')).resolves.toEqual([null, obj]);
       expect(obj.asyncFunc('error')).resolves.toEqual([presetError, null])
       expect(obj.asyncFunc('pass')).resolves.toEqual([null, 'pass']);
     })
