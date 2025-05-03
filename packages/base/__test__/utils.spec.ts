@@ -80,6 +80,7 @@ describe('utils', async () => {
     isOldEdge,
     isOpenHarmony,
     isPromise,
+    isObject,
     isQuickApp,
     isSafari,
     isString,
@@ -430,6 +431,28 @@ describe('utils', async () => {
       expect(isAsyncFunc('')).toBe(false);
       expect(isAsyncFunc(0 / 1)).toBe(false);
     });
+
+    it('isObject', () => {
+      expect(isObject({})).toBe(true);
+      expect(isObject(null)).toBe(false);
+      expect(isObject(undefined)).toBe(false);
+      expect(isObject(0)).toBe(false);
+      expect(isObject('')).toBe(false);
+      expect(isObject(0 / 1)).toBe(false);
+      expect(isObject(new Date())).toBe(true);
+      expect(isObject(new Error())).toBe(true);
+      expect(isObject(new Map())).toBe(true);
+      expect(isObject(new WeakMap())).toBe(true);
+      expect(isObject(new Set())).toBe(true);
+      expect(isObject(new WeakSet())).toBe(true);
+      expect(isObject(new Promise(() => {}))).toBe(true);
+      expect(isObject(new Int8Array())).toBe(true);
+      expect(isObject(new Uint8Array())).toBe(true);
+      expect(isObject(new Uint8ClampedArray())).toBe(true);
+      expect(isObject(new Int16Array())).toBe(true);
+      expect(isObject(new Uint16Array())).toBe(true);
+      expect(isObject(new File(Buffer.from('test'), 'test.txt', { type: 'text/plain' }))).toBe(true);
+    })
   });
 
   describe('funcHandler', () => {
