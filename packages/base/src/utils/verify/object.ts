@@ -45,7 +45,7 @@ export const isBlob = cacheByReturn(() => {
 });
 
 /**
- * 判断是否为Object对象
+ * 判断是否为引用类型数据
  * @param value
  */
 export function isObject(value: any): value is object {
@@ -53,7 +53,7 @@ export function isObject(value: any): value is object {
 }
 
 /**
- * 判断是否为普通字面量对象
+ * 判断是否为普通对象
  * @param value
  */
 export function isPlainObject(value: any): value is Record<string, unknown> {
