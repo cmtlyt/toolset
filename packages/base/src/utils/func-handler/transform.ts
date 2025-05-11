@@ -234,7 +234,9 @@ export function tryCallFunc<F extends TAnyFunc>(
  * @param func
  */
 export function tryOrErrorFunc<T extends any[], R>(func: TFunc<T, R>): (...args: T) => ErrorResult<R> {
-  return (...args: T) => tryOrError(() => func(...args));
+  return function (this: any, ...args: T) {
+    return tryOrError(() => func.call(this, ...args));
+  };
 }
 
 /**
@@ -244,5 +246,7 @@ export function tryOrErrorFunc<T extends any[], R>(func: TFunc<T, R>): (...args:
  * @param func
  */
 export function tryOrErrorAsyncFunc<T extends any[], R>(func: TFunc<T, R>): (...args: T) => Promise<ErrorResult<R>> {
-  return (...args: T) => tryOrErrorAsync(() => func(...args));
+  return function (this: any, ...args: T) {
+    return tryOrErrorAsync(() => func.call(this, ...args));
+  };
 }

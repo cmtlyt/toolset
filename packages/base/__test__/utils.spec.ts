@@ -80,6 +80,8 @@ describe('utils', async () => {
     isOldEdge,
     isOpenHarmony,
     isPromise,
+    isObject,
+    isPlainObject,
     isQuickApp,
     isSafari,
     isString,
@@ -118,6 +120,11 @@ describe('utils', async () => {
     sleepSync,
     throttle,
     getSpace,
+    tryOrErrorFunc,
+    tryOrErrorAsyncFunc,
+    tryOrError,
+    tryOrErrorAsync,
+    resultOrError
   } = await (() => {
     return inject('CI') ? import('../dist') : import('../src');
   })() as typeof import('../src');
@@ -425,6 +432,49 @@ describe('utils', async () => {
       expect(isAsyncFunc('')).toBe(false);
       expect(isAsyncFunc(0 / 1)).toBe(false);
     });
+
+    it('isObject', () => {
+      expect(isObject({})).toBe(true);
+      expect(isObject(null)).toBe(false);
+      expect(isObject(undefined)).toBe(false);
+      expect(isObject(0)).toBe(false);
+      expect(isObject('')).toBe(false);
+      expect(isObject(0 / 1)).toBe(false);
+      expect(isObject(new Date())).toBe(true);
+      expect(isObject(new Error())).toBe(true);
+      expect(isObject(new Map())).toBe(true);
+      expect(isObject(new WeakMap())).toBe(true);
+      expect(isObject(new Set())).toBe(true);
+      expect(isObject(new WeakSet())).toBe(true);
+      expect(isObject(new Promise(() => {}))).toBe(true);
+      expect(isObject(new Int8Array())).toBe(true);
+      expect(isObject(new Uint8Array())).toBe(true);
+      expect(isObject(new Uint8ClampedArray())).toBe(true);
+      expect(isObject(new Int16Array())).toBe(true);
+      expect(isObject(new Uint16Array())).toBe(true);
+      expect(isObject(new File(Buffer.from('test'), 'test.txt', { type: 'text/plain' }))).toBe(true);
+    })
+
+    it('isPlainObject', () => {
+      expect(isPlainObject({})).toBe(true);
+      expect(isPlainObject(null)).toBe(false);
+      expect(isPlainObject(undefined)).toBe(false);
+      expect(isPlainObject(0)).toBe(false);
+      expect(isPlainObject('')).toBe(false);
+      expect(isPlainObject(0 / 1)).toBe(false);
+      expect(isPlainObject(new Date())).toBe(false);
+      expect(isPlainObject(new Error())).toBe(false);
+      expect(isPlainObject(new Map())).toBe(false);
+      expect(isPlainObject(new WeakMap())).toBe(false);
+      expect(isPlainObject(new Set())).toBe(false);
+      expect(isPlainObject(new WeakSet())).toBe(false);
+      expect(isPlainObject(new Promise(() => {}))).toBe(false);
+      expect(isPlainObject(new Int8Array())).toBe(false);
+      expect(isPlainObject(new Uint8Array())).toBe(false);
+      expect(isPlainObject(new Uint8ClampedArray())).toBe(false);
+      expect(isPlainObject(new Int16Array())).toBe(false);
+      expect(isPlainObject(new Uint16Array())).toBe(false);
+    })
   });
 
   describe('funcHandler', () => {
@@ -636,6 +686,47 @@ describe('utils', async () => {
         })(3),
       ).rejects.toThrowErrorMatchingInlineSnapshot(`[Error: error]`);
     });
+
+    it('errorHandler', () => {
+      const presetError = new Error('error self');
+
+      const func = function (flag: 'this' | 'error' | 'pass') {
+        if (flag === 'this') {
+          return this;
+        }
+
+        if (flag === 'error') {
+          throw presetError;
+        }
+
+        return 'pass';
+      }
+
+      const resolveResult = Promise.resolve(func('pass'));
+      const rejectResult = Promise.reject(presetError);
+
+      const obj = {
+        func: tryOrErrorFunc(func),
+        asyncFunc: tryOrErrorAsyncFunc(func)
+      };
+
+      expect(tryOrError(() => func('pass'))).toEqual([null, 'pass']);
+      expect(tryOrError(() => func('error'))).toEqual([presetError, null])
+
+      expect(tryOrErrorAsync(async () => func('pass'))).resolves.toEqual([null, 'pass']);
+      expect(tryOrErrorAsync(async () => func('error'))).resolves.toEqual([presetError, null])
+
+      expect(resultOrError(resolveResult)).resolves.toEqual([null, 'pass']);
+      expect(resultOrError(rejectResult)).resolves.toEqual([presetError, null])
+
+      expect(obj.func('this')).toEqual([null, obj]);
+      expect(obj.func('error')).toEqual([presetError, null])
+      expect(obj.func('pass')).toEqual([null, 'pass']);
+
+      expect(obj.asyncFunc('this')).resolves.toEqual([null, obj]);
+      expect(obj.asyncFunc('error')).resolves.toEqual([presetError, null])
+      expect(obj.asyncFunc('pass')).resolves.toEqual([null, 'pass']);
+    })
   });
 
   describe('datahandler', () => {

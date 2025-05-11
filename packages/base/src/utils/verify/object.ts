@@ -1,4 +1,5 @@
 import { warning } from '$/common/warning';
+import { getType } from '..';
 import { cacheByReturn } from '../func-handler';
 import { isInIframe } from '../ua';
 
@@ -42,3 +43,19 @@ export const isBlob = cacheByReturn(() => {
   }
   return (value: any): boolean => value instanceof Blob;
 });
+
+/**
+ * 判断是否为引用类型数据
+ * @param value
+ */
+export function isObject(value: any): value is object {
+  return typeof value === 'object' && value !== null;
+}
+
+/**
+ * 判断是否为普通对象
+ * @param value
+ */
+export function isPlainObject(value: any): value is Record<string, unknown> {
+  return getType(value) === 'object';
+}
