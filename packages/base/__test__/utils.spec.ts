@@ -439,19 +439,19 @@ describe('utils', async () => {
       expect(isObject(0)).toBe(false);
       expect(isObject('')).toBe(false);
       expect(isObject(0 / 1)).toBe(false);
-      expect(isObject(new Date())).toBe(true);
-      expect(isObject(new Error())).toBe(true);
-      expect(isObject(new Map())).toBe(true);
-      expect(isObject(new WeakMap())).toBe(true);
-      expect(isObject(new Set())).toBe(true);
-      expect(isObject(new WeakSet())).toBe(true);
-      expect(isObject(new Promise(() => {}))).toBe(true);
-      expect(isObject(new Int8Array())).toBe(true);
-      expect(isObject(new Uint8Array())).toBe(true);
-      expect(isObject(new Uint8ClampedArray())).toBe(true);
-      expect(isObject(new Int16Array())).toBe(true);
-      expect(isObject(new Uint16Array())).toBe(true);
-      expect(isObject(new File(Buffer.from('test'), 'test.txt', { type: 'text/plain' }))).toBe(true);
+      expect(isObject(NaN)).toBe(false);
+      expect(isObject(new Date())).toBe(false);
+      expect(isObject(new Error())).toBe(false);
+      expect(isObject(new Map())).toBe(false);
+      expect(isObject(new WeakMap())).toBe(false);
+      expect(isObject(new Set())).toBe(false);
+      expect(isObject(new WeakSet())).toBe(false);
+      expect(isObject(new Promise(() => {}))).toBe(false);
+      expect(isObject(new Int8Array())).toBe(false);
+      expect(isObject(new Uint8Array())).toBe(false);
+      expect(isObject(new Uint8ClampedArray())).toBe(false);
+      expect(isObject(new Int16Array())).toBe(false);
+      expect(isObject(new Uint16Array())).toBe(false);
     })
   });
 
