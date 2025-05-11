@@ -56,6 +56,6 @@ export function isObject(value: any): value is object {
  * 判断是否为普通字面量对象
  * @param value
  */
-export function isPlainObject(value: any): value is object {
+export function isPlainObject(value: any): value is Record<string, unknown> {
   return getType(value) === 'object';
 }
