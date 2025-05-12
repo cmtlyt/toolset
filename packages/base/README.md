@@ -47,6 +47,8 @@ pnpm add @cmtlyt/base
 - (F) resultOrError
 - (F) tryOrErrorFunc
 - (F) tryOrErrorFuncAsync
+- (F) isObject
+- (F) isPlainObject
 
 ### v0.12.2
 
