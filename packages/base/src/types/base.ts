@@ -87,6 +87,8 @@ export type TPromiseConstructor<T> = TConstructor<
   [func: (resolve: (data: T) => void, reject: TFunc<any, void>) => any]
 >;
 
+export type ErrorResult<R> = [Error, null] | [null, R];
+
 /** js 支持的所有类型 (滞后) */
 export type TAllType =
   | 'string'

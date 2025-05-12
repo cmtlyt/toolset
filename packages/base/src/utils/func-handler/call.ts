@@ -1,4 +1,4 @@
-import type { TAnyFunc, TFunc } from '$/types/base';
+import type { ErrorResult, TAnyFunc, TFunc } from '$/types/base';
 import { isPromise } from '../verify';
 
 /**
@@ -49,4 +49,48 @@ export function iife<T extends any[], R>(func: TFunc<T, R>, args?: T) {
    * 此处为数组展开, 所以需要对 args 进行兜底处理
    */
   return func(...(args || []) as any);
+}
+
+/**
+ * 调用函数, 返回包装过的结果对象
+ *
+ * 如果需要异步支持, 请使用 `tryOrErrorAsync`
+ *
+ * @param func 需要执行的函数
+ */
+export function tryOrError<R>(func: TFunc<any[], R>): ErrorResult<R> {
+  try {
+    return [null, func()];
+  }
+  catch (e: any) {
+    return [e, null];
+  }
+}
+
+/**
+ * 调用函数, 返回包装过的结果对象 (异步版本)
+ *
+ * @param func
+ */
+export async function tryOrErrorAsync<R>(func: TFunc<any[], R>): Promise<ErrorResult<R>> {
+  try {
+    return [null, await func()];
+  }
+  catch (e: any) {
+    return [e, null];
+  }
+}
+
+/**
+ * 获取 promise 结果, 返回包装过的结果对象
+ *
+ * @param promise
+ */
+export async function resultOrError<R>(promise: Promise<R>): Promise<ErrorResult<Awaited<R>>> {
+  try {
+    return [null, await promise];
+  }
+  catch (e: any) {
+    return [e, null];
+  }
 }

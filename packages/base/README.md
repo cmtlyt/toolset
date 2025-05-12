@@ -38,6 +38,18 @@ pnpm add @cmtlyt/base
 - (T) 类型
 - -> 别名
 
+### v0.13.0
+
+新增
+
+- (F) tryOrError
+- (F) tryOrErrorAsync
+- (F) resultOrError
+- (F) tryOrErrorFunc
+- (F) tryOrErrorFuncAsync
+- (F) isObject
+- (F) isPlainObject
+
 ### v0.12.2
 
 - createPolymorphismFunc -> createOverloadFunc

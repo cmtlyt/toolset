@@ -1,8 +1,8 @@
-import type { TAnyFunc, TArgsType, TFlatPromise, TFunc, TGetReturnType, TReverseArray } from '$/types/base';
+import type { ErrorResult, TAnyFunc, TArgsType, TFlatPromise, TFunc, TGetReturnType, TReverseArray } from '$/types/base';
 import { getNow, withResolvers } from '../get-data';
 import { isPromise } from '../verify';
 import { cacheByReturn } from './cache';
-import { tryCall } from './call';
+import { tryCall, tryOrError, tryOrErrorAsync } from './call';
 
 /**
  * 防抖函数 (返回 Promise)
@@ -225,4 +225,28 @@ export function tryCallFunc<F extends TAnyFunc>(
   catcher?: (e: any) => void,
 ): TFunc<Parameters<F>, ReturnType<F>> {
   return (...args: Parameters<F>) => tryCall(() => runner(...args), catcher);
+}
+
+/**
+ * 返回一个支持传参的使用 try catch 包裹的函数
+ *
+ * @see tryOrError
+ * @param func
+ */
+export function tryOrErrorFunc<T extends any[], R>(func: TFunc<T, R>): (...args: T) => ErrorResult<R> {
+  return function (this: any, ...args: T) {
+    return tryOrError(() => func.call(this, ...args));
+  };
+}
+
+/**
+ * 返回一个支持传参和异步的使用 try catch 包裹的函数
+ *
+ * @see tryOrErrorAsync
+ * @param func
+ */
+export function tryOrErrorAsyncFunc<T extends any[], R>(func: TFunc<T, R>): (...args: T) => Promise<ErrorResult<R>> {
+  return function (this: any, ...args: T) {
+    return tryOrErrorAsync(() => func.call(this, ...args));
+  };
 }
