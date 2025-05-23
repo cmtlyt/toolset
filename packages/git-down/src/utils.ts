@@ -63,18 +63,13 @@ export function parseGitUrl(url: string): GitUrlInfo {
   };
 }
 
-export async function moveOrCopyAndCleanup(sourcePath: string, targetPath: string, callback: Callback): Promise<void> {
-  try {
-    // 如果目标路径已存在，使用复制
-    if (existsSync(targetPath)) {
-      await cp(sourcePath, targetPath, { recursive: true });
-    }
-    else {
-      // 如果目标不存在，使用移动（重命名）
-      await rename(sourcePath, targetPath);
-    }
-
-    callback(null);
+export async function moveOrCopyAndCleanup(sourcePath: string, targetPath: string) {
+  // 如果目标路径已存在，使用复制
+  if (existsSync(targetPath)) {
+    await cp(sourcePath, targetPath, { recursive: true });
   }
-  catch {}
+  else {
+    // 如果目标不存在，使用移动（重命名）
+    await rename(sourcePath, targetPath);
+  }
 }

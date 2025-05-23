@@ -41,6 +41,6 @@ export async function downloadPartial(state: State) {
     }, callback)
     .then(() => writeFile(sparseCheckoutPath, sparseChecoutFile), callback)
     .then(() => exec(`git pull ${randomRemoteName} --quiet ${branch} --depth 1`, execOption), callback)
-    .then(() => moveOrCopyAndCleanup(resolve(tempPath, pathname), targetPath, callback), callback)
+    .then(() => moveOrCopyAndCleanup(resolve(tempPath, pathname), targetPath), callback)
     .then(() => rmdir(tempPath), callback);
 }
