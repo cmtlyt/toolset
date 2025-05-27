@@ -1,5 +1,5 @@
 import type { State } from '$/types';
-import { createOutput, exec, existsSync, mv, readFile, resolve, rmdir, writeFile } from '$/utils';
+import { createOutput, exec, existsSync, moveOrCopyAndCleanup, readFile, resolve, rmdir, writeFile } from '$/utils';
 
 export async function downloadPartial(state: State) {
   const { gitInfo, callback, option } = state;
@@ -41,6 +41,6 @@ export async function downloadPartial(state: State) {
     }, callback)
     .then(() => writeFile(sparseCheckoutPath, sparseChecoutFile), callback)
     .then(() => exec(`git pull ${randomRemoteName} --quiet ${branch} --depth 1`, execOption), callback)
-    .then(() => mv(resolve(tempPath, pathname), targetPath), callback)
+    .then(() => moveOrCopyAndCleanup(resolve(tempPath, pathname), targetPath), callback)
     .then(() => rmdir(tempPath), callback);
 }

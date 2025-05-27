@@ -39,6 +39,14 @@ await gitDown('http://github.com/cmtlyt/test', { output: tempFolder });
 
 ## 更新
 
+### v0.2.2
+
+新增 `gitDown` 具名导出
+
+### v0.2.1
+
+修复 windows 下 rename 问题
+
 ### v0.2.0
 
 移除目录切换逻辑, 下载文件/目录支持并发

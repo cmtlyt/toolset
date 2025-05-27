@@ -30,7 +30,7 @@ export function gitDownWithCallback(path: string, option?: GitDownOption, callba
  *
  * @warning 下载过程中会频繁修改执行目录, 请勿在运行期间执行文件相关操作, 除非你清楚执行目录的修改行为
  */
-function gitDown(path: string, option?: GitDownOption) {
+export function gitDown(path: string, option?: GitDownOption) {
   return new Promise<void>((resolve, reject) => {
     gitDownWithCallback(path, option, (error) => {
       if (error)

@@ -1,7 +1,7 @@
 import type { Callback, GitDownOption, GitUrlInfo } from './types';
 import { exec as execWithCallback } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
+import { cp, mkdir, rename, rm } from 'node:fs/promises';
 import { extname } from 'node:path';
 
 import { promisify } from 'node:util';
@@ -61,4 +61,15 @@ export function parseGitUrl(url: string): GitUrlInfo {
     branch,
     pathname: filePath,
   };
+}
+
+export async function moveOrCopyAndCleanup(sourcePath: string, targetPath: string) {
+  // 如果目标路径已存在，使用复制
+  if (existsSync(targetPath)) {
+    return cp(sourcePath, targetPath, { recursive: true });
+  }
+  else {
+    // 如果目标不存在，使用移动（重命名）
+    return rename(sourcePath, targetPath);
+  }
 }
