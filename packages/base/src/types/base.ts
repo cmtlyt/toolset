@@ -57,7 +57,7 @@ export type TArrayType<T> = T extends any[] ? T[number] : never;
 export type TUnwrapPromise<T> = T extends Promise<infer R> ? R : T;
 
 /** 指定对象的部分属性可选, 如果不指定属性, 则整个对象可选 */
-export type TOptional<T, K extends keyof T = keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type TOptional<T, K extends keyof T = keyof T> = Printify<Omit<T, K> & Partial<Pick<T, K>>>;
 
 /** 获取函数形参类型 */
 export type TGetArgs<F> = F extends (...args: infer A) => any ? A : [];
@@ -76,7 +76,7 @@ export type TReverseArray<T extends any[], L = TLength<T>, R extends any[] = []>
   L extends TLength<[]> ? R : T extends [infer H, ...infer E] ? TReverseArray<E, TLength<E>, TPrepend<H, R>> : [];
 
 /** 指定对象的部分属性必填, 如果不指定属性, 则整个对象必填 */
-export type TRequired<T, K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+export type TRequired<T, K extends keyof T = keyof T> = Printify<Omit<T, K> & Required<Pick<T, K>>>;
 
 /** 构造函数 */
 export type TConstructor<R, A extends any[] = any[]> = new (...args: A) => R;
@@ -164,3 +164,6 @@ export type TGetType<T> = T extends string ? string :
     T extends boolean ? boolean :
       T extends [...infer R] ? R :
         any;
+
+/** 更好的现实类型信息 */
+export type Printify<T> = { [K in keyof T]: T[K]; };
