@@ -2,14 +2,10 @@ name: check
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
   pull_request:
-    branches:
-      - '*'
-
-  merge_group: {}
+    types: [opened, synchronize, reopened]
 
 jobs:
   test:
