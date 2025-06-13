@@ -180,3 +180,11 @@ export type TIncludes<L extends any[], K> = L extends [infer H, ...infer T]
     ? true
     : TIncludes<T, K>
   : false;
+
+/** 深度指定对象的部分属性必填 */
+export type TDeepRequired<T> = T extends TObject<any> ? { [K in keyof T]-?: TDeepRequired<T[K]> } : T;
+
+/** 深度只读 */
+export type TDeepReadonly<T> = T extends (...args: any[]) => any ? T : {
+  readonly [P in keyof T]: TDeepReadonly<T[P]>;
+};
