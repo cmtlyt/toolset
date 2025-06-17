@@ -1,7 +1,6 @@
 import { Option, program } from 'commander';
 import { version } from '../package.json';
 import { createHandler } from './cli/create';
-import { optionPrompt } from './cli/option-prompt';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
 import { Registry } from './types';
 
