@@ -14,5 +14,3 @@ coverage
 doc_build
 __screenshots__
 *test-temp-folder
-# 排除 CLI 产物
-bin

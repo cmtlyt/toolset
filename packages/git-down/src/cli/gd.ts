@@ -91,8 +91,13 @@ export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
     // 获取自定义名称或使用仓库名称
     const customName = typeof args.name === 'string' ? args.name : gitInfo.project;
 
+    // 优先使用用户提供的output参数
     let outputPath: string;
-    if (customName) {
+    const userOutputPath = getStringArg(args.output, '');
+    if (userOutputPath) {
+      outputPath = userOutputPath;
+    }
+    else if (customName) {
       // 用户指定了自定义文件夹名称
       outputPath = `./${customName}`;
     }
