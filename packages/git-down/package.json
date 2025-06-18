@@ -24,7 +24,8 @@
     "clone",
     "git-clone",
     "git-down",
-    "cmtlyt"
+    "cmtlyt",
+    "cli"
   ],
   "exports": {
     ".": {
