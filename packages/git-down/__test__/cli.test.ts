@@ -1,12 +1,12 @@
 import { execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import process from 'node:process';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createOutput, rmdir } from '../src/utils';
 
 const tempFolder = resolve(process.cwd(), './cli-test-temp-folder');
-const binPath = resolve(process.cwd(), './bin/cli.mjs');
+const binPath = join(__dirname, '..', 'bin', 'cli.mjs');
 
 /**
  * 执行CLI命令并返回输出
