@@ -38,24 +38,6 @@ afterEach(async () => {
   await rmdir(tempFolder);
 });
 
-// describe('gd CLI测试', () => {
-//   // 下载功能测试
-//   describe('下载功能测试', () => {
-//     // master分支测试
-//     describe('master分支', () => {
-//       it('应该成功下载master分支目录', async () => {
-//         const repoUrl = 'https://github.com/cmtlyt/test';
-//         const outputDir = resolve(tempFolder, 'gd-cli-test-store');
-
-//         runCLI(repoUrl, `-o ${outputDir}`);
-//         // 验证文件是否下载成功
-//         expect(existsSync(outputDir)).toBe(true);
-//         expect(existsSync(resolve(outputDir, 'README.md'))).toBe(true);
-//       });
-//     });
-//   });
-// });
-
 describe('gd CLI测试', () => {
   // 下载功能测试
   describe('下载功能测试', () => {
