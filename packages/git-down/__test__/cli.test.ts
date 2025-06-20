@@ -38,72 +38,72 @@ afterEach(async () => {
   await rmdir(tempFolder);
 });
 
-describe('gd CLI测试', () => {
-  // 下载功能测试
-  describe('下载功能测试', () => {
-    // master分支测试
-    describe('master分支', () => {
-      it('应该成功下载master分支目录', async () => {
-        const repoUrl = 'https://github.com/cmtlyt/test';
-        const outputDir = resolve(tempFolder, 'gd-cli-test-store');
-
-        runCLI(repoUrl, `-o ${outputDir}`);
-        // 验证文件是否下载成功
-        expect(existsSync(outputDir)).toBe(true);
-        expect(existsSync(resolve(outputDir, 'README.md'))).toBe(true);
-      });
-    });
-  });
-});
-
 // describe('gd CLI测试', () => {
 //   // 下载功能测试
 //   describe('下载功能测试', () => {
 //     // master分支测试
 //     describe('master分支', () => {
 //       it('应该成功下载master分支目录', async () => {
-//         const repoUrl = 'https://github.com/snailuu/gd-cli-test-store/tree/master';
+//         const repoUrl = 'https://github.com/cmtlyt/test';
 //         const outputDir = resolve(tempFolder, 'gd-cli-test-store');
 
 //         runCLI(repoUrl, `-o ${outputDir}`);
 //         // 验证文件是否下载成功
 //         expect(existsSync(outputDir)).toBe(true);
-//         expect(existsSync(resolve(outputDir, 'main.md'))).toBe(true);
-//       });
-
-//       it('应该成功下载master分支特定文件', async () => {
-//         const fileUrl = 'https://github.com/snailuu/gd-cli-test-store/blob/master/src/index.ts';
-//         const outputDir = resolve(tempFolder, 'gd-cli-test-store');
-
-//         runCLI(fileUrl, `-o ${outputDir}`);
-
-//         // 验证文件是否下载成功
-//         expect(existsSync(resolve(outputDir, 'index.ts'))).toBe(true);
-//       });
-//     });
-
-//     // dev分支测试
-//     describe('dev分支', () => {
-//       it('应该成功下载dev分支目录', async () => {
-//         const repoUrl = 'https://github.com/snailuu/gd-cli-test-store/tree/dev';
-//         const outputDir = resolve(tempFolder, 'gd-cli-test-store');
-
-//         runCLI(repoUrl, `-o ${outputDir}`);
-
-//         // 验证文件是否下载成功
-//         expect(existsSync(outputDir)).toBe(true);
-//         expect(existsSync(resolve(outputDir, 'dev.md'))).toBe(true);
-//       });
-
-//       it('应该成功下载dev分支特定文件', async () => {
-//         const fileUrl = 'https://github.com/snailuu/gd-cli-test-store/blob/dev/src/dev.ts';
-//         const outputDir = resolve(tempFolder, 'gd-cli-test-store');
-
-//         runCLI(fileUrl, `-o ${outputDir}`);
-
-//         // 验证文件是否下载成功
-//         expect(existsSync(resolve(outputDir, 'dev.ts'))).toBe(true);
+//         expect(existsSync(resolve(outputDir, 'README.md'))).toBe(true);
 //       });
 //     });
 //   });
 // });
+
+describe('gd CLI测试', () => {
+  // 下载功能测试
+  describe('下载功能测试', () => {
+    // master分支测试
+    describe('master分支', () => {
+      it('应该成功下载master分支目录', async () => {
+        const repoUrl = 'https://github.com/snailuu/gd-cli-test-store/tree/master';
+        const outputDir = resolve(tempFolder, 'gd-cli-test-store');
+
+        runCLI(repoUrl, `-o ${outputDir}`);
+        // 验证文件是否下载成功
+        expect(existsSync(outputDir)).toBe(true);
+        expect(existsSync(resolve(outputDir, 'main.md'))).toBe(true);
+      });
+
+      it('应该成功下载master分支特定文件', async () => {
+        const fileUrl = 'https://github.com/snailuu/gd-cli-test-store/blob/master/src/index.ts';
+        const outputDir = resolve(tempFolder, 'gd-cli-test-store');
+
+        runCLI(fileUrl, `-o ${outputDir}`);
+
+        // 验证文件是否下载成功
+        expect(existsSync(resolve(outputDir, 'index.ts'))).toBe(true);
+      });
+    });
+
+    // dev分支测试
+    describe('dev分支', () => {
+      it('应该成功下载dev分支目录', async () => {
+        const repoUrl = 'https://github.com/snailuu/gd-cli-test-store/tree/dev';
+        const outputDir = resolve(tempFolder, 'gd-cli-test-store');
+
+        runCLI(repoUrl, `-o ${outputDir}`);
+
+        // 验证文件是否下载成功
+        expect(existsSync(outputDir)).toBe(true);
+        expect(existsSync(resolve(outputDir, 'dev.md'))).toBe(true);
+      });
+
+      it('应该成功下载dev分支特定文件', async () => {
+        const fileUrl = 'https://github.com/snailuu/gd-cli-test-store/blob/dev/src/dev.ts';
+        const outputDir = resolve(tempFolder, 'gd-cli-test-store');
+
+        runCLI(fileUrl, `-o ${outputDir}`);
+
+        // 验证文件是否下载成功
+        expect(existsSync(resolve(outputDir, 'dev.ts'))).toBe(true);
+      });
+    });
+  });
+});
