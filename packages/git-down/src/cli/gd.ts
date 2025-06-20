@@ -21,7 +21,7 @@ export interface GitDownArgsDef extends ArgsDef {
     type: 'string';
     description: '指定要下载的分支名称';
     alias: ['b'];
-    default: 'master';
+    default: 'main';
   };
   help: {
     type: 'boolean';
