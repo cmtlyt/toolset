@@ -56,15 +56,5 @@ jobs:
       - name: Install Supported Browsers
         run: npx playwright install
 
-      - name: Configure Git for CI
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global url."https://${{ github.token }}@github.com/".insteadOf "https://github.com/"
-
-      - name: Test
-        run: nr test:ci
-
-
       - name: Test
         run: nr test:ci
