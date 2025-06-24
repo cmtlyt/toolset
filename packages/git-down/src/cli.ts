@@ -41,6 +41,7 @@ const main = defineCommand<GitDownArgsDef>({
     },
   },
   async run({ args }) {
+    console.warn('主分支默认是 main，如果需要下载其他分支，请使用 -b 参数指定分支名称');
     await runGitDown(args);
   },
 });

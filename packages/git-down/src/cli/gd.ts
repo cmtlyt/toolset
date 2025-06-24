@@ -1,5 +1,7 @@
 import type { ArgsDef, ParsedArgs } from 'citty';
 import type { GitDownOption } from '../types';
+import { existsSync, rmSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { exit } from 'node:process';
 import gitDown, { parseGitUrl } from '../index';
 
@@ -68,6 +70,8 @@ function getStringArg(value: string | boolean | string[] | undefined, defaultVal
  * Git Down CLI 主函数
  */
 export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
+  let outputPath = '';
+
   try {
     // 获取 URL 参数（位置参数或从 _ 数组中获取）
     const url = args.url || args._[0];
@@ -92,7 +96,7 @@ export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
     const customName = typeof args.name === 'string' ? args.name : gitInfo.project;
 
     // 优先使用用户提供的output参数
-    const outputPath = getStringArg(args.output, `./${customName || gitInfo.project}`);
+    outputPath = getStringArg(args.output, `./${customName || gitInfo.project}`);
 
     // 构建选项
     const options: GitDownOption = {
@@ -110,6 +114,22 @@ export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
   }
   catch (error) {
     console.error('❌ Download failed:', error instanceof Error ? error.message : String(error));
+
+    // 如果下载失败，尝试删除已创建的输出目录
+    if (outputPath) {
+      const absolutePath = resolve(outputPath);
+
+      if (existsSync(absolutePath)) {
+        try {
+          rmSync(absolutePath, { recursive: true, force: true });
+          console.log(`🗑️ Cleaned up incomplete download directory: ${outputPath}`);
+        }
+        catch (cleanupError) {
+          console.error(`⚠️ Failed to clean up directory: ${String(cleanupError)}`);
+        }
+      }
+    }
+
     exit(1);
   }
 }
