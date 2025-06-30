@@ -2,7 +2,8 @@ import type { ArgsDef, ParsedArgs } from 'citty';
 import type { GitDownOption } from '../types';
 import { existsSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { exit } from 'node:process';
+import { exit, stdin, stdout } from 'node:process';
+import { createInterface } from 'node:readline';
 import gitDown, { parseGitUrl } from '../index';
 
 /**
@@ -67,69 +68,128 @@ function getStringArg(value: string | boolean | string[] | undefined, defaultVal
 }
 
 /**
+ * 验证和获取URL参数
+ */
+function validateAndGetUrl(args: GitDownParsedArgs): string {
+  const url = args.url || args._[0];
+
+  if (!url) {
+    console.error('❌ 错误: 必须提供URL参数');
+    console.log('使用 --help 查看使用说明');
+    exit(1);
+  }
+
+  if (!validateUrl(url)) {
+    console.error('❌ 错误: GitHub URL格式无效');
+    console.log('请提供有效的GitHub仓库、文件或目录URL');
+    exit(1);
+  }
+
+  return url;
+}
+
+/**
+ * 询问用户是否删除已存在的目录
+ */
+async function promptForDirectoryDeletion(dirPath: string): Promise<boolean> {
+  const rl = createInterface({
+    input: stdin,
+    output: stdout,
+  });
+
+  return new Promise<boolean>((resolve) => {
+    rl.question(`目录 "${dirPath}" 已存在。是否删除? (y/n): `, (answer) => {
+      rl.close();
+      resolve(answer.toLowerCase() === 'y');
+    });
+  });
+}
+
+/**
+ * 处理并生成输出路径
+ */
+async function processOutputPath(args: GitDownParsedArgs, gitInfo: ReturnType<typeof parseGitUrl>): Promise<string> {
+  const customName = typeof args.name === 'string' ? args.name : gitInfo.project;
+  const output = getStringArg(args.output, `./${customName || gitInfo.project}`);
+
+  if (existsSync(output)) {
+    console.log(`⚠️ 警告: 输出目录已存在: ${output}`);
+    const shouldDelete = await promptForDirectoryDeletion(output);
+
+    if (shouldDelete) {
+      cleanupIncompleteDownload(output);
+    }
+    else {
+      console.log('❌ 操作取消');
+      exit(1);
+    }
+  }
+
+  return output;
+}
+
+/**
+ * 获取分支参数
+ */
+function getBranchOption(args: GitDownParsedArgs, defaultBranch: string): string {
+  return getStringArg(args.branch, defaultBranch);
+}
+
+/**
+ * 清理不完整的下载目录
+ */
+function cleanupIncompleteDownload(outputPath: string): void {
+  if (!outputPath)
+    return;
+
+  const absolutePath = resolve(outputPath);
+
+  if (existsSync(absolutePath)) {
+    try {
+      rmSync(absolutePath, { recursive: true });
+      console.log(`🗑️ 已清理不完整的下载目录: ${outputPath}`);
+    }
+    catch (cleanupError) {
+      console.error(`⚠️ 清理目录失败: ${String(cleanupError)}`);
+    }
+  }
+}
+
+/**
+ * 执行下载操作
+ */
+async function executeDownload(url: string, options: GitDownOption): Promise<void> {
+  console.log(`🚀 开始从以下地址下载: ${url}`);
+  console.log(`📁 输出目录: ${options.output}`);
+
+  await gitDown(url, options);
+  console.log('✅ 下载成功完成!');
+}
+
+/**
  * Git Down CLI 主函数
  */
 export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
   let outputPath = '';
 
   try {
-    // 获取 URL 参数（位置参数或从 _ 数组中获取）
-    const url = args.url || args._[0];
+    const url = validateAndGetUrl(args);
 
-    if (!url) {
-      console.error('❌ Error: URL is required');
-      console.log('Use --help for usage information');
-      exit(1);
-    }
-
-    // 验证 URL 格式
-    if (!validateUrl(url)) {
-      console.error('❌ Error: Invalid GitHub URL format');
-      console.log('Please provide a valid GitHub repository, file, or directory URL');
-      exit(1);
-    }
-
-    // 解析URL获取详细信息
     const gitInfo = parseGitUrl(url);
 
-    // 获取自定义名称或使用仓库名称
-    const customName = typeof args.name === 'string' ? args.name : gitInfo.project;
+    outputPath = await processOutputPath(args, gitInfo);
 
-    // 优先使用用户提供的output参数
-    outputPath = getStringArg(args.output, `./${customName || gitInfo.project}`);
-
-    // 构建选项
     const options: GitDownOption = {
       output: outputPath,
-      branch: getStringArg(args.branch, gitInfo.branch || 'master'),
+      branch: getBranchOption(args, gitInfo.branch || 'master'),
     };
 
-    console.log(`🚀 Starting download from: ${url}`);
-    console.log(`📁 Output directory: ${options.output}`);
-
-    // 执行下载
-    await gitDown(url, options);
-
-    console.log('✅ Download completed successfully!');
+    await executeDownload(url, options);
   }
   catch (error) {
-    console.error('❌ Download failed:', error instanceof Error ? error.message : String(error));
+    console.error('❌ 下载失败:', error instanceof Error ? error.message : String(error));
 
-    // 如果下载失败，尝试删除已创建的输出目录
-    if (outputPath) {
-      const absolutePath = resolve(outputPath);
-
-      if (existsSync(absolutePath)) {
-        try {
-          rmSync(absolutePath, { recursive: true, force: true });
-          console.log(`🗑️ Cleaned up incomplete download directory: ${outputPath}`);
-        }
-        catch (cleanupError) {
-          console.error(`⚠️ Failed to clean up directory: ${String(cleanupError)}`);
-        }
-      }
-    }
-
+    cleanupIncompleteDownload(outputPath);
     exit(1);
   }
 }
