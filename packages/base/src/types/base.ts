@@ -188,3 +188,12 @@ export type TDeepRequired<T> = T extends TObject<any> ? { [K in keyof T]-?: TDee
 export type TDeepReadonly<T> = T extends (...args: any[]) => any ? T : {
   readonly [P in keyof T]: TDeepReadonly<T[P]>;
 };
+
+/** 选择某个类型 */
+export type TPickType<T, P> = Extract<T, P>;
+
+/** 排除某个类型 */
+export type TOmitType<T, O> = Exclude<T, O>;
+
+/** 判断是否为联合类型 */
+export type TIsUnion<T, _T = T> = (T extends T ? [_T] extends [T] ? false : true : never);
