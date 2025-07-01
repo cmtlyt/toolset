@@ -109,20 +109,18 @@ async function promptForDirectoryDeletion(dirPath: string): Promise<boolean> {
  * 处理并生成输出路径
  */
 async function processOutputPath(args: GitDownParsedArgs, gitInfo: ReturnType<typeof parseGitUrl>): Promise<string> {
-  const customName = typeof args.name === 'string' ? args.name : gitInfo.project;
-  const output = getStringArg(args.output, `./${customName || gitInfo.project}`);
+  const output = getStringArg(args.output, `./${args.name ?? gitInfo.project}`);
 
   if (existsSync(output)) {
     console.log(`⚠️ 警告: 输出目录已存在: ${output}`);
     const shouldDelete = await promptForDirectoryDeletion(output);
 
-    if (shouldDelete) {
-      cleanupIncompleteDownload(output);
-    }
-    else {
+    if (!shouldDelete) {
       console.log('❌ 操作取消');
       exit(1);
     }
+
+    cleanupIncompleteDownload(output);
   }
 
   return output;
