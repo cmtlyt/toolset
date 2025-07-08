@@ -57,7 +57,7 @@ export type TArrayType<T> = T extends any[] ? T[number] : never;
 export type TUnwrapPromise<T> = T extends Promise<infer R> ? R : T;
 
 /** 指定对象的部分属性可选, 如果不指定属性, 则整个对象可选 */
-export type TOptional<T, K extends keyof T = keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+export type TOptional<T, K extends keyof T = keyof T> = TPrintify<Omit<T, K> & Partial<Pick<T, K>>>;
 
 /** 获取函数形参类型 */
 export type TGetArgs<F> = F extends (...args: infer A) => any ? A : [];
@@ -76,7 +76,7 @@ export type TReverseArray<T extends any[], L = TLength<T>, R extends any[] = []>
   L extends TLength<[]> ? R : T extends [infer H, ...infer E] ? TReverseArray<E, TLength<E>, TPrepend<H, R>> : [];
 
 /** 指定对象的部分属性必填, 如果不指定属性, 则整个对象必填 */
-export type TRequired<T, K extends keyof T = keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+export type TRequired<T, K extends keyof T = keyof T> = TPrintify<Omit<T, K> & Required<Pick<T, K>>>;
 
 /** 构造函数 */
 export type TConstructor<R, A extends any[] = any[]> = new (...args: A) => R;
@@ -164,3 +164,36 @@ export type TGetType<T> = T extends string ? string :
     T extends boolean ? boolean :
       T extends [...infer R] ? R :
         any;
+
+/** 更好的现实类型信息 */
+export type TPrintify<T> = { [K in keyof T]: T[K]; };
+
+/** 判断两个入参类型是否相同 (更严格的判断请使用 `TEquals`) */
+export type TBe<X, Y> = [X, Y] extends [Y, X] ? true : false;
+
+/** 判断两个入参类型是否全等 */
+export type TEquals<X, Y> = (<T>() => T extends X ? 1 : 2) extends (<T>() => T extends Y ? 1 : 2) ? true : false;
+
+/** 判断类型数组中是否包含指定类型 */
+export type TIncludes<L extends any[], K> = L extends [infer H, ...infer T]
+  ? TEquals<H, K> extends true
+    ? true
+    : TIncludes<T, K>
+  : false;
+
+/** 深度指定对象的部分属性必填 */
+export type TDeepRequired<T> = T extends TObject<any> ? { [K in keyof T]-?: TDeepRequired<T[K]> } : T;
+
+/** 深度只读 */
+export type TDeepReadonly<T> = T extends (...args: any[]) => any ? T : {
+  readonly [P in keyof T]: TDeepReadonly<T[P]>;
+};
+
+/** 选择某个类型 */
+export type TPickType<T, P> = Extract<T, P>;
+
+/** 排除某个类型 */
+export type TOmitType<T, O> = Exclude<T, O>;
+
+/** 判断是否为联合类型 */
+export type TIsUnion<T, _T = T> = (T extends T ? [_T] extends [T] ? false : true : never);
