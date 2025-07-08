@@ -39,6 +39,10 @@ await gitDown('http://github.com/cmtlyt/test', { output: tempFolder });
 
 ## 更新
 
+### v0.3.0
+
+新增 `gd` 命令行工具
+
 ### v0.2.2
 
 新增 `gitDown` 具名导出
