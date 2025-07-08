@@ -13,4 +13,3 @@ coverage
 .eslintcache
 doc_build
 __screenshots__
-*test-temp-folder

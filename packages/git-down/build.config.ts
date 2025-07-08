@@ -1,29 +1,47 @@
 import path from 'node:path';
 import { defineBuildConfig } from 'unbuild';
 
-export default defineBuildConfig({
+export default defineBuildConfig([
+  {
   // 入口文件配置
-  entries: ['src/index'],
-  // 输出目录
-  outDir: 'dist',
-  // 路径别名
-  alias: { $: path.resolve(__dirname, 'src') },
-  // 每次打包清空输出目录
-  clean: true,
-  // 生成类型
-  declaration: true,
-  // 不生成 sourcemap
-  sourcemap: false,
-  rollup: {
+    entries: ['src/index'],
+    // 输出目录
+    outDir: 'dist',
+    // 路径别名
+    alias: { $: path.resolve(__dirname, 'src') },
+    // 每次打包清空输出目录
+    clean: true,
+    // 生成类型
+    declaration: true,
+    // 不生成 sourcemap
+    sourcemap: false,
+    rollup: {
     // 生成 cjs 桥
-    cjsBridge: true,
-    // 生成 cjs 版本
-    emitCJS: true,
-    // 内联依赖
-    inlineDependencies: true,
-    esbuild: {
-      minify: true,
+      cjsBridge: true,
+      // 生成 cjs 版本
+      emitCJS: true,
+      // 内联依赖
+      inlineDependencies: true,
+      esbuild: {
+        minify: true,
+      },
     },
+    failOnWarn: false,
   },
-  failOnWarn: false,
-});
+  {
+    entries: ['src/cli'],
+    outDir: 'bin',
+    // 路径别名
+    alias: { $: path.resolve(__dirname, 'src') },
+    clean: true,
+    sourcemap: false,
+    rollup: {
+      // 内联依赖
+      inlineDependencies: true,
+      esbuild: {
+        minify: true,
+      },
+    },
+    failOnWarn: false,
+  },
+]);

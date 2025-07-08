@@ -18,7 +18,15 @@
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues"
   },
-  "keywords": ["git", "download", "clone", "git-clone", "git-down", "cmtlyt"],
+  "keywords": [
+    "git",
+    "download",
+    "clone",
+    "git-clone",
+    "git-down",
+    "cmtlyt",
+    "cli"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -29,7 +37,13 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "bin": {
+    "gd": "bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -39,5 +53,8 @@
     "build": "unbuild",
     "test": "cross-env CI=true vitest run",
     "prepublishOnly": "pnpm build && pnpm test"
+  },
+  "dependencies": {
+    "citty": "^0.1.6"
   }
 }

@@ -11,6 +11,7 @@ export default antfu({
     '**/.temp',
     '**/*.svg',
     'packages/create-origin/template',
+    '**/bin',
   ],
   stylistic: {
     indent: 2,
