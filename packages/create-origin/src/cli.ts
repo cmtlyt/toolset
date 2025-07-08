@@ -2,7 +2,6 @@ import { createCommand, Option, program } from 'commander';
 import { version } from '../package.json';
 import { createHandler } from './cli/create';
 import { downloadTemplateConfig } from './cli/download-template-config';
-import { optionPrompt } from './cli/option-prompt';
 import { templateManagerHandler } from './cli/template-manager';
 import { updateOriginConfig } from './cli/update-origin-config';
 import { SUPPORT_BUILDERS, SUPPORT_FRAMES } from './constant';
