@@ -41,6 +41,16 @@ export async function downloadPartial(state: State) {
     }, callback)
     .then(() => writeFile(sparseCheckoutPath, sparseChecoutFile), callback)
     .then(() => exec(`git pull ${randomRemoteName} --quiet ${branch} --depth 1`, execOption), callback)
-    .then(() => moveOrCopyAndCleanup(resolve(tempPath, pathname), targetPath), callback)
+    .then(() => {
+      const primarySource = resolve(tempPath, pathname);
+      if (existsSync(primarySource))
+        return moveOrCopyAndCleanup(primarySource, targetPath);
+
+      const fallbackSource = resolve(tempPath, pathname.split('/').pop()!);
+      if (existsSync(fallbackSource))
+        return moveOrCopyAndCleanup(fallbackSource, targetPath);
+
+      throw new Error(`无法在下载目录中找到目标资源: ${pathname}`);
+    }, callback)
     .then(() => rmdir(tempPath), callback);
 }

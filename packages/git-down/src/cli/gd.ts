@@ -1,10 +1,11 @@
 import type { ArgsDef, ParsedArgs } from 'citty';
-import type { GitDownOption } from '../types';
+import type { GitDownOption, GitUrlInfo } from '../types';
 import { existsSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { exit, stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline';
 import gitDown, { parseGitUrl } from '../index';
+import { reconcileGitInfoBranch } from '../utils';
 
 /**
  * CLI 参数定义
@@ -44,6 +45,21 @@ export interface GitDownArgsDef extends ArgsDef {
  */
 export type GitDownParsedArgs = ParsedArgs<GitDownArgsDef>;
 
+function hasExplicitBranch(rawArgs: string[] = []): boolean {
+  return rawArgs.some((arg, index) => {
+    if (arg === '-b' || arg === '--branch')
+      return true;
+    if (arg.startsWith('--branch='))
+      return true;
+    if (arg.startsWith('-b') && arg.length > 2)
+      return true;
+    const prev = index > 0 ? rawArgs[index - 1] : '';
+    if ((prev === '-b' || prev === '--branch') && arg.trim().length > 0)
+      return true;
+    return false;
+  });
+}
+
 /**
  * 验证 URL 参数
  */
@@ -62,7 +78,8 @@ function validateUrl(url: unknown): url is string {
  */
 function getStringArg(value: string | boolean | string[] | undefined, defaultValue: string): string {
   if (typeof value === 'string') {
-    return value;
+    const trimmed = value.trim();
+    return trimmed || defaultValue;
   }
   return defaultValue;
 }
@@ -127,6 +144,20 @@ async function processOutputPath(args: GitDownParsedArgs, gitInfo: ReturnType<ty
 }
 
 /**
+ * 打印仓库元信息
+ */
+function logRepositoryMetadata(gitInfo: GitUrlInfo, branch: string): void {
+  const repoDisplay = gitInfo.owner ? `${gitInfo.owner}/${gitInfo.project}` : gitInfo.project;
+  const branchDisplay = branch || 'main';
+
+  console.log(`📦 仓库: ${repoDisplay}`);
+  console.log(`🌿 分支: ${branchDisplay}`);
+  if (gitInfo.pathname) {
+    console.log(`🗂️ 目标: ${gitInfo.pathname}`);
+  }
+}
+
+/**
  * 获取分支参数
  */
 function getBranchOption(args: GitDownParsedArgs, defaultBranch: string): string {
@@ -167,7 +198,7 @@ async function executeDownload(url: string, options: GitDownOption): Promise<voi
 /**
  * Git Down CLI 主函数
  */
-export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
+export async function runGitDown(args: GitDownParsedArgs, rawArgs: string[] = []): Promise<void> {
   let outputPath = '';
 
   try {
@@ -175,12 +206,21 @@ export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
 
     const gitInfo = parseGitUrl(url);
 
+    const branchExplicit = hasExplicitBranch(rawArgs);
+    const fallbackBranch = gitInfo.branch || 'main';
+    const branchOption = getBranchOption(args, fallbackBranch);
+    const branchToUse = branchExplicit ? branchOption : fallbackBranch;
+
+    reconcileGitInfoBranch(gitInfo, branchToUse);
+
     outputPath = await processOutputPath(args, gitInfo);
 
     const options: GitDownOption = {
       output: outputPath,
-      branch: getBranchOption(args, gitInfo.branch || 'master'),
+      branch: gitInfo.branch || branchToUse,
     };
+
+    logRepositoryMetadata(gitInfo, options.branch || '');
 
     await executeDownload(url, options);
   }
