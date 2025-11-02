@@ -25,7 +25,6 @@ export interface GitDownArgsDef extends ArgsDef {
     type: 'string';
     description: '指定要下载的分支名称';
     alias: ['b'];
-    default: 'main';
   };
   help: {
     type: 'boolean';
@@ -45,21 +44,6 @@ export interface GitDownArgsDef extends ArgsDef {
  */
 export type GitDownParsedArgs = ParsedArgs<GitDownArgsDef>;
 
-function hasExplicitBranch(rawArgs: string[] = []): boolean {
-  return rawArgs.some((arg, index) => {
-    if (arg === '-b' || arg === '--branch')
-      return true;
-    if (arg.startsWith('--branch='))
-      return true;
-    if (arg.startsWith('-b') && arg.length > 2)
-      return true;
-    const prev = index > 0 ? rawArgs[index - 1] : '';
-    if ((prev === '-b' || prev === '--branch') && arg.trim().length > 0)
-      return true;
-    return false;
-  });
-}
-
 /**
  * 验证 URL 参数
  */
@@ -78,8 +62,7 @@ function validateUrl(url: unknown): url is string {
  */
 function getStringArg(value: string | boolean | string[] | undefined, defaultValue: string): string {
   if (typeof value === 'string') {
-    const trimmed = value.trim();
-    return trimmed || defaultValue;
+    return value.trim() || defaultValue;
   }
   return defaultValue;
 }
@@ -158,13 +141,6 @@ function logRepositoryMetadata(gitInfo: GitUrlInfo, branch: string): void {
 }
 
 /**
- * 获取分支参数
- */
-function getBranchOption(args: GitDownParsedArgs, defaultBranch: string): string {
-  return getStringArg(args.branch, defaultBranch);
-}
-
-/**
  * 清理不完整的下载目录
  */
 function cleanupIncompleteDownload(outputPath: string): void {
@@ -198,7 +174,7 @@ async function executeDownload(url: string, options: GitDownOption): Promise<voi
 /**
  * Git Down CLI 主函数
  */
-export async function runGitDown(args: GitDownParsedArgs, rawArgs: string[] = []): Promise<void> {
+export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
   let outputPath = '';
 
   try {
@@ -206,10 +182,7 @@ export async function runGitDown(args: GitDownParsedArgs, rawArgs: string[] = []
 
     const gitInfo = parseGitUrl(url);
 
-    const branchExplicit = hasExplicitBranch(rawArgs);
-    const fallbackBranch = gitInfo.branch || 'main';
-    const branchOption = getBranchOption(args, fallbackBranch);
-    const branchToUse = branchExplicit ? branchOption : fallbackBranch;
+    const branchToUse = getStringArg(args.branch, gitInfo.branch || 'main');
 
     reconcileGitInfoBranch(gitInfo, branchToUse);
 
@@ -217,7 +190,7 @@ export async function runGitDown(args: GitDownParsedArgs, rawArgs: string[] = []
 
     const options: GitDownOption = {
       output: outputPath,
-      branch: gitInfo.branch || branchToUse,
+      branch: branchToUse,
     };
 
     logRepositoryMetadata(gitInfo, options.branch || '');

@@ -109,7 +109,7 @@ function trimLeadingSlash(value: string) {
  * 去除路径两端的斜杠，保证比较时使用统一格式
  */
 function trimSurroundingSlashes(value: string) {
-  return value.replace(/^\/+/, '').replace(/\/+$/, '');
+  return value.replace(/^\/+|\/+$/g, '');
 }
 
 /**
@@ -169,6 +169,7 @@ async function fetchRemoteBranchSet(owner: string, project: string): Promise<Set
   const promise = exec(`git ls-remote --heads https://github.com/${owner}/${project}`)
     .then(({ stdout }) => {
       const set = new Set<string>();
+      const refsHeadsPattern = /^refs\/heads\/(.+)$/;
       stdout.split(/\r?\n/)
         .map(line => line.trim())
         .filter(Boolean)
@@ -176,7 +177,7 @@ async function fetchRemoteBranchSet(owner: string, project: string): Promise<Set
           const [, ref] = line.split(/\s+/);
           if (!ref)
             return;
-          const match = ref.match(/^refs\/heads\/(.+)$/);
+          const match = ref.match(refsHeadsPattern);
           if (match?.[1])
             set.add(match[1]);
         });
