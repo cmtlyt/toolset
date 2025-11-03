@@ -1,7 +1,7 @@
 {
   "name": "@cmtlyt/git-down",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": false,
   "packageManager": "pnpm@9.14.4",
   "description": "下载 git 仓库或文件",
@@ -13,7 +13,8 @@
   "homepage": "https://github.com/cmtlyt/toolset/packages/git-down#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cmtlyt/toolset.git"
+    "url": "https://github.com/cmtlyt/toolset.git",
+    "directory": "packages/git-down"
   },
   "bugs": {
     "url": "https://github.com/cmtlyt/toolset/issues"
