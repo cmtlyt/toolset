@@ -1,10 +1,11 @@
 import type { ArgsDef, ParsedArgs } from 'citty';
-import type { GitDownOption } from '../types';
+import type { GitDownOption, GitUrlInfo } from '../types';
 import { existsSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { exit, stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline';
 import gitDown, { parseGitUrl } from '../index';
+import { reconcileGitInfoBranch } from '../utils';
 
 /**
  * CLI 参数定义
@@ -24,7 +25,6 @@ export interface GitDownArgsDef extends ArgsDef {
     type: 'string';
     description: '指定要下载的分支名称';
     alias: ['b'];
-    default: 'main';
   };
   help: {
     type: 'boolean';
@@ -62,7 +62,7 @@ function validateUrl(url: unknown): url is string {
  */
 function getStringArg(value: string | boolean | string[] | undefined, defaultValue: string): string {
   if (typeof value === 'string') {
-    return value;
+    return value.trim() || defaultValue;
   }
   return defaultValue;
 }
@@ -127,10 +127,17 @@ async function processOutputPath(args: GitDownParsedArgs, gitInfo: ReturnType<ty
 }
 
 /**
- * 获取分支参数
+ * 打印仓库元信息
  */
-function getBranchOption(args: GitDownParsedArgs, defaultBranch: string): string {
-  return getStringArg(args.branch, defaultBranch);
+function logRepositoryMetadata(gitInfo: GitUrlInfo, branch: string): void {
+  const repoDisplay = gitInfo.owner ? `${gitInfo.owner}/${gitInfo.project}` : gitInfo.project;
+  const branchDisplay = branch || 'main';
+
+  console.log(`📦 仓库: ${repoDisplay}`);
+  console.log(`🌿 分支: ${branchDisplay}`);
+  if (gitInfo.pathname) {
+    console.log(`🗂️ 目标: ${gitInfo.pathname}`);
+  }
 }
 
 /**
@@ -175,12 +182,18 @@ export async function runGitDown(args: GitDownParsedArgs): Promise<void> {
 
     const gitInfo = parseGitUrl(url);
 
+    const branchToUse = getStringArg(args.branch, gitInfo.branch || 'main');
+
+    reconcileGitInfoBranch(gitInfo, branchToUse);
+
     outputPath = await processOutputPath(args, gitInfo);
 
     const options: GitDownOption = {
       output: outputPath,
-      branch: getBranchOption(args, gitInfo.branch || 'master'),
+      branch: branchToUse,
     };
+
+    logRepositoryMetadata(gitInfo, options.branch || '');
 
     await executeDownload(url, options);
   }

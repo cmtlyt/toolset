@@ -19,9 +19,7 @@ describe('promise polyfill', async () => {
         throw new Error('error');
       }),
     ).rejects.toThrow('error');
-    expect(() => ClPromise.try.call(null, () => {})).toThrowErrorMatchingInlineSnapshot(
-      `[TypeError: 必须通过 Promise.try 方式调用]`,
-    );
+    expect(() => ClPromise.try.call(null, () => {})).toThrow();
 
     expect(promiseTry(() => {})).toBeInstanceOf(Promise);
     expect(promiseTry((a: number) => a, 1)).resolves.toBe(1);

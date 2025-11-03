@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseGitUrl } from '../src/utils';
+import { parseGitUrl, reconcileGitInfoBranch } from '../src/utils';
 
 describe('utils test', () => {
   it('parseGitUrl', () => {
@@ -56,6 +56,62 @@ describe('utils test', () => {
       branch: '',
       owner: 'cmtlyt',
       project: 'git-down',
+    });
+  });
+
+  describe('reconcileGitInfoBranch', () => {
+    it('应该修正多级分支名和路径', () => {
+      // 场景：parseGitUrl 把 feat/yxp-lib-start 解析为 feat + yxp-lib-start/README.md
+      // 用户通过 -b 指定完整分支名后，应该修正为正确的分支和路径
+      const gitInfo = {
+        href: '',
+        owner: '',
+        project: '',
+        isRepo: false,
+        sourceType: 'file' as const,
+        branch: 'feat',
+        pathname: 'yxp-lib-start/README.md',
+      };
+
+      reconcileGitInfoBranch(gitInfo, 'feat/yxp-lib-start');
+
+      expect(gitInfo.branch).toBe('feat/yxp-lib-start');
+      expect(gitInfo.pathname).toBe('README.md');
+    });
+
+    it('应该处理路径等于分支余下部分的情况', () => {
+      // 场景：pathname 恰好等于分支名去掉第一层后的部分
+      const gitInfo = {
+        href: '',
+        owner: '',
+        project: '',
+        isRepo: false,
+        sourceType: 'dir' as const,
+        branch: 'feat',
+        pathname: 'feature-name',
+      };
+
+      reconcileGitInfoBranch(gitInfo, 'feat/feature-name');
+
+      expect(gitInfo.branch).toBe('feat/feature-name');
+      expect(gitInfo.pathname).toBe('');
+    });
+
+    it('应该去除分支名开头和结尾的斜杠', () => {
+      const gitInfo = {
+        href: '',
+        owner: '',
+        project: '',
+        isRepo: false,
+        sourceType: 'dir' as const,
+        branch: 'feat',
+        pathname: 'branch-name',
+      };
+
+      reconcileGitInfoBranch(gitInfo, '/feat/branch-name/');
+
+      expect(gitInfo.branch).toBe('feat/branch-name');
+      expect(gitInfo.pathname).toBe('');
     });
   });
 });

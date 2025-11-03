@@ -26,7 +26,6 @@ const main = defineCommand<GitDownArgsDef>({
       type: 'string',
       description: '指定要下载的分支名称',
       alias: ['b'],
-      default: 'main',
     },
     help: {
       type: 'boolean',
